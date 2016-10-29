@@ -414,41 +414,21 @@ public class TimerReceiver extends BroadcastReceiver {
             // Set up remoteviews for the notification.
             RemoteViews remoteViewsCollapsed = new RemoteViews(context.getPackageName(),
                     org.omnirom.deskclock.R.layout.custom_notif_collapsed);
-            remoteViewsCollapsed.setOnClickPendingIntent(org.omnirom.deskclock.R.id.swn_collapsed_hitspace, pendingIntent);
-            if (Utils.isNougatOrLater()) {
-                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_chronometer, View.VISIBLE);
-                remoteViewsCollapsed.setChronometer(
-                        org.omnirom.deskclock.R.id.collapsed_chronometer, baseTime, null, timer.isTicking());
-                remoteViewsCollapsed.setChronometerCountDown(org.omnirom.deskclock.R.id.collapsed_chronometer, true);
-                remoteViewsCollapsed.setTextColor(org.omnirom.deskclock.R.id.collapsed_chronometer,
-                        context.getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
-            } else {
-                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_chronometer, View.GONE);
-                remoteViewsCollapsed.setTextViewText(org.omnirom.deskclock.R.id.collapsed_title, title);
-                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_title, View.VISIBLE);
-                remoteViewsCollapsed.setTextViewText(org.omnirom.deskclock.R.id.collapsed_text, text);
-                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_text, View.VISIBLE);
-            }
+            remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_chronometer, View.GONE);
+            remoteViewsCollapsed.setTextViewText(org.omnirom.deskclock.R.id.collapsed_title, title);
+            remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_title, View.VISIBLE);
+            remoteViewsCollapsed.setTextViewText(org.omnirom.deskclock.R.id.collapsed_text, text);
+            remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_text, View.VISIBLE);
             remoteViewsCollapsed.
                     setImageViewResource(org.omnirom.deskclock.R.id.notification_icon, org.omnirom.deskclock.R.drawable.ic_notify_timer);
 
             RemoteViews remoteViewsExpanded = new RemoteViews(context.getPackageName(),
                     org.omnirom.deskclock.R.layout.custom_notif_expanded);
-            remoteViewsExpanded.setOnClickPendingIntent(org.omnirom.deskclock.R.id.swn_expanded_hitspace, pendingIntent);
-            if (Utils.isNougatOrLater()) {
-                remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_chronometer, View.VISIBLE);
-                remoteViewsExpanded.setChronometer(
-                        org.omnirom.deskclock.R.id.expanded_chronometer, baseTime, null, timer.isTicking());
-                remoteViewsExpanded.setChronometerCountDown(org.omnirom.deskclock.R.id.expanded_chronometer, true);
-                remoteViewsExpanded.setTextColor(org.omnirom.deskclock.R.id.expanded_chronometer,
-                        context.getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
-            } else {
-                remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_chronometer, View.GONE);
-                remoteViewsExpanded.setTextViewText(org.omnirom.deskclock.R.id.expanded_title, title);
-                remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_title, View.VISIBLE);
-                remoteViewsExpanded.setTextViewText(org.omnirom.deskclock.R.id.expanded_text, text);
-                remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_text, View.VISIBLE);
-            }
+            remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_chronometer, View.GONE);
+            remoteViewsExpanded.setTextViewText(org.omnirom.deskclock.R.id.expanded_title, title);
+            remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_title, View.VISIBLE);
+            remoteViewsExpanded.setTextViewText(org.omnirom.deskclock.R.id.expanded_text, text);
+            remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_text, View.VISIBLE);
             remoteViewsExpanded.
                     setImageViewResource(org.omnirom.deskclock.R.id.notification_icon, org.omnirom.deskclock.R.drawable.ic_notify_timer);
 
@@ -555,7 +535,6 @@ public class TimerReceiver extends BroadcastReceiver {
                 // Set up remoteviews for the notification.
                 RemoteViews remoteViewsCollapsed = new RemoteViews(context.getPackageName(),
                         org.omnirom.deskclock.R.layout.custom_notif_nougat);
-                remoteViewsCollapsed.setOnClickPendingIntent(org.omnirom.deskclock.R.id.notif_hitspace, pendingIntent);
                 remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_chronometer, View.VISIBLE);
                 remoteViewsCollapsed.setChronometer(
                         org.omnirom.deskclock.R.id.notif_chronometer, baseTime, null, timer.isTicking());
@@ -565,7 +544,6 @@ public class TimerReceiver extends BroadcastReceiver {
 
                 RemoteViews remoteViewsExpanded = new RemoteViews(context.getPackageName(),
                         org.omnirom.deskclock.R.layout.custom_notif_nougat);
-                remoteViewsExpanded.setOnClickPendingIntent(org.omnirom.deskclock.R.id.notif_hitspace, pendingIntent);
                 remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.notif_chronometer, View.VISIBLE);
                 remoteViewsExpanded.setChronometer(
                         org.omnirom.deskclock.R.id.notif_chronometer, baseTime, null, timer.isTicking());

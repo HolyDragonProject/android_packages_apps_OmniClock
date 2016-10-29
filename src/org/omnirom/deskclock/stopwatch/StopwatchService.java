@@ -164,7 +164,6 @@ public class StopwatchService extends Service {
         // Set up remoteviews for the notification.
         RemoteViews remoteViewsCollapsed = new RemoteViews(getPackageName(),
                 org.omnirom.deskclock.R.layout.custom_notif_collapsed);
-        remoteViewsCollapsed.setOnClickPendingIntent(org.omnirom.deskclock.R.id.swn_collapsed_hitspace, pendingIntent);
         remoteViewsCollapsed.setChronometer(
                 org.omnirom.deskclock.R.id.collapsed_chronometer, clockBaseTime, null, clockRunning);
         remoteViewsCollapsed.
@@ -172,7 +171,6 @@ public class StopwatchService extends Service {
         remoteViewsCollapsed.setTextColor(org.omnirom.deskclock.R.id.expanded_chronometer, getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
         RemoteViews remoteViewsExpanded = new RemoteViews(getPackageName(),
                 org.omnirom.deskclock.R.layout.custom_notif_expanded);
-        remoteViewsExpanded.setOnClickPendingIntent(org.omnirom.deskclock.R.id.swn_expanded_hitspace, pendingIntent);
         remoteViewsExpanded.setChronometer(
                 org.omnirom.deskclock.R.id.expanded_chronometer, clockBaseTime, null, clockRunning);
         remoteViewsExpanded.
@@ -258,6 +256,7 @@ public class StopwatchService extends Service {
                 .setSmallIcon(org.omnirom.deskclock.R.drawable.ic_notify_stopwatch)
                 .setPriority(Notification.PRIORITY_MAX)
                 .setLocalOnly(true)
+                .setContentIntent(pendingIntent)
                 .build();
         notification.bigContentView = remoteViewsExpanded;
         mNotificationManager.notify(NOTIFICATION_ID, notification);
@@ -277,13 +276,11 @@ public class StopwatchService extends Service {
         // Set up remoteviews for the notification.
         RemoteViews remoteViewsCollapsed = new RemoteViews(getPackageName(),
                 org.omnirom.deskclock.R.layout.custom_notif_nougat);
-        remoteViewsCollapsed.setOnClickPendingIntent(org.omnirom.deskclock.R.id.swn_collapsed_hitspace, pendingIntent);
         remoteViewsCollapsed.setChronometer(
                 org.omnirom.deskclock.R.id.notif_chronometer, clockBaseTime, null, clockRunning);
         remoteViewsCollapsed.setTextColor(org.omnirom.deskclock.R.id.notif_chronometer, getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
         RemoteViews remoteViewsExpanded = new RemoteViews(getPackageName(),
                 org.omnirom.deskclock.R.layout.custom_notif_nougat);
-        remoteViewsExpanded.setOnClickPendingIntent(org.omnirom.deskclock.R.id.notif_hitspace, pendingIntent);
         remoteViewsExpanded.setChronometer(
                 org.omnirom.deskclock.R.id.notif_chronometer, clockBaseTime, null, clockRunning);
         remoteViewsExpanded.setTextColor(org.omnirom.deskclock.R.id.notif_chronometer, getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
@@ -360,6 +357,7 @@ public class StopwatchService extends Service {
                     .setPriority(Notification.PRIORITY_MAX)
                     .setLocalOnly(true)
                     .setStyle(new Notification.DecoratedCustomViewStyle())
+                    .setContentIntent(pendingIntent)
                     .build();
             mNotificationManager.notify(NOTIFICATION_ID, notification);
         }
