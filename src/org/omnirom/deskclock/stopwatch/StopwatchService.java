@@ -210,8 +210,7 @@ public class StopwatchService extends Service {
             if (numLaps > 0) {
                 String lapText = String.format(
                         context.getString(org.omnirom.deskclock.R.string.sw_notification_lap_number), numLaps);
-                remoteViewsCollapsed.setTextViewText(org.omnirom.deskclock.R.id.collapsed_text, lapText);
-                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_text, View.VISIBLE);
+                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_text, View.GONE);
                 remoteViewsExpanded.setTextViewText(org.omnirom.deskclock.R.id.expanded_text, lapText);
                 remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_text, View.VISIBLE);
             } else {
@@ -242,9 +241,7 @@ public class StopwatchService extends Service {
                             org.omnirom.deskclock.R.drawable.ic_notify_start_black, 0, 0, 0);
 
             // Show stopped string.
-            remoteViewsCollapsed.
-                    setTextViewText(org.omnirom.deskclock.R.id.collapsed_text, getString(org.omnirom.deskclock.R.string.swn_stopped));
-            remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_text, View.VISIBLE);
+            remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.collapsed_text, View.GONE);
             remoteViewsExpanded.
                     setTextViewText(org.omnirom.deskclock.R.id.expanded_text, getString(org.omnirom.deskclock.R.string.swn_stopped));
             remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.expanded_text, View.VISIBLE);
@@ -316,8 +313,7 @@ public class StopwatchService extends Service {
             if (numLaps > 0) {
                 String lapText = String.format(
                         context.getString(org.omnirom.deskclock.R.string.sw_notification_lap_number), numLaps);
-                remoteViewsCollapsed.setTextViewText(org.omnirom.deskclock.R.id.notif_text, lapText);
-                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);
+                remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.GONE);
                 remoteViewsExpanded.setTextViewText(org.omnirom.deskclock.R.id.notif_text, lapText);
                 remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);
             } else {
@@ -344,9 +340,7 @@ public class StopwatchService extends Service {
                             rightButtonIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
             // Show stopped string.
-            remoteViewsCollapsed.
-                    setTextViewText(org.omnirom.deskclock.R.id.notif_text, getString(org.omnirom.deskclock.R.string.swn_stopped));
-            remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);
+            remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.GONE);
             remoteViewsExpanded.
                     setTextViewText(org.omnirom.deskclock.R.id.notif_text, getString(org.omnirom.deskclock.R.string.swn_stopped));
             remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);

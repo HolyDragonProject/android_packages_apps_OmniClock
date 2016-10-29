@@ -490,9 +490,7 @@ public class TimerReceiver extends BroadcastReceiver {
                                         org.omnirom.deskclock.R.drawable.ic_notify_start_black, 0, 0, 0);
                 if (timer.mState == TimerObj.STATE_STOPPED) {
                     // Show stopped string.
-                    remoteViewsCollapsed.
-                            setTextViewText(org.omnirom.deskclock.R.id.notif_text, context.getResources().getString(org.omnirom.deskclock.R.string.swn_stopped));
-                    remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);
+                    remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.GONE);
                     remoteViewsExpanded.
                             setTextViewText(org.omnirom.deskclock.R.id.notif_text, context.getResources().getString(org.omnirom.deskclock.R.string.swn_stopped));
                     remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);
@@ -607,9 +605,7 @@ public class TimerReceiver extends BroadcastReceiver {
 
                     if (timer.mState == TimerObj.STATE_STOPPED) {
                         // Show stopped string.
-                        remoteViewsCollapsed.
-                                setTextViewText(org.omnirom.deskclock.R.id.notif_text, context.getResources().getString(org.omnirom.deskclock.R.string.swn_stopped));
-                        remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);
+                        remoteViewsCollapsed.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.GONE);
                         remoteViewsExpanded.
                                 setTextViewText(org.omnirom.deskclock.R.id.notif_text, context.getResources().getString(org.omnirom.deskclock.R.string.swn_stopped));
                         remoteViewsExpanded.setViewVisibility(org.omnirom.deskclock.R.id.notif_text, View.VISIBLE);
