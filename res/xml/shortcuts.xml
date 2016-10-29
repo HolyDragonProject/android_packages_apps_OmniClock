@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- this is just to make aapt happy for now 
+remove if you enable shortcuts below -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+</resources>
+
+<!-- If you have API 25 you can enable this -->
+<!--<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+<shortcut
+    android:shortcutId="create_alarm"
+    android:enabled="true"
+    android:icon="@drawable/ic_shortcut_alarm"
+    android:shortcutShortLabel="@string/tile_create_alarm">
+    <intent
+        android:action="android.intent.action.SET_ALARM"
+        android:targetPackage="com.omnirom.deskclock"
+        android:targetClass="org.omnirom.deskclock.HandleApiCalls" />
+    <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="start_timer"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_timer"
+        android:shortcutShortLabel="@string/shortcut_start_timer">
+        <intent
+            android:action="android.intent.action.SET_TIMER"
+            android:targetPackage="com.omnirom.deskclock"
+            android:targetClass="org.omnirom.deskclock.HandleApiCalls" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="start_stopwatch"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_stopwatch"
+        android:shortcutShortLabel="@string/shortcut_stopwatch">
+        <intent
+            android:action="com.omnirom.deskclock.ACTION_SHOW_STOPWATCH"
+            android:targetPackage="com.omnirom.deskclock"
+            android:targetClass="org.omnirom.deskclock.HandleApiCalls" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>-->
+
