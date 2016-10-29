@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2008 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <color name="ampm_off">#ff404040</color>
+    <color name="ampm_on">#ffffffff</color>
+    <color name="time_text_color">#E6FFFFFF</color>
+    <color name="ampm_text_color">#99FFFFFF</color>
+    <color name="screen_saver_color">#FF006688</color>
+    <color name="screen_saver_dim_color">#FF001634</color>
+    <color name="action_bar_button_text_color">#FFFFFF</color>
+    <color name="dialog_gray">#28ffffff</color>
+    <color name="pressed_state_color">#33999999</color>
+    <color name="black">#ff000000</color>
+    <color name="black_87p">#de000000</color>
+    <color name="black_54p">#8a000000</color>
+    <color name="black_30p">#45000000</color>
+    <color name="black_16p">#28000000</color>
+    <color name="white">#ffffffff</color>
+    <color name="white_69p">#B1FFFFFF</color>
+    <color name="white_54p">#8aFFFFFF</color>
+    <color name="white_30p">#45FFFFFF</color>
+    <color name="blackish_selected">#0cffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="clock_gray">#cccccc</color>
+    <color name="status_bar">#26000000</color>
+    <color name="text_color_light">#de000000</color>
+    <color name="icon_color_light">#de000000</color>
+    <color name="analog_color_light">#de000000</color>
+    <color name="tab_indicator">#ffffff</color>
+    <color name="no_alarms_text_color">#aaaaaa</color>
+    <color name="notify_action_color">#ff5a595b</color> <!-- button_material_dark" -->
+    <color name="folder_dialog_file_color">@color/black_30p</color>
+    <color name="folder_dialog_file_color_dark">@color/white_30p</color>
+    <color name="material_blue_grey_900">#ff263238</color>
+    <color name="undo_background">@color/material_blue_grey_900</color>
+    <color name="material_grey_50">#fffafafa</color>
+    <color name="material_grey_100">#fff5f5f5</color>
+    <color name="material_grey_300">#ffe0e0e0</color>
+    <color name="material_grey_600">#ff757575</color>
+    <color name="material_grey_800">#ff424242</color>
+    <color name="material_grey_850">#ff303030</color>
+    <color name="material_grey_900">#ff212121</color>
+    <color name="view_background">@color/material_grey_300</color>
+    <color name="window_background">@color/material_grey_100</color>
+    <color name="view_background_dark">@color/material_grey_850</color>
+    <color name="window_background_dark">@color/material_grey_900</color>
+    <color name="primary">#245c75</color>
+    <color name="primary_dark">#183d4d</color>
+    <color name="primary_light">#30245c75</color>
+    <color name="accent">#e12475</color>
+    <color name="analog_clock_bg_color">#21282b</color>
+    <color name="analog_clock_hour_hand_color">#ffffff</color>
+    <color name="analog_clock_minute_hand_color">#28abe3</color>
+    <color name="analog_clock_seconds_hand_color">@color/accent</color>
+    <color name="analog_clock_alarm_color">#d72929</color>
+    <color name="stopwatch_max_lap_line">#d72929</color>
+    <color name="stopwatch_min_lap_line">#43bf43</color>
+    <color name="undo_color">#ffc107</color>
+</resources>
