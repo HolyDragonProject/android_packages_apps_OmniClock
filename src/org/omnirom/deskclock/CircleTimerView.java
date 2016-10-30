@@ -131,13 +131,14 @@ public class CircleTimerView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        int xCenter = getWidth() / 2 + 1;
+        int xCenter = getWidth() / 2;
         int yCenter = getHeight() / 2;
 
         mPaint.setStrokeWidth(mStrokeSize);
         mPaint.setColor(mAccentColor);
 
-        float radius = Math.min(xCenter, yCenter) - mStrokeSize / 2;
+        // add 2 pixel border
+        float radius = Math.min(xCenter, yCenter) - mStrokeSize / 2 - 2;
 
         if (mIntervalStartTime == -1) {
             canvas.drawCircle (xCenter, yCenter, radius, mPaint);
