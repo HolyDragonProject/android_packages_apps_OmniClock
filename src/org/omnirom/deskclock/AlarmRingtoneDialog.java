@@ -292,6 +292,16 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
         List<String> alarmTypes = new ArrayList<String>();
         alarmTypes.addAll(Arrays.asList(getResources().getStringArray(R.array.alarm_type_entries)));
+        boolean addSpotify = false;
+        if (Utils.isSpotifyPluginInstalled(getActivity())) {
+            addSpotify = true;
+        } else if (Utils.isSpotifyAlarm(mAlarm, mPreAlarm)) {
+            addSpotify = true;
+        }
+        if (addSpotify) {
+            final String spotifyMenu = getResources().getString(R.string.menu_item_spotify);
+            alarmTypes.add(spotifyMenu);
+        }
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),
                 R.layout.spinner_item, alarmTypes);
@@ -663,7 +673,16 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void showAlarmTestDialog(Alarm alarm, boolean preAlarm) {
         if (mCurrentMediaType == ALARM_TYPE_SPOTIFY && Utils.isSpotifyAlarm(alarm, preAlarm)) {
-            showSpotifyErrorDialog();
+             if (Utils.isSpotifyPluginInstalled(getActivity())) {
+                // ignore pre alarm here - spotify activities assume it stored in there
+                alarm.alert = mRingtone;
+                alarm.ringtoneName = mRingtoneName;
+                alarm.setRandomMode(false, mRandomModeValue);
+                alarm.alarmVolume = mVolume;
+                startActivity(Utils.getSpotifyTestPlayIntent(getActivity().getApplicationContext(), alarm));
+            } else {
+                showSpotifyErrorDialog();
+            }
         } else {
             closeAlarmTestDialog();
 
@@ -697,7 +716,16 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void selectRingtone(int mediaType) {
         if (mediaType == ALARM_TYPE_SPOTIFY) {
-            showSpotifyErrorDialog();
+             if (Utils.isSpotifyPluginInstalled(getActivity())) {
+                Alarm testAlarm = new Alarm();
+                saveChanges(testAlarm);
+                // ignore pre alarm here - spotify activities assume it stored in there
+                testAlarm.alert = mRingtone;
+                startActivityForResult(Utils.getSpotifyBrowseIntent(getActivity(),
+                        testAlarm), REQUEST_CODE_SPOTIFY);
+            } else {
+                showSpotifyErrorDialog();
+            }
         } else if (mediaType == ALARM_TYPE_BROWSE) {
             launchBrowseActivity();
         }

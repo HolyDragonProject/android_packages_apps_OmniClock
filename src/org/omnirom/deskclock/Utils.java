@@ -769,6 +769,20 @@ public class Utils {
         return sharedPref.getBoolean(SettingsActivity.KEY_WEAR_NOTIFICATIONS, true);
     }
 
+    public static boolean isSpotifyPluginInstalled(final Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo("com.maxwen.deskclock.spotify", 0);
+            if (info != null) {
+                // we need at least version 1.3.0 = 19
+                if (info.versionCode >= 19) {
+                    return true;
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return false;
+    }
+
     public static boolean isSpotifyAlarm(AlarmInstance instance, boolean preAlarm) {
         if (preAlarm) {
             return isSpotifyUri(instance.mPreAlarmRingtone.toString());
@@ -787,10 +801,57 @@ public class Utils {
         return uri.startsWith("spotify:");
     }
 
+    public static Intent getSpotifyTestPlayIntent(final Context context, Alarm alarm) {
+        Intent spotifyIntent = new Intent();
+        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
+                "com.maxwen.deskclock.spotify.TestPlayActivity"));
+        spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
+        spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_URI, alarm.alert.toString());
+        spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, alarm.ringtoneName);
+        spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_RANDOM, alarm.getRandomMode(false));
+        spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_VOLUME, alarm.alarmVolume);
+        return spotifyIntent;
+    }
+
+    public static Intent getSpotifyFirstStartIntent(final Context context) {
+        Intent spotifyIntent = new Intent();
+        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
+                "com.maxwen.deskclock.spotify.FirstStartActivity"));
+        spotifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return spotifyIntent;
+    }
+
+    public static int getSpotifyPluginVersionNumber(final Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo("com.maxwen.deskclock.spotify", 0);
+            return info.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return -1;
+    }
+
     public static int getHighNotificationOffset(Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String offset = prefs.getString(SettingsActivity.KEY_PRE_ALARM_NOTIFICATION_TIME, "-30");
         return Integer.decode(offset).intValue();
+    }
+
+    public static Intent getSpotifyBrowseIntent(final Context context, Alarm alarm) {
+        Intent spotifyIntent = new Intent();
+        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
+                "com.maxwen.deskclock.spotify.BrowseActivity"));
+        spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_URI, alarm.alert.toString());
+        spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
+        return spotifyIntent;
+    }
+
+    public static Intent getSpotifySettingsIntent(final Context context) {
+        Intent spotifyIntent = new Intent();
+        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
+                "com.maxwen.deskclock.spotify.SpotifyActivity"));
+        spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
+        spotifyIntent.putExtra(AlarmConstants.DATA_OMNICLOCK_PARENT, true);
+        return spotifyIntent;
     }
 
     public static Intent getLocalBrowseIntent(final Context context, Alarm alarm) {

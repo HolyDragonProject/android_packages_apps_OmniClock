@@ -27,6 +27,10 @@ public class AlarmConstants {
     public static final String DATA_ALARM_EXTRA = "alarm_data";
     public static final String DATA_ALARM_EXTRA_URI = "alarm_uri";
     public static final String DATA_ALARM_EXTRA_NAME = "alarm_name";
+    public static final String DATA_ALARM_EXTRA_RANDOM = "alarm_random";
+    public static final String DATA_ALARM_EXTRA_VOLUME = "alarm_volume";
     public static final String DATA_COLOR_THEME_LIGHT = "color_theme_light";
     public static final String DATA_OMNICLOCK_PARENT = "omniclock_parent";
+    public static final String DATA_OMNICLOCK_AUTHORITY = "omniclock_alarm_authority";
+
 }

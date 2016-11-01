@@ -262,6 +262,14 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
         Intent timerIntent = new Intent();
         timerIntent.setAction(Timers.NOTIF_IN_USE_CANCEL);
         sendBroadcast(timerIntent);
+
+        if (Utils.isSpotifyPluginInstalled(this)) {
+            boolean firstStartDone = prefs.getBoolean(KEY_SPOTIFY_FIRST_START_DONE, false);
+            if (!firstStartDone) {
+                prefs.edit().putBoolean(KEY_SPOTIFY_FIRST_START_DONE, true).commit();
+                startActivity(Utils.getSpotifyFirstStartIntent(this));
+            }
+        }
     }
 
     @Override
@@ -288,6 +296,9 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.desk_clock_menu, menu);
+        if (Utils.isSpotifyPluginInstalled(this)) {
+            menu.findItem(R.id.menu_item_spotify).setVisible(true);
+        }
         return true;
     }
 
@@ -299,6 +310,12 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_item_spotify:
+                if (Utils.isSpotifyPluginInstalled(this)) {
+                    Intent spotifyIntent = Utils.getSpotifySettingsIntent(this);
+                    startActivity(spotifyIntent);
+                    return true;
+                }
             case R.id.menu_item_settings:
                 startActivity(new Intent(DeskClock.this, SettingsActivity.class));
                 return true;

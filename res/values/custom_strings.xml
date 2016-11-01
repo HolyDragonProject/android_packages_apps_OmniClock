@@ -129,6 +129,7 @@
     <string name="msg_errsaving">An error occoured while saving.</string>
     <string name="msg_saved">Successfully saved.</string>
     <string name="menu_item_share">Share alarms</string>
+    <string name="menu_item_spotify">Spotify</string>
     <string name="wear_notification_summary">Show alarm and timer notification on connected wearable devices</string>
     <string name="wear_notification_title">Enable wearable notifications</string>
     <string name="no_spotify_message">No Spotify support available.\nPlease select a different alarm type.</string>

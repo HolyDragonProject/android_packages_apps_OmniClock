@@ -16,6 +16,9 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:id="@+id/menu_items">
+        <item android:id="@+id/menu_item_spotify"
+              android:title="@string/menu_item_spotify"
+              android:visible="false"/>
         <item android:id="@+id/menu_item_settings"
             android:title="@string/menu_item_settings"
             android:icon="@android:drawable/ic_menu_preferences"/>
