@@ -915,10 +915,11 @@ public final class AlarmStateManager extends BroadcastReceiver {
 
         intent.setAction(AlarmConstants.START_ALARM_ACTION);
 
-        // Maintain a cpu wake lock until the service can get it
-        AlarmAlertWakeLock.acquireCpuWakeLock(context);
-        AlarmNotifications.clearNotification(context, instance);
+        final PowerManager.WakeLock wl = AlarmAlertWakeLock.createPartialWakeLock(context);
+        // this should be enough to start the alarm service which will aquire its own lock then
+        wl.acquire(5000);
 
+        AlarmNotifications.clearNotification(context, instance);
         context.startService(intent);
     }
 
