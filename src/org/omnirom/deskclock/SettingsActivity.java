@@ -109,6 +109,7 @@ public class SettingsActivity extends PreferenceActivity
     public static final String KEY_COLOR_THEME = "color_theme";
     public static final String KEY_MAKE_SCREEN_DARK = "make_screen_dark";
     public static final String KEY_SHOW_BACKGROUND_IMAGE = "show_background_image";
+    public static final String KEY_VIBRATE_NOTIFICATION = "vibrate_notification";
 
     // default action for alarm action
     public static final String DEFAULT_ALARM_ACTION = "0";

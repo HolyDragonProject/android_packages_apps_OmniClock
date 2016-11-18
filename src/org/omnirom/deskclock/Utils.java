@@ -769,6 +769,11 @@ public class Utils {
         return sharedPref.getBoolean(SettingsActivity.KEY_WEAR_NOTIFICATIONS, true);
     }
 
+    public static boolean isNotificationVibrate(final Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getBoolean(SettingsActivity.KEY_VIBRATE_NOTIFICATION, true);
+    }
+
     public static boolean isSpotifyPluginInstalled(final Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo("com.maxwen.deskclock.spotify", 0);

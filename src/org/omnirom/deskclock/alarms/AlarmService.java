@@ -159,9 +159,15 @@ public class AlarmService extends Service {
         // Close dialogs and window shade, so this will display
         context.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
 
+        String alarmName = null;
+        if (instance.mAlarmState == AlarmInstance.PRE_ALARM_STATE) {
+            alarmName = instance.mPreAlarmRingtoneName;
+        } else {
+            alarmName = instance.mRingtoneName;
+        }
         Resources resources = context.getResources();
         Notification.Builder notification = new Notification.Builder(context)
-                .setContentTitle(AlarmUtils.getAlarmTitle(context, instance))
+                .setContentTitle(AlarmUtils.getAlarmTitle(context, instance) + " " + alarmName)
                 .setContentText(AlarmUtils.getFormattedTime(context, instance.getAlarmTime()))
                 .setSmallIcon(org.omnirom.deskclock.R.drawable.ic_notify_alarm)
                 .setAutoCancel(false)
@@ -169,11 +175,15 @@ public class AlarmService extends Service {
                 .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setVibrate(new long[] {0, 100, 50, 100} )
-                .setLocalOnly(true);
+                .setLocalOnly(true)
+                .setColor(resources.getColor(org.omnirom.deskclock.R.color.primary));
+
         notification.setGroup("GROUP");
         notification.setGroupSummary(true);
 
+        if (Utils.isNotificationVibrate(context)) {
+            notification.setVibrate(new long[] {0, 100, 50, 100} );
+        }
         // Setup Snooze Action
         if (AlarmStateManager.canSnooze(context)) {
             Intent snoozeIntent = AlarmStateManager.createStateChangeIntent(context,

@@ -398,7 +398,9 @@ public class TimerReceiver extends BroadcastReceiver {
                 .setSmallIcon(org.omnirom.deskclock.R.drawable.ic_notify_timer)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setLocalOnly(true);
+                .setLocalOnly(true)
+                .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary));
+
         if (showTicker) {
             builder.setTicker(text);
         }
@@ -519,7 +521,9 @@ public class TimerReceiver extends BroadcastReceiver {
                     .setCategory(Notification.CATEGORY_ALARM)
                     .setVisibility(Notification.VISIBILITY_PUBLIC)
                     .setStyle(new Notification.DecoratedCustomViewStyle())
-                    .setLocalOnly(true);
+                    .setLocalOnly(true)
+                    .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary));
+
             if (showTicker) {
                 builder.setTicker(text);
             }
@@ -732,12 +736,14 @@ public class TimerReceiver extends BroadcastReceiver {
                 .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setVibrate(new long[]{0, 100, 50, 100});
+                .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary));
 
         if (!Utils.showWearNotification(context)) {
             builder.setLocalOnly(true);
         }
-
+        if (Utils.isNotificationVibrate(context)) {
+            builder.setVibrate(new long[] {0, 100, 50, 100} );
+        }
         Notification notification = builder.build();
 
         // Send the notification using the timer's id to identify the

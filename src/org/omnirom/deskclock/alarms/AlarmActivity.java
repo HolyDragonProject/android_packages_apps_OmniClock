@@ -60,17 +60,6 @@ import org.omnirom.deskclock.provider.AlarmInstance;
 
 public class AlarmActivity extends Activity implements View.OnClickListener, View.OnTouchListener {
 
-    /**
-     * AlarmActivity listens for this broadcast intent, so that other applications can snooze the
-     * alarm (after ALARM_ALERT_ACTION and before ALARM_DONE_ACTION).
-     */
-    public static final String ALARM_SNOOZE_ACTION = "org.omnirom.deskclock.ALARM_SNOOZE";
-    /**
-     * AlarmActivity listens for this broadcast intent, so that other applications can dismiss
-     * the alarm (after ALARM_ALERT_ACTION and before ALARM_DONE_ACTION).
-     */
-    public static final String ALARM_DISMISS_ACTION = "org.omnirom.deskclock.ALARM_DISMISS";
-
     private static final String LOGTAG = AlarmActivity.class.getSimpleName();
 
     private static final Interpolator PULSE_INTERPOLATOR =
@@ -103,24 +92,14 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
             LogUtils.v(LOGTAG, "Received broadcast: " + action);
 
             switch (action) {
-                case ALARM_SNOOZE_ACTION:
-                    if (!mAlarmHandled) {
-                        snooze();
-                    }
-                    break;
-                case ALARM_DISMISS_ACTION:
-                    if (!mAlarmHandled) {
-                        dismiss();
-                    }
-                    break;
                 case AlarmConstants.ALARM_DONE_ACTION:
                     // DONE MUST never be missed else all the listeners will not be 
                     // removed correctly
                     finish();
                     break;
                 case AlarmConstants.ALARM_MEDIA_ACTION:
-                    String metaData = intent.getStringExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME);
-                    updateMediaInfo(metaData);
+                    //String metaData = intent.getStringExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME);
+                    //updateMediaInfo(metaData);
                     break;
                 default:
                     LogUtils.v(LOGTAG, "Unknown broadcast: " + action);
@@ -287,8 +266,6 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
 
         // Register to get the alarm done/snooze/dismiss intent.
         final IntentFilter filter = new IntentFilter(AlarmConstants.ALARM_DONE_ACTION);
-        filter.addAction(ALARM_SNOOZE_ACTION);
-        filter.addAction(ALARM_DISMISS_ACTION);
         filter.addAction(AlarmConstants.ALARM_MEDIA_ACTION);
 
         registerReceiver(mReceiver, filter);

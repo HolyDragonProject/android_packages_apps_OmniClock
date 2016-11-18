@@ -88,6 +88,8 @@
             android:entryValues="@array/audio_stream_values"
             android:key="audio_stream"
             android:title="@string/audio_stream_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/notification_settings" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="wear_notification"
@@ -106,6 +108,11 @@
             android:key="pre_alarm_notification_time"
             android:title="@string/pre_alarm_notification_time_title"
             android:dependency="pre_alarm_notification_show"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="vibrate_notification"
+            android:summary="@string/vibrate_notification_summary"
+            android:title="@string/vibrate_notification_title" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/fullscreen_alarm_settings"

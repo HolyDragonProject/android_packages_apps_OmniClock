@@ -168,7 +168,6 @@ public class AlarmKlaxon {
         }
 
         Uri alarmNoise = null;
-        String alarmName = null;
         sRandomMusicMode = false;
         sLocalMediaMode = false;
         sPlayFallbackAlarm = false;
@@ -176,10 +175,8 @@ public class AlarmKlaxon {
         sCurrentIndex = 0;
         if (sPreAlarmMode) {
             alarmNoise = instance.mPreAlarmRingtone;
-            alarmName = instance.mPreAlarmRingtoneName;
         } else {
             alarmNoise = instance.mRingtone;
-            alarmName = instance.mRingtoneName;
         }
         if (alarmNoise != null && Utils.isSpotifyUri(alarmNoise.toString())) {
             alarmNoise = null;
@@ -227,11 +224,9 @@ public class AlarmKlaxon {
         if (alarmNoise == null) {
             LogUtils.e("Play default alarm");
             sPlayFallbackAlarm = true;
-            alarmName = null;
         } else if (AlarmInstance.NO_RINGTONE_URI.equals(alarmNoise)) {
             // silent
             alarmNoise = null;
-            alarmName = null;
         }
         boolean playSound = alarmNoise != null || sPlayFallbackAlarm;
         boolean vibrate = instance.mVibrate;
@@ -245,11 +240,6 @@ public class AlarmKlaxon {
         }
         if (playSound) {
             playAlarm(context, alarmNoise);
-            if (alarmName != null) {
-                Intent metaDataIntent = new Intent(AlarmConstants.ALARM_MEDIA_ACTION);
-                metaDataIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, alarmName);
-                sContext.sendBroadcast(metaDataIntent);
-            }
         }
         if (vibrate) {
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

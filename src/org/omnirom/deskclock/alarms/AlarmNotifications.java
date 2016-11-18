@@ -115,7 +115,8 @@ public final class AlarmNotifications {
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_ALARM)
-                .setVisibility(Notification.VISIBILITY_PUBLIC);
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setColor(resources.getColor(org.omnirom.deskclock.R.color.primary));
 
         if (!Utils.showWearNotification(context)) {
             notification.setLocalOnly(true);
@@ -151,7 +152,8 @@ public final class AlarmNotifications {
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_ALARM)
-                .setVisibility(Notification.VISIBILITY_PUBLIC);
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setColor(resources.getColor(org.omnirom.deskclock.R.color.primary));
 
         if (!Utils.showWearNotification(context)) {
             notification.setLocalOnly(true);
@@ -189,7 +191,8 @@ public final class AlarmNotifications {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setLocalOnly(true);
+                .setLocalOnly(true)
+                .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary));
 
         // Setup dismiss intent
         Intent dismissIntent = AlarmStateManager.createStateChangeIntent(context,
@@ -228,7 +231,7 @@ public final class AlarmNotifications {
                 .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setVibrate(new long[] {0, 100, 50, 100} );
+                .setColor(resources.getColor(org.omnirom.deskclock.R.color.primary));
 
         // Setup Snooze Action
         if (AlarmStateManager.canSnooze(context)) {
@@ -270,6 +273,9 @@ public final class AlarmNotifications {
     @Deprecated
     public static void showAlarmNotification(Context context, AlarmInstance instance) {
         Notification.Builder notification = getAlarmNotification(context, instance);
+        if (Utils.isNotificationVibrate(context)) {
+            notification.setVibrate(new long[] {0, 100, 50, 100} );
+        }
         NotificationManager nm = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         notification.setLocalOnly(true);
@@ -292,6 +298,10 @@ public final class AlarmNotifications {
                             .setBackground(b);
             notification.extend(wearableExtender);
         }
+        if (Utils.isNotificationVibrate(context)) {
+            notification.setVibrate(new long[]{0, 100, 50, 100});
+        }
+
         // see http://stackoverflow.com/questions/24631932/android-wear-notification-is-not-displayed-if-flag-no-clear-is-used/24916387#24916387
         notification.setGroup("GROUP");
         notification.setGroupSummary(false);
@@ -329,7 +339,8 @@ public final class AlarmNotifications {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setLocalOnly(true);
+                .setLocalOnly(true)
+                .setColor(resources.getColor(org.omnirom.deskclock.R.color.primary));
 
         // Setup up dismiss action
         Intent dismissIntent = AlarmStateManager.createStateChangeIntent(context,

@@ -23,6 +23,7 @@ public class AlarmConstants {
     public static final String DATA_ALARM_AUDIO_STREAM = "alarm_audio_stream";
     public static final String DATA_ALARM_CAN_SNOOZE = "can_snooze";
     public static final String DATA_ALARM_NOTIF_WEARABLE = "notif_wearable";
+    public static final String DATA_ALARM_NOTIF_VIBRATE = "notif_vibrate";
 
     public static final String DATA_ALARM_EXTRA = "alarm_data";
     public static final String DATA_ALARM_EXTRA_URI = "alarm_uri";

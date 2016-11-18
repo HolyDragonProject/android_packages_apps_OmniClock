@@ -160,4 +160,6 @@
     <string name="shortcut_stopwatch">Stopwatch</string>
     <string name="show_background_image_summary"></string>
     <string name="show_background_image_title">Show background image</string>
+    <string name="vibrate_notification_summary">Enable vibration for active alarm and timer notifications</string>
+    <string name="vibrate_notification_title">Notification vibrate</string>
 </resources>

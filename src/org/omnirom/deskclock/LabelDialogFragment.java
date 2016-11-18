@@ -177,11 +177,6 @@ public class LabelDialogFragment extends DialogFragment implements
         dismiss();
     }
 
-    private void setLabelBoxBackground(boolean emptyText) {
-        mLabelBox.setBackgroundResource(emptyText ?
-                R.drawable.bg_edittext_default : R.drawable.bg_edittext_activated);
-    }
-
     interface AlarmLabelDialogHandler {
         void onDialogLabelSet(Alarm alarm, String label, String tag);
     }

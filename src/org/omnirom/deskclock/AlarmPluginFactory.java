@@ -46,6 +46,7 @@ public class AlarmPluginFactory {
             intent.putExtra(AlarmConstants.DATA_ALARM_AUDIO_STREAM, stream);
             intent.putExtra(AlarmConstants.DATA_ALARM_NOTIF_WEARABLE, Utils.showWearNotification(context));
             intent.putExtra(AlarmConstants.DATA_ALARM_CAN_SNOOZE, AlarmStateManager.canSnooze(context));
+            intent.putExtra(AlarmConstants.DATA_ALARM_NOTIF_VIBRATE, Utils.isNotificationVibrate(context));
             intent.putExtra(AlarmConstants.DATA_OMNICLOCK_AUTHORITY, ClockContract.AUTHORITY);
 
         } else {

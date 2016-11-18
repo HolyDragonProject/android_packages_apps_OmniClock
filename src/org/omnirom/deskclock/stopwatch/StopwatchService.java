@@ -257,6 +257,7 @@ public class StopwatchService extends Service {
                 .setPriority(Notification.PRIORITY_MAX)
                 .setLocalOnly(true)
                 .setContentIntent(pendingIntent)
+                .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary))
                 .build();
         notification.bigContentView = remoteViewsExpanded;
         mNotificationManager.notify(NOTIFICATION_ID, notification);
@@ -358,6 +359,7 @@ public class StopwatchService extends Service {
                     .setLocalOnly(true)
                     .setStyle(new Notification.DecoratedCustomViewStyle())
                     .setContentIntent(pendingIntent)
+                    .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary))
                     .build();
             mNotificationManager.notify(NOTIFICATION_ID, notification);
         }
