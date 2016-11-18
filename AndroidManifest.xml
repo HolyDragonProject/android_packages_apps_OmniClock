@@ -51,9 +51,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- If you have API 25 you can enable this -->
-            <!--<meta-data android:name="android.app.shortcuts"
-            android:resource="@xml/shortcuts" />-->
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity-alias
