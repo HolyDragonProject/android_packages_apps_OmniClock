@@ -100,6 +100,8 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
     private LayoutInflater mFactory;
     private ListView mCitiesList;
     private CityAdapter mAdapter;
+    private ListView mSelectedCitiesList;
+    private CityAdapter mSelectedCitiesAdapter;
     private HashMap<String, CityObj> mUserSelectedCities;
     private Calendar mCalendar;
     private AddCityDialog mAddCityDialog;
@@ -112,7 +114,6 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
     private SharedPreferences mPrefs;
     private int mSortType;
 
-    private String mSelectedCitiesHeaderString;
     private boolean mLightTheme = true;
 
     private class SearchActionExpandListener implements OnActionExpandListener {
@@ -180,8 +181,8 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         private final int mNormalCityFgColor;
         private final int mUserDefinedCityFgColor;
 
-        private int mSelectedEndPosition = 0;
         private CityObj mSelected;
+        private boolean mShowOnlySelectedCities;
 
         private Filter mFilter = new Filter() {
 
@@ -197,25 +198,6 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
                 // Update the list first when user using search filter
                 final Collection<CityObj> selectedCities = mUserSelectedCities.values();
                 mSelectedCities = selectedCities.toArray(new CityObj[selectedCities.size()]);
-                // If the search query is empty, add in the selected cities
-                if (TextUtils.isEmpty(modifiedQuery) && mSelectedCities != null) {
-                    if (mSelectedCities.length > 0) {
-                        sectionHeaders.add("+");
-                        sectionPositions.add(0);
-                        filteredList.add(new CityObj(mSelectedCitiesHeaderString,
-                                mSelectedCitiesHeaderString, null, null));
-                    }
-                    for (CityObj city : mSelectedCities) {
-                        city.isHeader = false;
-                        filteredList.add(city);
-                    }
-                }
-
-                final HashSet<String> selectedCityIds = new HashSet<String>();
-                for (CityObj c : mSelectedCities) {
-                    selectedCityIds.add(c.mCityId);
-                }
-                mSelectedEndPosition = filteredList.size();
 
                 long currentTime = System.currentTimeMillis();
                 String val = null;
@@ -229,37 +211,35 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
 
                     // If the search query is empty, add section headers.
                     if (TextUtils.isEmpty(modifiedQuery)) {
-                        if (!selectedCityIds.contains(city.mCityId)) {
-                            // If the list is sorted by name, and the city has an index
-                            // different than the previous city's index, update the section header.
-                            if (mSortType == SORT_BY_NAME
-                                    && !city.mCityIndex.equals(val)) {
-                                val = city.mCityIndex.toUpperCase();
-                                sectionHeaders.add(val);
+                        // If the list is sorted by name, and the city has an index
+                        // different than the previous city's index, update the section header.
+                        if (mSortType == SORT_BY_NAME
+                                && !city.mCityIndex.equals(val)) {
+                            val = city.mCityIndex.toUpperCase();
+                            sectionHeaders.add(val);
+                            sectionPositions.add(filteredList.size());
+                            city.isHeader = true;
+                        } else {
+                            city.isHeader = false;
+                        }
+
+                        // If the list is sorted by time, and the gmt offset is different than
+                        // the previous city's gmt offset, insert a section header.
+                        if (mSortType == SORT_BY_GMT_OFFSET) {
+                            TimeZone timezone = TimeZone.getTimeZone(city.mTimeZone);
+                            int newOffset = timezone.getOffset(currentTime);
+                            if (offset != newOffset) {
+                                offset = newOffset;
+                                String offsetString = Utils.getGMTHourOffset(timezone, false, false);
+                                sectionHeaders.add(offsetString);
                                 sectionPositions.add(filteredList.size());
                                 city.isHeader = true;
                             } else {
                                 city.isHeader = false;
                             }
-
-                            // If the list is sorted by time, and the gmt offset is different than
-                            // the previous city's gmt offset, insert a section header.
-                            if (mSortType == SORT_BY_GMT_OFFSET) {
-                                TimeZone timezone = TimeZone.getTimeZone(city.mTimeZone);
-                                int newOffset = timezone.getOffset(currentTime);
-                                if (offset != newOffset) {
-                                    offset = newOffset;
-                                    String offsetString = Utils.getGMTHourOffset(timezone, false, false);
-                                    sectionHeaders.add(offsetString);
-                                    sectionPositions.add(filteredList.size());
-                                    city.isHeader = true;
-                                } else {
-                                    city.isHeader = false;
-                                }
-                            }
-
-                            filteredList.add(city);
                         }
+
+                        filteredList.add(city);
                     } else {
                         // If the city name begins with the non-empty query, add it into the list.
                         String cityName = city.mCityName.trim().toUpperCase();
@@ -290,8 +270,9 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         };
 
         public CityAdapter(
-                Context context, LayoutInflater factory) {
+                Context context, LayoutInflater factory, boolean showOnlySelectedCities) {
             super();
+            mShowOnlySelectedCities = showOnlySelectedCities;
             mCalendar = Calendar.getInstance();
             mCalendar.setTimeInMillis(System.currentTimeMillis());
             mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(Locale.getDefault());
@@ -320,8 +301,16 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         }
 
         protected void loadCitiesDatabase(Context context, final CityObj selected) {
-            // Load the cities from xml.
-            mCities = Utils.loadCitiesFromXml(context);
+            // Re-organize the selected cities into an array.
+            Collection<CityObj> selectedCities = mUserSelectedCities.values();
+            mSelectedCities = selectedCities.toArray(new CityObj[selectedCities.size()]);
+
+            if (mShowOnlySelectedCities) {
+                mCities = mSelectedCities;
+            } else {
+                // Load the cities from xml.
+                mCities = Utils.loadCitiesFromXml(context);
+            }
 
             // Reload the city name map with the recently parsed city names of the currently
             // selected language for use with selected cities.
@@ -329,10 +318,6 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
             for (CityObj city : mCities) {
                 mCityNameMap.put(city.mCityId, city.mCityName);
             }
-
-            // Re-organize the selected cities into an array.
-            Collection<CityObj> selectedCities = mUserSelectedCities.values();
-            mSelectedCities = selectedCities.toArray(new CityObj[selectedCities.size()]);
 
             // Override the selected city names in the shared preferences with the
             // city names in the updated city name map, which will always reflect the
@@ -351,26 +336,20 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         public void refreshSelectedCities(final CityObj selected) {
             Collection<CityObj> selectedCities = mUserSelectedCities.values();
             mSelectedCities = selectedCities.toArray(new CityObj[selectedCities.size()]);
-            sortCities(mSortType, selected);
-        }
-
-        public void toggleSort() {
-            if (mSortType == SORT_BY_NAME) {
-                sortCities(SORT_BY_GMT_OFFSET, null);
-            } else {
-                sortCities(SORT_BY_NAME, null);
+            if (mShowOnlySelectedCities) {
+                mCities = mSelectedCities;
             }
+            sortCities(selected);
         }
 
-        private void sortCities(final int sortType, final CityObj selected) {
-            mSortType = sortType;
-            Arrays.sort(mCities, sortType == SORT_BY_NAME ? mSortByNameComparator
+        private void sortCities(final CityObj selected) {
+            Arrays.sort(mCities, mSortType == SORT_BY_NAME ? mSortByNameComparator
                     : mSortByTimeComparator);
             if (mSelectedCities != null) {
-                Arrays.sort(mSelectedCities, sortType == SORT_BY_NAME ? mSortByNameComparator
+                Arrays.sort(mSelectedCities, mSortType == SORT_BY_NAME ? mSortByNameComparator
                         : mSortByTimeComparator);
             }
-            mPrefs.edit().putInt(PREF_SORT, sortType).commit();
+            mPrefs.edit().putInt(PREF_SORT, mSortType).commit();
             mSelected = selected;
             mFilter.filter(mQueryTextBuffer.toString(), CitiesActivity.this);
         }
@@ -550,7 +529,6 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         mFactory = LayoutInflater.from(this);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSortType = mPrefs.getInt(PREF_SORT, SORT_BY_NAME);
-        mSelectedCitiesHeaderString = getString(org.omnirom.deskclock.R.string.selected_cities_label);
         if (savedInstanceState != null) {
             mQueryTextBuffer.append(savedInstanceState.getString(KEY_SEARCH_QUERY));
             mSearchMode = savedInstanceState.getBoolean(KEY_SEARCH_MODE);
@@ -601,18 +579,35 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         } else {
             mCitiesList.setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background_dark));
         }
-        setFastScroll(TextUtils.isEmpty(mQueryTextBuffer.toString().trim()));
         mCitiesList.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
+
+        mSelectedCitiesList = (ListView) findViewById(org.omnirom.deskclock.R.id.selected_cities_list);
+        if (mLightTheme) {
+            mSelectedCitiesList.setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background));
+        } else {
+            mSelectedCitiesList.setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background_dark));
+        }
+        mSelectedCitiesList.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
+
+        setFastScroll(TextUtils.isEmpty(mQueryTextBuffer.toString().trim()));
+
         mUserSelectedCities = Cities.readCitiesFromSharedPrefs(
                 PreferenceManager.getDefaultSharedPreferences(this));
-        mAdapter = new CityAdapter(this, mFactory);
+        mAdapter = new CityAdapter(this, mFactory, false);
         mCitiesList.setAdapter(mAdapter);
+
+        mSelectedCitiesAdapter = new CityAdapter(this, mFactory, true);
+        mSelectedCitiesList.setAdapter(mSelectedCitiesAdapter);
     }
 
     private void setFastScroll(boolean enabled) {
         if (mCitiesList != null) {
             mCitiesList.setFastScrollAlwaysVisible(enabled);
             mCitiesList.setFastScrollEnabled(enabled);
+        }
+        if (mSelectedCitiesList != null) {
+            mSelectedCitiesList.setFastScrollAlwaysVisible(enabled);
+            mSelectedCitiesList.setFastScrollEnabled(enabled);
         }
     }
 
@@ -621,6 +616,9 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         super.onResume();
         if (mAdapter != null) {
             mAdapter.set24HoursMode(this);
+        }
+        if (mSelectedCitiesAdapter != null) {
+            mSelectedCitiesAdapter.set24HoursMode(this);
         }
     }
 
@@ -646,19 +644,28 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
             case org.omnirom.deskclock.R.id.menu_item_add:
                 showAddCityDialog();
                 return true;
-            case org.omnirom.deskclock.R.id.menu_item_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
             case org.omnirom.deskclock.R.id.menu_item_sort:
-                if (mAdapter != null) {
-                    mAdapter.toggleSort();
-                    setFastScroll(TextUtils.isEmpty(mQueryTextBuffer.toString().trim()));
-                }
+                toggleSort();
+                setFastScroll(TextUtils.isEmpty(mQueryTextBuffer.toString().trim()));
                 return true;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void toggleSort() {
+        if (mSortType == SORT_BY_NAME) {
+            mSortType = SORT_BY_GMT_OFFSET;
+        } else {
+            mSortType = SORT_BY_NAME;
+        }
+        if (mAdapter != null) {
+            mAdapter.sortCities(null);
+        }
+        if (mSelectedCitiesAdapter != null) {
+            mSelectedCitiesAdapter.sortCities(null);
+        }
     }
 
     @Override
@@ -727,10 +734,7 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         onCheckedChanged(b, checked);
         b.setChecked(!checked);
         mAdapter.refreshSelectedCities(null);
-        if (!checked) {
-            // scroll to top cause we will remove a selected city and place it on top
-            mCitiesList.setSelectionAfterHeaderView();
-        }
+        mSelectedCitiesAdapter.refreshSelectedCities(null);
     }
 
     @Override
@@ -748,8 +752,9 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
     public boolean onQueryTextChange(String queryText) {
         mQueryTextBuffer.setLength(0);
         mQueryTextBuffer.append(queryText);
-        mCitiesList.setFastScrollEnabled(TextUtils.isEmpty(mQueryTextBuffer.toString().trim()));
+        setFastScroll(TextUtils.isEmpty(mQueryTextBuffer.toString().trim()));
         mAdapter.getFilter().filter(queryText, this);
+        mSelectedCitiesAdapter.getFilter().filter(queryText, this);
         return true;
     }
 
@@ -821,15 +826,17 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         dbCity.tz = tz;
         long id = DbCities.addCity(this, dbCity);
         if (id < 0) {
-          // Something went wrong
-          Toast.makeText(this, org.omnirom.deskclock.R.string.cities_add_city_failed,
-                  Toast.LENGTH_SHORT).show();
+            // Something went wrong
+            Toast.makeText(this, org.omnirom.deskclock.R.string.cities_add_city_failed,
+                    Toast.LENGTH_SHORT).show();
         } else {
             CityObj o = new CityObj(name, tz, "UD" + id, name.substring(0, 1));
             o.mUserDefined = true;
             mAdapter.loadCitiesDatabase(this, o);
+            mSelectedCitiesAdapter.loadCitiesDatabase(this, o);
             mUserSelectedCities.put(o.mCityId, o);
             mAdapter.refreshSelectedCities(o);
+            mSelectedCitiesAdapter.refreshSelectedCities(o);
             mCitiesList.invalidate();
             mCitiesList.setSelectionAfterHeaderView();
         }
@@ -848,21 +855,22 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
         builder.setMessage(getString(org.omnirom.deskclock.R.string.cities_delete_city_msg, c.mCityName));
         builder.setPositiveButton(getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int id = Integer.parseInt(c.mCityId.substring(2));
-                if (DbCities.deleteCity(CitiesActivity.this, id) > 0) {
-                    // Remove from the list and from the selection
-                    mUserSelectedCities.remove(c.mCityId);
-                    mAdapter.loadCitiesDatabase(CitiesActivity.this, null);
-                    mCitiesList.invalidate();
-                } else {
-                    // Something went wrong
-                    Toast.makeText(CitiesActivity.this, org.omnirom.deskclock.R.string.cities_delete_city_failed,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int id = Integer.parseInt(c.mCityId.substring(2));
+                        if (DbCities.deleteCity(CitiesActivity.this, id) > 0) {
+                            // Remove from the list and from the selection
+                            mUserSelectedCities.remove(c.mCityId);
+                            mAdapter.loadCitiesDatabase(CitiesActivity.this, null);
+                            mSelectedCitiesAdapter.loadCitiesDatabase(CitiesActivity.this, null);
+                            mCitiesList.invalidate();
+                        } else {
+                            // Something went wrong
+                            Toast.makeText(CitiesActivity.this, org.omnirom.deskclock.R.string.cities_delete_city_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
         builder.setNegativeButton(getString(android.R.string.cancel), null);
         AlertDialog dialog = builder.create();
         dialog.show();

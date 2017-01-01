@@ -162,4 +162,5 @@
     <string name="show_background_image_title">Show background image</string>
     <string name="vibrate_notification_summary">Enable vibration for active alarm and timer notifications</string>
     <string name="vibrate_notification_title">Notification vibrate</string>
+    <string name="all_cities_label">Add</string>
 </resources>

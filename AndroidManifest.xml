@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.omnirom.deskclock"
-    android:versionCode="26"
-    android:versionName="1.7.4" >
+    android:versionCode="30"
+    android:versionName="1.7.8" >
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -33,9 +33,13 @@
             android:authorities="org.omnirom.deskclock"
             android:exported="true" />
 
+        <permission
+            android:name="org.omnirom.deskclock.worldclock.permissions.WRITE_DATABASE"
+            android:protectionLevel="normal" />
+
         <provider
             android:name="org.omnirom.deskclock.worldclock.db.DbCityProvider"
-            android:authorities="com.omnirom.deskclock.worldclock.db"
+            android:authorities="org.omnirom.deskclock.worldclock.db"
             android:exported="true"
             android:writePermission="org.omnirom.deskclock.worldclock.permissions.WRITE_DATABASE" />
 
@@ -138,7 +142,6 @@
             android:name="HandleSetAlarm"
             android:exported="true"
             android:targetActivity="org.omnirom.deskclock.HandleApiCalls"/>
-
 
         <receiver android:name="org.omnirom.deskclock.AlarmInitReceiver">
             <intent-filter>
