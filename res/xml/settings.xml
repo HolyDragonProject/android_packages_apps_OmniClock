@@ -51,8 +51,8 @@
         <ListPreference
             android:defaultValue="10"
             android:dialogTitle="@string/auto_silence_title"
-            android:entries="@array/auto_silence_entries"
-            android:entryValues="@array/auto_silence_values"
+            android:entries="@array/auto_silence_entries_new"
+            android:entryValues="@array/auto_silence_values_new"
             android:key="auto_silence"
             android:title="@string/auto_silence_title" />
         <ListPreference
