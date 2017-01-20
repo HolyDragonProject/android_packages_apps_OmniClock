@@ -186,7 +186,7 @@ public class WidgetUtils {
         int textHeight = (int) (textPaint.descent() - textPaint.ascent());
         int textOffset = (int) ((textHeight / 2) - textPaint.descent());
         float timeStringSize = textPaint.measureText(currTime);
-        float timeStringSizeTotal = textPaint.measureText("00:00");
+        float timeStringSizeTotal = timeStringSize;
         float amPmStringSize = smallTextPaint.measureText(amPmString);
         int totalWidth = (int) (timeStringSizeTotal + amPmStringSize);
         int startOffset = (int) (timeStringSizeTotal - timeStringSize);
