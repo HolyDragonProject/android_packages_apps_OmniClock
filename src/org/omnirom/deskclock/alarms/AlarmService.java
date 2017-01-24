@@ -23,8 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.IBinder;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 
 import org.omnirom.deskclock.AlarmAlertWakeLock;
 import org.omnirom.deskclock.AlarmUtils;
@@ -37,24 +35,7 @@ import org.omnirom.deskclock.provider.AlarmInstance;
  * {@link AlarmKlaxon}.
  */
 public class AlarmService extends Service {
-
-    private TelephonyManager mTelephonyManager;
-    private int mInitialCallState;
     private AlarmInstance mCurrentAlarm = null;
-
-    private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
-        @Override
-        public void onCallStateChanged(int state, String ignored) {
-            // The user might already be in a call when the alarm fires. When
-            // we register onCallStateChanged, we get the initial in-call state
-            // which kills the alarm. Check against the initial call state so
-            // we don't kill the alarm during a call.
-            if (state != TelephonyManager.CALL_STATE_IDLE && state != mInitialCallState) {
-                sendBroadcast(AlarmStateManager.createStateChangeIntent(AlarmService.this,
-                        "AlarmService", mCurrentAlarm, AlarmInstance.MISSED_STATE));
-            }
-        }
-    };
 
     private void startAlarm(AlarmInstance instance) {
         LogUtils.v("AlarmService.start with instance: " + instance.mId);
@@ -66,10 +47,7 @@ public class AlarmService extends Service {
         AlarmAlertWakeLock.acquireCpuWakeLock(this);
         mCurrentAlarm = instance;
 
-        mInitialCallState = mTelephonyManager.getCallState();
-        mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        boolean inCall = mInitialCallState != TelephonyManager.CALL_STATE_IDLE;
-        AlarmKlaxon.start(this, mCurrentAlarm, inCall);
+        AlarmKlaxon.start(this, mCurrentAlarm);
         sendBroadcast(new Intent(AlarmConstants.ALARM_ALERT_ACTION));
     }
 
@@ -81,7 +59,6 @@ public class AlarmService extends Service {
 
         LogUtils.v("AlarmService.stop with instance: " + mCurrentAlarm.mId);
         AlarmKlaxon.stop(this);
-        mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
         sendBroadcast(new Intent(AlarmConstants.ALARM_DONE_ACTION));
         mCurrentAlarm = null;
         AlarmAlertWakeLock.releaseCpuLock();
@@ -90,7 +67,6 @@ public class AlarmService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
     }
 
     @Override

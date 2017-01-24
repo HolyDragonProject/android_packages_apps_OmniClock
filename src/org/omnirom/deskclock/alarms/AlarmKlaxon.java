@@ -73,7 +73,6 @@ public class AlarmKlaxon {
     private static boolean sRandomMusicMode;
     private static boolean sLocalMediaMode;
     private static boolean sPlayFallbackAlarm;
-    private static boolean mInTelephoneCall;
 
     // Internal messages
     private static final int INCREASING_VOLUME = 1001;
@@ -130,10 +129,8 @@ public class AlarmKlaxon {
         }
     }
 
-    public static void start(final Context context, AlarmInstance instance,
-                             boolean inTelephoneCall) {
+    public static void start(final Context context, AlarmInstance instance) {
         sContext = context;
-        mInTelephoneCall = inTelephoneCall;
 
         // Make sure we are stop before starting
         stop(context);
@@ -181,7 +178,7 @@ public class AlarmKlaxon {
         if (alarmNoise != null && Utils.isSpotifyUri(alarmNoise.toString())) {
             alarmNoise = null;
         }
-        if (alarmNoise != null && !inTelephoneCall) {
+        if (alarmNoise != null) {
             if (Utils.isRandomUri(alarmNoise.toString())) {
                 sRandomMusicMode = true;
                 sRandomPlayback = true;
@@ -277,23 +274,13 @@ public class AlarmKlaxon {
         }
 
         try {
-            // Check if we are in a call. If we are, use the in-call alarm
-            // resource at a low volume to not disrupt the call.
-            if (mInTelephoneCall) {
-                LogUtils.v("Using the in-call alarm");
-                sIncreasingVolume = false;
-                sMediaPlayer.setVolume(IN_CALL_VOLUME, IN_CALL_VOLUME);
-                setDataSourceFromResource(context, sMediaPlayer,
-                        org.omnirom.deskclock.R.raw.in_call_alarm);
+            if (sPlayFallbackAlarm || alarmNoise == null) {
+                LogUtils.e("Using the fallback ringtone");
+                setDataSourceFromResource(context, sMediaPlayer, org.omnirom.deskclock.R.raw.fallbackring);
             } else {
-                if (sPlayFallbackAlarm || alarmNoise == null) {
-                    LogUtils.e("Using the fallback ringtone");
-                    setDataSourceFromResource(context, sMediaPlayer, org.omnirom.deskclock.R.raw.fallbackring);
-                } else {
-                    sMediaPlayer.setDataSource(context, alarmNoise);
-                    mCurrentTone = alarmNoise;
-                    LogUtils.v("next song:" + mCurrentTone);
-                }
+                sMediaPlayer.setDataSource(context, alarmNoise);
+                mCurrentTone = alarmNoise;
+                LogUtils.v("next song:" + mCurrentTone);
             }
             startAlarm(context, sMediaPlayer);
         } catch (Exception ex) {
