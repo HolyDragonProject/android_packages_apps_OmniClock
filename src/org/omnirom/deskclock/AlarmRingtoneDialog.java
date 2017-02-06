@@ -588,6 +588,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         } else {
             if (mCurrentMediaType == ALARM_TYPE_BROWSE) {
                 boolean isLegacyMusicUri = false;
+                boolean unknownAlarm = false;
                 if (mRingtoneName == null) {
                     if (Utils.isFolderUri(ringtoneUri.toString())){
                         ringtoneTitle = ringtoneUri.getLastPathSegment();
@@ -599,14 +600,19 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                         }
                     } else {
                         ringtoneTitle = getRingToneTitle(ringtoneUri);
-                        if (ringtoneTitle == null) {
+                        if (!isAlarmUriValid(ringtoneUri)) {
                             ringtoneTitle = getResources().getString(R.string.local_uri_unkown);
+                            unknownAlarm = true;
                         }
                     }
                 } else {
                     ringtoneTitle = mRingtoneName;
+                    if (!isAlarmUriValid(ringtoneUri)) {
+                        ringtoneTitle = getResources().getString(R.string.local_uri_unkown);
+                        unknownAlarm = true;
+                    }
                 }
-                if (mAlarms.contains(ringtoneUri)) {
+                if (mAlarms.contains(ringtoneUri) || unknownAlarm) {
                     mRingtoneImageId = R.drawable.ic_alarm;
                 } else if (mRingtones.contains(ringtoneUri)) {
                     mRingtoneImageId = R.drawable.ic_bell;
@@ -853,5 +859,11 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         ringtone.setText(ringtoneTitle);
         ringtone.setCompoundDrawablesWithIntrinsicBounds(getActivity().getDrawable(mRingtoneImageId), null, null, null);
         mRingtoneView.setVisibility(View.INVISIBLE);
+    }
+
+    private boolean isAlarmUriValid(Uri uri) {
+        final RingtoneManager rm = new RingtoneManager(getActivity());
+        rm.setType(RingtoneManager.TYPE_ALL);
+        return rm.getRingtonePosition(uri) != -1;
     }
 }

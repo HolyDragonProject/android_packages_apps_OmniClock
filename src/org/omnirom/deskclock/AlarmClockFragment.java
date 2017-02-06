@@ -332,6 +332,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 a.minutes = minute;
                 a.enabled = true;
                 a.alert = getDefaultAlarmUri();
+                a.ringtoneName = getRingToneTitle(a.alert);
                 a.deleteAfterUse = false;
                 mAddedAlarm = a;
                 asyncAddAlarm(a);
@@ -807,6 +808,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     ringtone = getResources().getString(R.string.randomMusicType);
                     ringtoneImageId = R.drawable.ic_track;
                 } else {
+                    boolean unknownAlarm = false;
                     if (Alarm.NO_RINGTONE_URI.equals(alarm.alert)) {
                         ringtone = "";
                     } else if (alarm.ringtoneName == null) {
@@ -814,14 +816,20 @@ public class AlarmClockFragment extends DeskClockFragment implements
                             ringtone = alarm.alert.getLastPathSegment();
                         } else {
                             ringtone = getRingToneTitle(alarm.alert);
-                            if (ringtone == null) {
+                            if (!isAlarmUriValid(alarm.alert)) {
                                 ringtone = getResources().getString(R.string.local_uri_unkown);
+                                unknownAlarm = true;
                             }
                         }
                     } else {
                         ringtone = alarm.ringtoneName;
+                        if (!isAlarmUriValid(alarm.alert)) {
+                            ringtone = getResources().getString(R.string.local_uri_unkown);
+                            unknownAlarm = true;
+                        }
                     }
-                    if (mAlarms.contains(alarm.alert)) {
+
+                    if (mAlarms.contains(alarm.alert) || unknownAlarm) {
                         ringtoneImageId = R.drawable.ic_alarm;
                     } else if (mRingtones.contains(alarm.alert)) {
                         ringtoneImageId = R.drawable.ic_bell;
@@ -938,6 +946,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     ringtone = getResources().getString(R.string.randomMusicType);
                     ringtoneImageId = R.drawable.ic_track;
                 } else {
+                    boolean unknownAlarm = false;
                     if (Alarm.NO_RINGTONE_URI.equals(alarm.preAlarmAlert)) {
                         ringtone = "";
                     } else if (alarm.preAlarmRingtoneName == null) {
@@ -945,14 +954,19 @@ public class AlarmClockFragment extends DeskClockFragment implements
                             ringtone = alarm.preAlarmAlert.getLastPathSegment();
                         } else {
                             ringtone = getRingToneTitle(alarm.preAlarmAlert);
-                            if (ringtone == null) {
+                            if (!isAlarmUriValid(alarm.preAlarmAlert)) {
                                 ringtone = getResources().getString(R.string.local_uri_unkown);
+                                unknownAlarm = true;
                             }
                         }
                     } else {
                         ringtone = alarm.preAlarmRingtoneName;
+                        if (!isAlarmUriValid(alarm.preAlarmAlert)) {
+                            ringtone = getResources().getString(R.string.local_uri_unkown);
+                            unknownAlarm = true;
+                        }
                     }
-                    if (mAlarms.contains(alarm.preAlarmAlert)) {
+                    if (mAlarms.contains(alarm.preAlarmAlert) || unknownAlarm) {
                         ringtoneImageId = R.drawable.ic_alarm;
                     } else if (mRingtones.contains(alarm.preAlarmAlert)) {
                         ringtoneImageId = R.drawable.ic_bell;
@@ -1039,14 +1053,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
             final TextView dayButton = holder.dayButtons[dayIndex];
             dayButton.setActivated(true);
             dayButton.setTextColor(getResources().getColor(R.color.primary));
-        }
-
-        private String getRingToneTitle(Uri uri) {
-            Ringtone ringTone = RingtoneManager.getRingtone(getActivity(), uri);
-            if (ringTone != null) {
-                return ringTone.getTitle(getActivity());
-            }
-            return null;
         }
 
         private String getMediaTitle(Uri uri) {
@@ -1502,9 +1508,26 @@ public class AlarmClockFragment extends DeskClockFragment implements
         }
     }
 
+    private boolean isAlarmUriValid(Uri uri) {
+        final RingtoneManager rm = new RingtoneManager(getActivity());
+        rm.setType(RingtoneManager.TYPE_ALL);
+        return rm.getRingtonePosition(uri) != -1;
+    }
+
+    private String getRingToneTitle(Uri uri) {
+        Ringtone ringTone = RingtoneManager.getRingtone(getActivity(), uri);
+        if (ringTone != null) {
+            return ringTone.getTitle(getActivity());
+        }
+        return null;
+    }
+
     private Uri getDefaultAlarmUri() {
+        if (mAlarms == null || mAlarms.size() == 0) {
+            cacheAlarmTones();
+        }
         Uri defaultAlarm = Utils.getDefaultAlarmUri(getActivity());
-        if (defaultAlarm == null) {
+        if (defaultAlarm == null || !mAlarms.contains(defaultAlarm)) {
             // choose the first one from the list
             defaultAlarm = mAlarms.get(0);
         }
