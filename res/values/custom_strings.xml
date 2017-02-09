@@ -124,11 +124,6 @@
     <string name="hours_label_new" translatable="false">\u003A</string>
     <string name="seconds_label_new" translatable="false">\u003A</string>
     <string name="minutes_label_new" translatable="false">\u003A</string>
-    <string name="msg_errconnect">An error occoured while trying to connect.</string>
-    <string name="msg_errretrieval">An error occoured while retrieving the file.</string>
-    <string name="msg_errsaving">An error occoured while saving.</string>
-    <string name="msg_saved">Successfully saved.</string>
-    <string name="menu_item_share">Share alarms</string>
     <string name="menu_item_spotify">Spotify</string>
     <string name="wear_notification_summary">Show alarm and timer notification on connected wearable devices</string>
     <string name="wear_notification_title">Enable wearable notifications</string>
