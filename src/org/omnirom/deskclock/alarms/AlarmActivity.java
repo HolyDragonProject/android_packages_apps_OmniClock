@@ -221,9 +221,9 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
         mTitleViewSub = (TextView) mContentView.findViewById(org.omnirom.deskclock.R.id.title_sub);
         String alarmName = null;
         if (mPreAlarmMode) {
-            alarmName = mAlarmInstance.mPreAlarmRingtoneName;
+            alarmName = mAlarmInstance.getPreAlarmRingtoneName();
         } else {
-            alarmName = mAlarmInstance.mRingtoneName;
+            alarmName = mAlarmInstance.getRingtoneName();
         }
         updateMediaInfo(alarmName);
 

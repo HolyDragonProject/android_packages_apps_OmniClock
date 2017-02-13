@@ -78,6 +78,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
     private static final String KEY_TAG = "tag";
     private static final String KEY_PRE_ALARM_TIME = "preAlarmTime";
     private static final String KEY_RINGTONE_NAME = "ringtoneName";
+    private static final String KEY_RINGTONE_TYPE = "ringtoneType";
 
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
 
@@ -112,9 +113,10 @@ public class AlarmRingtoneDialog extends DialogFragment implements
     private String mRingtoneName;
     private int mRingtoneImageId;
     private View mRingtoneView;
+    private int mRingtoneType;
 
     public interface AlarmRingtoneDialogListener {
-        void onFinishOk(Alarm alarm, boolean preAlarm, boolean alarmMedia);
+        void onFinishOk(Alarm alarm, boolean preAlarm);
     }
 
     public static AlarmRingtoneDialog newInstance(Alarm alarm, boolean preAlarm, String tag) {
@@ -146,16 +148,19 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             mRingtone = savedInstanceState.getParcelable(KEY_RINGTONE);
             mPreAlarmTime = savedInstanceState.getInt(KEY_PRE_ALARM_TIME);
             mRingtoneName = savedInstanceState.getString(KEY_RINGTONE_NAME);
+            mRingtoneType  = savedInstanceState.getInt(KEY_RINGTONE_TYPE);
         } else {
             if (mPreAlarm) {
                 mRingtone = mAlarm.preAlarmAlert;
                 mVolume = mAlarm.preAlarmVolume;
                 mPreAlarmTime = mAlarm.preAlarmTime;
-                mRingtoneName = mAlarm.preAlarmRingtoneName;
+                mRingtoneName = mAlarm.getPreAlarmRingtoneName();
+                mRingtoneType = mAlarm.getPreAlarmRingtoneType();
             } else {
                 mRingtone = mAlarm.alert;
                 mVolume = mAlarm.alarmVolume;
-                mRingtoneName = mAlarm.ringtoneName;
+                mRingtoneName = mAlarm.getRingtoneName();
+                mRingtoneType = mAlarm.getRingtoneType();
             }
             mIncreasingVolumeValue = mAlarm.getIncreasingVolume(mPreAlarm);
             mRandomModeValue = mAlarm.getRandomMode(mPreAlarm);
@@ -183,6 +188,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         outState.putParcelable(KEY_RINGTONE, mRingtone);
         outState.putInt(KEY_PRE_ALARM_TIME, mPreAlarmTime);
         outState.putString(KEY_RINGTONE_NAME, mRingtoneName);
+        outState.putInt(KEY_RINGTONE_TYPE, mRingtoneType);
     }
 
     @Override
@@ -217,8 +223,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             saveChanges(mAlarm);
             Fragment frag = getFragmentManager().findFragmentByTag(mTag);
             if (frag instanceof AlarmClockFragment) {
-                ((AlarmClockFragment) frag).onFinishOk(mAlarm, mPreAlarm,
-                    Utils.isDocumentProviderAlarm(mAlarm, mPreAlarm));
+                ((AlarmClockFragment) frag).onFinishOk(mAlarm, mPreAlarm);
             }
         }
     }
@@ -302,7 +307,6 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             final String spotifyMenu = getResources().getString(R.string.menu_item_spotify);
             alarmTypes.add(spotifyMenu);
         }
-
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),
                 R.layout.spinner_item, alarmTypes);
         mMediaTypeSelect.setAdapter(adapter);
@@ -432,6 +436,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                     if (uri != null) {
                         mRingtone = Uri.parse(uri);
                         mRingtoneName = name;
+                        mRingtoneType = -1;
                         updateRingtoneName();
 
                         // shuffle is depending on spotify uri type
@@ -442,9 +447,11 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                 case REQUEST_CODE_BROWSE: {
                     String uri = data.getStringExtra(AlarmConstants.DATA_ALARM_EXTRA_URI);
                     String name = data.getStringExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME);
+                    Integer type = data.getIntExtra(AlarmConstants.DATA_ALARM_EXTRA_TYPE, -1);
                     if (uri != null) {
                         mRingtone = Uri.parse(uri);
                         mRingtoneName = name;
+                        mRingtoneType = type;
                         updateRingtoneName();
                         updateRandomModeVisibility();
                     }
@@ -463,27 +470,6 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             return ringTone.getTitle(getActivity());
         }
         return getResources().getString(R.string.fallback_ringtone);
-    }
-
-    private String getMediaTitle(Uri uri) {
-        if (uri == null) {
-            return null;
-        }
-        Cursor cursor = null;
-        try {
-            cursor = getActivity().getApplicationContext().getContentResolver()
-                    .query(uri, null, null, null, null);
-            int nameIndex = cursor
-                    .getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
-            cursor.moveToFirst();
-            return cursor.getString(nameIndex);
-        } catch (Exception e) {
-            return null;
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
     }
 
     private void cacheAlarmTones() {
@@ -539,7 +525,6 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void setRingtoneName() {
         Uri ringtoneUri = mRingtone;
-        boolean mediaAlertEnabled = false;
         boolean spotifyAlarm = false;
         boolean randomMusicAlarm = false;
         boolean localMediaAlarm = false;
@@ -553,8 +538,6 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                     randomMusicAlarm = true;
                 } else if (Utils.isLocalMediaAlarm(mAlarm, mPreAlarm)) {
                     localMediaAlarm = true;
-                } else if(Utils.isDocumentProviderAlarm(mAlarm, mPreAlarm)) {
-                    mediaAlertEnabled = true;
                 } else {
                     if (mAlarms.contains(ringtoneUri)) {
                         mCurrentMediaType = ALARM_TYPE_BROWSE;
@@ -565,9 +548,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             }
         }
 
-        if (mediaAlertEnabled) {
-            mCurrentMediaType = ALARM_TYPE_BROWSE;
-        } else if (spotifyAlarm) {
+        if (spotifyAlarm) {
             mCurrentMediaType = ALARM_TYPE_SPOTIFY;
         } else if (randomMusicAlarm) {
             mCurrentMediaType = ALARM_TYPE_RANDOM;
@@ -587,28 +568,21 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             ringtoneTitle = getResources().getString(R.string.silent_alarm_summary);
         } else {
             if (mCurrentMediaType == ALARM_TYPE_BROWSE) {
-                boolean isLegacyMusicUri = false;
                 boolean unknownAlarm = false;
                 if (mRingtoneName == null) {
                     if (Utils.isFolderUri(ringtoneUri.toString())){
                         ringtoneTitle = ringtoneUri.getLastPathSegment();
-                    } else if(Utils.isDocumentProviderUri(ringtoneUri.toString())) {
-                        isLegacyMusicUri = true;
-                        ringtoneTitle = getMediaTitle(ringtoneUri);
-                        if (ringtoneTitle == null) {
-                            ringtoneTitle = getResources().getString(R.string.local_uri_unkown);
-                        }
                     } else {
                         ringtoneTitle = getRingToneTitle(ringtoneUri);
-                        if (!isAlarmUriValid(ringtoneUri)) {
-                            ringtoneTitle = getResources().getString(R.string.local_uri_unkown);
+                        if (!Utils.isAlarmUriValid(getActivity(), ringtoneUri)) {
+                            ringtoneTitle = getResources().getString(R.string.alarm_uri_unkown);
                             unknownAlarm = true;
                         }
                     }
                 } else {
                     ringtoneTitle = mRingtoneName;
-                    if (!isAlarmUriValid(ringtoneUri)) {
-                        ringtoneTitle = getResources().getString(R.string.local_uri_unkown);
+                    if (!Utils.isValidAlarm(getActivity(), ringtoneUri, mRingtoneType)) {
+                        ringtoneTitle = ringtoneTitle + getResources().getString(R.string.alarm_uri_unkown);
                         unknownAlarm = true;
                     }
                 }
@@ -617,11 +591,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                 } else if (mRingtones.contains(ringtoneUri)) {
                     mRingtoneImageId = R.drawable.ic_bell;
                 } else {
-                    if (isLegacyMusicUri) {
-                        mRingtoneImageId = R.drawable.ic_track;
-                    } else {
-                        mRingtoneImageId = Utils.resolveLocalUriImage(ringtoneUri.toString());
-                    }
+                    mRingtoneImageId = Utils.resolveLocalUriImage(ringtoneUri.toString());
                 }
             } else if (mCurrentMediaType == ALARM_TYPE_SPOTIFY) {
                 ringtoneTitle = mRingtoneName != null ? mRingtoneName : mRingtone.toString();
@@ -682,7 +652,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
              if (Utils.isSpotifyPluginInstalled(getActivity())) {
                 // ignore pre alarm here - spotify activities assume it stored in there
                 alarm.alert = mRingtone;
-                alarm.ringtoneName = mRingtoneName;
+                alarm.setRingtoneName(mRingtoneName, mRingtoneType);
                 alarm.setRandomMode(false, mRandomModeValue);
                 alarm.alarmVolume = mVolume;
                 startActivity(Utils.getSpotifyTestPlayIntent(getActivity().getApplicationContext(), alarm));
@@ -710,11 +680,11 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             alarm.preAlarmAlert = mRingtone;
             alarm.preAlarmVolume = mVolume;
             alarm.preAlarmTime = mPreAlarmTime;
-            alarm.preAlarmRingtoneName = mRingtoneName;
+            alarm.setPreAlarmRingtoneName(mRingtoneName, mRingtoneType);
         } else {
             alarm.alert = mRingtone;
             alarm.alarmVolume = mVolume;
-            alarm.ringtoneName = mRingtoneName;
+            alarm.setRingtoneName(mRingtoneName, mRingtoneType);
         }
         alarm.setIncreasingVolume(mPreAlarm, mIncreasingVolumeValue);
         alarm.setRandomMode(mPreAlarm, mRandomModeValue);
@@ -854,16 +824,12 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void setRandomSong() {
         mRingtone = Uri.parse(Utils.getRandomUriString());
+        mRingtoneName = "";
         String ringtoneTitle = getResources().getString(R.string.randomMusicType);
         mRingtoneImageId = R.drawable.ic_track;
         ringtone.setText(ringtoneTitle);
         ringtone.setCompoundDrawablesWithIntrinsicBounds(getActivity().getDrawable(mRingtoneImageId), null, null, null);
         mRingtoneView.setVisibility(View.INVISIBLE);
     }
-
-    private boolean isAlarmUriValid(Uri uri) {
-        final RingtoneManager rm = new RingtoneManager(getActivity());
-        rm.setType(RingtoneManager.TYPE_ALL);
-        return rm.getRingtonePosition(uri) != -1;
-    }
 }
+

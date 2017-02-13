@@ -137,9 +137,9 @@ public class AlarmService extends Service {
 
         String alarmName = null;
         if (instance.mAlarmState == AlarmInstance.PRE_ALARM_STATE) {
-            alarmName = instance.mPreAlarmRingtoneName;
+            alarmName = instance.getPreAlarmRingtoneName();
         } else {
-            alarmName = instance.mRingtoneName;
+            alarmName = instance.getRingtoneName();
         }
         Resources resources = context.getResources();
         Notification.Builder notification = new Notification.Builder(context)

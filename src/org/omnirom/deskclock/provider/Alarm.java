@@ -269,8 +269,8 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
     public int preAlarmTime;
     public Uri preAlarmAlert;
     private int randomMode;
-    public String ringtoneName;
-    public String preAlarmRingtoneName;
+    private String ringtoneName;
+    private String preAlarmRingtoneName;
 
     // Creates a default alarm at the current time.
     public Alarm() {
@@ -430,8 +430,8 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
         result.mPreAlarmTime = preAlarmTime;
         result.mPreAlarmRingtone = preAlarmAlert;
         result.setRandomMode(randomMode);
-        result.mRingtoneName = ringtoneName;
-        result.mPreAlarmRingtoneName = preAlarmRingtoneName;
+        result.setRingtoneNameRaw(ringtoneName);
+        result.setPreAlarmRingtoneNameRaw(preAlarmRingtoneName);
         return result;
     }
 
@@ -466,8 +466,10 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
                 ", preAlarmTime=" + preAlarmTime +
                 ", preAlarmAlert=" + preAlarmAlert +
                 ", randomMode=" + randomMode +
-                ", ringtoneName=" + ringtoneName +
-                ", preAlarmRingtoneName=" + preAlarmRingtoneName +
+                ", ringtoneName=" + getRingtoneName() +
+                ", ringtoneType=" + getRingtoneType() +
+                ", preAlarmRingtoneName=" + getPreAlarmRingtoneName() +
+                ", preAlarmRingtoneType=" + getPreAlarmRingtoneType() +
                 '}';
     }
 
@@ -589,5 +591,45 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
             }
         }
         return false;
+    }
+
+    public String getRingtoneName() {
+        if (ringtoneName.indexOf("###") == -1) {
+            return ringtoneName;
+        }
+        String[] split = ringtoneName.split("###");
+        return split[1];
+    }
+
+    public int getRingtoneType() {
+        if (ringtoneName.indexOf("###") == -1) {
+            return -1;
+        }
+        String[] split = ringtoneName.split("###");
+        return Integer.valueOf(split[0]);
+    }
+
+    public void setRingtoneName(String name, int type) {
+        ringtoneName = type + "###" + name;
+    }
+
+    public String getPreAlarmRingtoneName() {
+        if (preAlarmRingtoneName.indexOf("###") == -1) {
+            return preAlarmRingtoneName;
+        }
+        String[] split = preAlarmRingtoneName.split("###");
+        return split[1];
+    }
+
+    public void setPreAlarmRingtoneName(String name, int type) {
+        preAlarmRingtoneName = type + "###" + name;
+    }
+
+    public int getPreAlarmRingtoneType() {
+        if (preAlarmRingtoneName.indexOf("###") == -1) {
+            return -1;
+        }
+        String[] split = preAlarmRingtoneName.split("###");
+        return Integer.valueOf(split[0]);
     }
 }

@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.content.UriPermission;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -313,9 +312,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
         // home was pressed, just dismiss any existing toast bar when restarting
         // the app.
         hideUndoBar(false, null);
-
-        // check and release for any no longer needed uri permissions
-        updateUriPermissions();
     }
 
     // Callback used by TimePickerDialog
@@ -332,7 +328,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 a.minutes = minute;
                 a.enabled = true;
                 a.alert = getDefaultAlarmUri();
-                a.ringtoneName = getRingToneTitle(a.alert);
+                a.setRingtoneName(getRingToneTitle(a.alert), BrowseActivity.QUERY_TYPE_ALARM);
                 a.deleteAfterUse = false;
                 mAddedAlarm = a;
                 asyncAddAlarm(a);
@@ -774,7 +770,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
             String ringtone = "";
 
             boolean spotifyAlarm = false;
-            boolean mediaAlertEnabled = false;
             boolean randomMusicAlarm = false;
             boolean localMediaAlarm = false;
             if (alarm.alert != null) {
@@ -785,24 +780,11 @@ public class AlarmClockFragment extends DeskClockFragment implements
                         randomMusicAlarm = true;
                     } else if (Utils.isLocalMediaUri(alarm.alert.toString())) {
                         localMediaAlarm = true;
-                    } else if(Utils.isDocumentProviderUri(alarm.alert.toString())) {
-                        mediaAlertEnabled = true;
                     }
                 }
 
-                if (mediaAlertEnabled) {
-                    if (alarm.ringtoneName == null) {
-                        ringtone = getMediaTitle(alarm.alert);
-                        ringtoneImageId = R.drawable.ic_track;
-                        // file no longer found
-                        if (ringtone == null) {
-                            ringtone = getResources().getString(R.string.local_uri_unkown);
-                        }
-                    } else {
-                        ringtone = alarm.ringtoneName;
-                    }
-                } else if (spotifyAlarm) {
-                    ringtone = alarm.ringtoneName != null ? alarm.ringtoneName : alarm.alert.toString();
+                if (spotifyAlarm) {
+                    ringtone = alarm.getRingtoneName() != null ? alarm.getRingtoneName() : alarm.alert.toString();
                     ringtoneImageId = Utils.resolveSpotifyUriImage(alarm.alert.toString());
                 } else if (randomMusicAlarm) {
                     ringtone = getResources().getString(R.string.randomMusicType);
@@ -811,24 +793,23 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     boolean unknownAlarm = false;
                     if (Alarm.NO_RINGTONE_URI.equals(alarm.alert)) {
                         ringtone = "";
-                    } else if (alarm.ringtoneName == null) {
+                    } else if (alarm.getRingtoneName() == null) {
                         if (Utils.isFolderUri(alarm.alert.toString())) {
                             ringtone = alarm.alert.getLastPathSegment();
                         } else {
                             ringtone = getRingToneTitle(alarm.alert);
-                            if (!isAlarmUriValid(alarm.alert)) {
-                                ringtone = getResources().getString(R.string.local_uri_unkown);
+                            if (ringtone == null) {
+                                ringtone = getResources().getString(R.string.alarm_uri_unkown);
                                 unknownAlarm = true;
                             }
                         }
                     } else {
-                        ringtone = alarm.ringtoneName;
-                        if (!isAlarmUriValid(alarm.alert)) {
-                            ringtone = getResources().getString(R.string.local_uri_unkown);
+                        ringtone = alarm.getRingtoneName();
+                        if (!Utils.isValidAlarm(getActivity(), alarm.alert, alarm.getRingtoneType())) {
+                            ringtone = ringtone + getResources().getString(R.string.alarm_uri_unkown);
                             unknownAlarm = true;
                         }
                     }
-
                     if (mAlarms.contains(alarm.alert) || unknownAlarm) {
                         ringtoneImageId = R.drawable.ic_alarm;
                     } else if (mRingtones.contains(alarm.alert)) {
@@ -872,7 +853,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                         Uri defaultAlarm = getDefaultAlarmUri();
                         alarm.preAlarm = true;
                         alarm.preAlarmAlert=defaultAlarm;
-                        alarm.preAlarmRingtoneName = getRingToneTitle(defaultAlarm);
+                        alarm.setPreAlarmRingtoneName(getRingToneTitle(defaultAlarm), BrowseActivity.QUERY_TYPE_ALARM);
                         itemHolder.preAlarm.setText("");
                     }
                     itemHolder.prealarmRingtone.requestLayout();
@@ -899,7 +880,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                         itemHolder.ringtone.setVisibility(View.VISIBLE);
                         Uri defaultAlarm = getDefaultAlarmUri();
                         alarm.alert=defaultAlarm;
-                        alarm.ringtoneName = getRingToneTitle(defaultAlarm);
+                        alarm.setRingtoneName(getRingToneTitle(defaultAlarm), BrowseActivity.QUERY_TYPE_ALARM);
                         itemHolder.alarmtone.setText("");
                     }
                     itemHolder.ringtone.requestLayout();
@@ -909,7 +890,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
             itemHolder.ringtone.setVisibility(itemHolder.alarmtone.isChecked() ? View.VISIBLE : View.GONE);
             ringtone = "";
 
-            mediaAlertEnabled = false;
             spotifyAlarm = false;
             randomMusicAlarm = false;
             localMediaAlarm = false;
@@ -923,24 +903,11 @@ public class AlarmClockFragment extends DeskClockFragment implements
                         randomMusicAlarm = true;
                     } else if (Utils.isLocalMediaUri(alarm.preAlarmAlert.toString())) {
                         localMediaAlarm = true;
-                    } else if(Utils.isDocumentProviderUri(alarm.preAlarmAlert.toString())) {
-                        mediaAlertEnabled = true;
                     }
                 }
 
-                if (mediaAlertEnabled) {
-                    if (alarm.preAlarmRingtoneName == null) {
-                        ringtone = getMediaTitle(alarm.preAlarmAlert);
-                        ringtoneImageId = R.drawable.ic_track;
-                        // file no longer found
-                        if (ringtone == null) {
-                            ringtone = getResources().getString(R.string.local_uri_unkown);
-                        }
-                    } else {
-                        ringtone = alarm.preAlarmRingtoneName;
-                    }
-                } else if (spotifyAlarm) {
-                    ringtone = alarm.preAlarmRingtoneName != null ? alarm.preAlarmRingtoneName : alarm.preAlarmAlert.toString();
+                if (spotifyAlarm) {
+                    ringtone = alarm.getPreAlarmRingtoneName() != null ? alarm.getPreAlarmRingtoneName() : alarm.preAlarmAlert.toString();
                     ringtoneImageId = Utils.resolveSpotifyUriImage(alarm.preAlarmAlert.toString());
                 } else if (randomMusicAlarm) {
                     ringtone = getResources().getString(R.string.randomMusicType);
@@ -949,20 +916,20 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     boolean unknownAlarm = false;
                     if (Alarm.NO_RINGTONE_URI.equals(alarm.preAlarmAlert)) {
                         ringtone = "";
-                    } else if (alarm.preAlarmRingtoneName == null) {
+                    } else if (alarm.getPreAlarmRingtoneName() == null) {
                         if (Utils.isFolderUri(alarm.preAlarmAlert.toString())) {
                             ringtone = alarm.preAlarmAlert.getLastPathSegment();
                         } else {
                             ringtone = getRingToneTitle(alarm.preAlarmAlert);
-                            if (!isAlarmUriValid(alarm.preAlarmAlert)) {
-                                ringtone = getResources().getString(R.string.local_uri_unkown);
+                            if (ringtone == null) {
+                                ringtone = getResources().getString(R.string.alarm_uri_unkown);
                                 unknownAlarm = true;
                             }
                         }
                     } else {
-                        ringtone = alarm.preAlarmRingtoneName;
-                        if (!isAlarmUriValid(alarm.preAlarmAlert)) {
-                            ringtone = getResources().getString(R.string.local_uri_unkown);
+                        ringtone = alarm.getPreAlarmRingtoneName();
+                        if (!Utils.isValidAlarm(getActivity(), alarm.preAlarmAlert, alarm.getPreAlarmRingtoneType())) {
+                            ringtone = ringtone + getResources().getString(R.string.alarm_uri_unkown);
                             unknownAlarm = true;
                         }
                     }
@@ -1053,25 +1020,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
             final TextView dayButton = holder.dayButtons[dayIndex];
             dayButton.setActivated(true);
             dayButton.setTextColor(getResources().getColor(R.color.primary));
-        }
-
-        private String getMediaTitle(Uri uri) {
-            if (uri == null) {
-                return null;
-            }
-            Cursor cursor = null;
-            try {
-                cursor = mContext.getContentResolver().query(uri, null, null, null, null);
-                int nameIndex = cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
-                cursor.moveToFirst();
-                return cursor.getString(nameIndex);
-            } catch (Exception e) {
-                return null;
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
         }
 
         /**
@@ -1355,70 +1303,8 @@ public class AlarmClockFragment extends DeskClockFragment implements
         }
     }
 
-    public void onFinishOk(Alarm alarm, boolean preAlarm, boolean alarmMedia) {
-        // aquire new/same one
-        if (alarmMedia) {
-            final Context context = getActivity().getApplicationContext();
-            Uri uri = null;
-            if (preAlarm) {
-                uri = alarm.preAlarmAlert;
-            } else {
-                uri = alarm.alert;
-            }
-            try {
-                context.getContentResolver().takePersistableUriPermission(
-                        uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                LogUtils.v("takePersistableUriPermission " + uri);
-            } catch (SecurityException ex) {
-                LogUtils.e("Unable to take persistent grant permission for uri " + uri, ex);
-                if (preAlarm) {
-                    alarm.preAlarmAlert = getDefaultAlarmUri();
-                } else {
-                    alarm.alert = getDefaultAlarmUri();
-                }
-                final int msgId = R.string.take_persistent_grant_uri_permission_failed_msg;
-                Toast.makeText(getActivity(), msgId, Toast.LENGTH_SHORT).show();
-            }
-        }
+    public void onFinishOk(Alarm alarm, boolean preAlarm) {
         asyncUpdateAlarm(alarm, false);
-    }
-
-    /**
-     * iterate over all granted permissions and check all alarms
-     * if the uri is still used. If not release it.
-     * This will be called on onPause
-     */
-    private void updateUriPermissions() {
-        final Context context = getActivity().getApplicationContext();
-        final ContentResolver cr = context.getContentResolver();
-
-        LogUtils.v("updateUriPermissions");
-
-        boolean containsUri = false;
-        for (UriPermission uriPermission : cr.getPersistedUriPermissions()) {
-            boolean used = false;
-            final Uri uri = uriPermission.getUri();
-            int count = mAdapter.getCount();
-            for (int i = 0; i < count; i++) {
-                Alarm alarm = new Alarm((Cursor) mAdapter.getItem(i));
-                if (alarm.isUsingRingtoneUri(uri)) {
-                    LogUtils.v("still used " + uri);
-                    used = true;
-                    break;
-                }
-            }
-            if (!used) {
-                // Release granted uri
-                try {
-                    cr.releasePersistableUriPermission(
-                            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    LogUtils.v("releasePersistableUriPermission " + uri);
-                } catch (SecurityException e) {
-                    // Ignore
-                    LogUtils.e("Unable to release persistent grant permission for uri " + uri, e);
-                }
-            }
-        }
     }
 
     private void cloneAlarm(Alarm baseAlarm, int hourOfDay, int minute) {
@@ -1506,12 +1392,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 alarmsCursor.close();
             }
         }
-    }
-
-    private boolean isAlarmUriValid(Uri uri) {
-        final RingtoneManager rm = new RingtoneManager(getActivity());
-        rm.setType(RingtoneManager.TYPE_ALL);
-        return rm.getRingtonePosition(uri) != -1;
     }
 
     private String getRingToneTitle(Uri uri) {

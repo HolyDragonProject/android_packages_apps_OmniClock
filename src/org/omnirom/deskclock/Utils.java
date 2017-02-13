@@ -46,6 +46,8 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -812,7 +814,7 @@ public class Utils {
                 "com.maxwen.deskclock.spotify.TestPlayActivity"));
         spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_URI, alarm.alert.toString());
-        spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, alarm.ringtoneName);
+        spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, alarm.getRingtoneName());
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_RANDOM, alarm.getRandomMode(false));
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_VOLUME, alarm.alarmVolume);
         return spotifyIntent;
@@ -925,6 +927,25 @@ public class Utils {
         return albumFiles;
     }
 
+    public static boolean checkAlbumExists(Context context, Uri album) {
+        String albumId = album.getLastPathSegment();
+        String selection = MediaStore.Audio.Media.ALBUM_ID + " = " + Integer.valueOf(albumId).intValue();
+
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE
+        };
+
+        Cursor c = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                null,
+                MediaStore.Audio.Media.TITLE);
+
+        return c.getCount() != 0;
+    }
+
     public static List<Uri> getArtistSongs(Context context, Uri artist) {
         String artistId = artist.getLastPathSegment();
         String selection = MediaStore.Audio.Media.ARTIST_ID + " = " + Integer.valueOf(artistId).intValue();
@@ -950,6 +971,24 @@ public class Utils {
         }
         c.close();
         return albumFiles;
+    }
+
+    public static boolean checkArtistExists(Context context, Uri artist) {
+        String artistId = artist.getLastPathSegment();
+        String selection = MediaStore.Audio.Media.ARTIST_ID + " = " + Integer.valueOf(artistId).intValue();
+
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.TITLE
+        };
+
+        Cursor c = context.getContentResolver().query(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                null,
+                MediaStore.Audio.Media.TITLE);
+        return c.getCount() != 0;
     }
 
     public static String resolveTrack(Context context, Uri track) {
@@ -1059,20 +1098,6 @@ public class Utils {
         return false;
     }
 
-    public static boolean isLocalPlaylistAlarm(Alarm alarm, boolean preAlarm) {
-        if (preAlarm) {
-            return isLocalPlaylistType(alarm.preAlarmAlert.toString());
-        }
-        return isLocalPlaylistType(alarm.alert.toString());
-    }
-
-    public static boolean isFolderAlarm(Alarm alarm, boolean preAlarm) {
-        if (preAlarm) {
-            return isFolderUri(alarm.preAlarmAlert.toString());
-        }
-        return isFolderUri(alarm.alert.toString());
-    }
-
     public static boolean isFolderUri(String uri) {
         return uri.startsWith("file:/");
     }
@@ -1081,17 +1106,6 @@ public class Utils {
         Uri alert = RingtoneManager.getActualDefaultRingtoneUri(context,
                 RingtoneManager.TYPE_ALARM);
         return alert;
-    }
-
-    public static boolean isDocumentProviderUri(String uri) {
-        return uri.startsWith("content://com.android.providers.media.documents/document");
-    }
-
-    public static boolean isDocumentProviderAlarm(Alarm alarm, boolean preAlarm) {
-        if (preAlarm) {
-            return isDocumentProviderUri(alarm.preAlarmAlert.toString());
-        }
-        return isDocumentProviderUri(alarm.alert.toString());
     }
 
     public static boolean showBackgroundImage(final Context context) {
@@ -1112,6 +1126,56 @@ public class Utils {
             return ((BitmapDrawable) d).getBitmap();
         }
         return null;
+    }
+
+    public static boolean isAlarmUriValid(Context context, Uri uri) {
+        final RingtoneManager rm = new RingtoneManager(context);
+        rm.setType(RingtoneManager.TYPE_ALL);
+        return rm.getRingtonePosition(uri) != -1;
+    }
+
+
+    public static String getMediaTitle(Context context, Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver()
+                    .query(uri, null, null, null, null);
+            int nameIndex = cursor
+                    .getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME);
+            cursor.moveToFirst();
+            return cursor.getString(nameIndex);
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public static boolean isValidAlarm(Context context, Uri ringtoneUri, int type) {
+        if (type == BrowseActivity.QUERY_TYPE_ALARM || type == BrowseActivity.QUERY_TYPE_RINGTONE) {
+            if (!Utils.isAlarmUriValid(context, ringtoneUri)) {
+                return false;
+            }
+        } else if (type == BrowseActivity.QUERY_TYPE_ALBUM) {
+            if (!Utils.checkAlbumExists(context, ringtoneUri)) {
+                return false;
+            }
+        } else if (type == BrowseActivity.QUERY_TYPE_ARTIST) {
+            if (!Utils.checkArtistExists(context, ringtoneUri)) {
+                return false;
+            }
+        } else if (type == BrowseActivity.QUERY_TYPE_TRACK) {
+            String title = getMediaTitle(context, ringtoneUri);
+            if (title == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

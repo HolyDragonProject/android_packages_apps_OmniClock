@@ -144,7 +144,7 @@
     <string name="local_query_album">Albums</string>
     <string name="local_query_track">Songs</string>
     <string name="local_query_folder">Folder</string>
-    <string name="local_uri_unkown" translatable="false">&lt;unknown&gt;</string>
+    <string name="alarm_uri_unkown"> (deleted)</string>
     <string name="choose_folder">Choose</string>
     <string name="musicType">Music</string>
     <string name="no_alarm_sound_hint">No default alarm ringtone set in system settings.</string>

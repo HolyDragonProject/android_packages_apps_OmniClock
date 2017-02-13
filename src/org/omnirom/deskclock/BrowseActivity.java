@@ -42,14 +42,14 @@ import java.util.List;
 public class BrowseActivity extends Activity implements SearchView.OnQueryTextListener,
         DirectoryChooserDialog.ChosenDirectoryListener {
 
-    private static final int QUERY_TYPE_ALARM = 0;
-    private static final int QUERY_TYPE_RINGTONE = 1;
-    private static final int QUERY_TYPE_RECENT = 2;
-    private static final int QUERY_TYPE_ARTIST = 3;
-    private static final int QUERY_TYPE_ALBUM = 4;
-    private static final int QUERY_TYPE_TRACK = 5;
-    private static final int QUERY_TYPE_FOLDER = 6;
-    private static final int QUERY_TYPE_UNKNOWN = -1;
+    public static final int QUERY_TYPE_ALARM = 0;
+    public static final int QUERY_TYPE_RINGTONE = 1;
+    public static final int QUERY_TYPE_RECENT = 2;
+    public static final int QUERY_TYPE_ARTIST = 3;
+    public static final int QUERY_TYPE_ALBUM = 4;
+    public static final int QUERY_TYPE_TRACK = 5;
+    public static final int QUERY_TYPE_FOLDER = 6;
+    public static final int QUERY_TYPE_UNKNOWN = -1;
 
     private static final String PREF_RECENT_URI = "local_recent_uri";
     private static final int RECENT_SIZE = 10;
@@ -272,6 +272,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                     Intent intent = new Intent();
                     intent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_URI, mSelectedUri);
                     intent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, queryItem.mName);
+                    intent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_TYPE, queryItem.mQueryType);
                     setResult(Activity.RESULT_OK, intent);
                     finish();
                 }
@@ -909,7 +910,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
             }
         }
         if (unknownTone || TextUtils.isEmpty(queryItem.mName)) {
-            queryItem.mName = getResources().getString(R.string.local_uri_unkown);
+            queryItem.mName = getResources().getString(R.string.alarm_uri_unkown);
             queryItem.mQueryType = QUERY_TYPE_UNKNOWN;
             return false;
         }

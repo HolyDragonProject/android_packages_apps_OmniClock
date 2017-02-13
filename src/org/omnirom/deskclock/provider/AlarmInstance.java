@@ -297,8 +297,8 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
     public int mPreAlarmTime;
     public Uri mPreAlarmRingtone;
     private int mRandomMode;
-    public String mRingtoneName;
-    public String mPreAlarmRingtoneName;
+    private String mRingtoneName;
+    private String mPreAlarmRingtoneName;
 
     public AlarmInstance(Calendar calendar, Long alarmId) {
         this(calendar);
@@ -605,5 +605,28 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
                 }
             }
         }
+    }
+    public void setRingtoneNameRaw(String name) {
+        mRingtoneName = name;
+    }
+
+    public void setPreAlarmRingtoneNameRaw(String name) {
+        mPreAlarmRingtoneName = name;
+    }
+
+    public String getRingtoneName() {
+        if (mRingtoneName.indexOf("###") == -1) {
+            return mRingtoneName;
+        }
+        String[] split = mRingtoneName.split("###");
+        return split[1];
+    }
+
+    public String getPreAlarmRingtoneName() {
+        if (mPreAlarmRingtoneName.indexOf("###") == -1) {
+            return mPreAlarmRingtoneName;
+        }
+        String[] split = mPreAlarmRingtoneName.split("###");
+        return split[1];
     }
 }
