@@ -594,6 +594,9 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
     }
 
     public String getRingtoneName() {
+        if (ringtoneName == null) {
+            return null;
+        }
         if (ringtoneName.indexOf("###") == -1) {
             return ringtoneName;
         }
@@ -602,7 +605,7 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
     }
 
     public int getRingtoneType() {
-        if (ringtoneName.indexOf("###") == -1) {
+        if (ringtoneName == null || ringtoneName.indexOf("###") == -1) {
             return -1;
         }
         String[] split = ringtoneName.split("###");
@@ -614,6 +617,9 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
     }
 
     public String getPreAlarmRingtoneName() {
+        if (preAlarmRingtoneName == null) {
+            return null;
+        }
         if (preAlarmRingtoneName.indexOf("###") == -1) {
             return preAlarmRingtoneName;
         }
@@ -626,7 +632,7 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
     }
 
     public int getPreAlarmRingtoneType() {
-        if (preAlarmRingtoneName.indexOf("###") == -1) {
+        if (preAlarmRingtoneName == null || preAlarmRingtoneName.indexOf("###") == -1) {
             return -1;
         }
         String[] split = preAlarmRingtoneName.split("###");

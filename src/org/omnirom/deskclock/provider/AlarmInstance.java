@@ -615,6 +615,9 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
     }
 
     public String getRingtoneName() {
+        if (mRingtoneName == null) {
+            return null;
+        }
         if (mRingtoneName.indexOf("###") == -1) {
             return mRingtoneName;
         }
@@ -623,6 +626,9 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
     }
 
     public String getPreAlarmRingtoneName() {
+        if (mPreAlarmRingtoneName == null) {
+            return null;
+        }
         if (mPreAlarmRingtoneName.indexOf("###") == -1) {
             return mPreAlarmRingtoneName;
         }
