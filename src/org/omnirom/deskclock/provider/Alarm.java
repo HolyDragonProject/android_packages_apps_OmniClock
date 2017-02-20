@@ -24,6 +24,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -600,8 +601,12 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
         if (ringtoneName.indexOf("###") == -1) {
             return ringtoneName;
         }
-        String[] split = ringtoneName.split("###");
-        return split[1];
+        try {
+            String[] split = ringtoneName.split("###");
+            return split[1];
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     public int getRingtoneType() {
@@ -613,7 +618,11 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
     }
 
     public void setRingtoneName(String name, int type) {
-        ringtoneName = type + "###" + name;
+        if (TextUtils.isEmpty(name)) {
+            ringtoneName = null;
+        } else {
+            ringtoneName = type + "###" + name;
+        }
     }
 
     public String getPreAlarmRingtoneName() {
@@ -623,12 +632,20 @@ public final class Alarm implements Parcelable, ClockContract.AlarmsColumns {
         if (preAlarmRingtoneName.indexOf("###") == -1) {
             return preAlarmRingtoneName;
         }
-        String[] split = preAlarmRingtoneName.split("###");
-        return split[1];
+        try {
+            String[] split = preAlarmRingtoneName.split("###");
+            return split[1];
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     public void setPreAlarmRingtoneName(String name, int type) {
-        preAlarmRingtoneName = type + "###" + name;
+        if (TextUtils.isEmpty(name)) {
+            preAlarmRingtoneName = null;
+        } else {
+            preAlarmRingtoneName = type + "###" + name;
+        }
     }
 
     public int getPreAlarmRingtoneType() {

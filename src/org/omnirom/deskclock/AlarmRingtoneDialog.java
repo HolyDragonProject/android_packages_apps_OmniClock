@@ -824,7 +824,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void setRandomSong() {
         mRingtone = Uri.parse(Utils.getRandomUriString());
-        mRingtoneName = "";
+        mRingtoneName = "random";
         String ringtoneTitle = getResources().getString(R.string.randomMusicType);
         mRingtoneImageId = R.drawable.ic_track;
         ringtone.setText(ringtoneTitle);

@@ -621,8 +621,12 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
         if (mRingtoneName.indexOf("###") == -1) {
             return mRingtoneName;
         }
-        String[] split = mRingtoneName.split("###");
-        return split[1];
+        try {
+            String[] split = mRingtoneName.split("###");
+            return split[1];
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getPreAlarmRingtoneName() {
@@ -632,7 +636,11 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
         if (mPreAlarmRingtoneName.indexOf("###") == -1) {
             return mPreAlarmRingtoneName;
         }
-        String[] split = mPreAlarmRingtoneName.split("###");
-        return split[1];
+        try {
+            String[] split = mPreAlarmRingtoneName.split("###");
+            return split[1];
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
