@@ -15,6 +15,10 @@
 
     <uses-feature android:name="android.hardware.location.gps" />
 
+    <uses-sdk
+        android:minSdkVersion="24"
+        android:targetSdkVersion="25" />
+
     <application
         android:icon="@mipmap/ic_launcher_alarmclock_omni"
         android:label="@string/app_label_new"
