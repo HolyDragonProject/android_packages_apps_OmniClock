@@ -204,7 +204,10 @@ public class WidgetUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String font = prefs.getString(CustomAppWidgetConfigure.KEY_CLOCK_FONT + "_" + id, null);
         if (font != null) {
-            return Typeface.createFromFile(font);
+            try {
+                return Typeface.createFromFile(font);
+            } catch (Exception e) {
+            }
         }
         return Typeface.create("sans-serif-light", Typeface.NORMAL);
     }
