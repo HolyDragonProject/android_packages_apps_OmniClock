@@ -85,7 +85,7 @@ public class CustomAppWidgetConfigure extends PreferenceActivity implements
 
         mClockFont = (FontPreference) findPreference(KEY_CLOCK_FONT);
         mClockFont.setKey(KEY_CLOCK_FONT + "_" + String.valueOf(mAppWidgetId));
-        mClockFont.setSummary("sans-serif");
+        mClockFont.setSummary("Roboto Light");
         mClockFont.setOnPreferenceChangeListener(this);
 
         mClockColor = (ColorPickerPreference) findPreference(KEY_CLOCK_COLOR);

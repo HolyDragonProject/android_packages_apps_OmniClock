@@ -206,7 +206,7 @@ public class WidgetUtils {
         if (font != null) {
             return Typeface.createFromFile(font);
         }
-        return Typeface.create("sans-serif", Typeface.NORMAL);
+        return Typeface.create("sans-serif-light", Typeface.NORMAL);
     }
 
     public static int getClockColor(Context context, int id) {
@@ -258,7 +258,7 @@ public class WidgetUtils {
         alarmPaint.setColor(r.getColor(org.omnirom.deskclock.R.color.analog_clock_alarm_color));
 
         float textSizePixels = r.getDimension(org.omnirom.deskclock.R.dimen.analog_widget_font_size);
-        Typeface typeface = Typeface.create("sans-serif", Typeface.NORMAL);
+        Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
         final TextPaint textPaint = new TextPaint();
         textPaint.setTypeface(typeface);

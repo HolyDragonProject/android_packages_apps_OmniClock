@@ -36,10 +36,42 @@ public class FontManager
 
             for ( File file : files )
             {
+                String filename = file.getName();
                 String fontname = analyzer.getTtfFontName( file.getAbsolutePath() );
-
-                if ( fontname != null )
+                if ( fontname != null ) {
                     fonts.put( fontname, file.getAbsolutePath() );
+                } else {
+                    if (filename.equals("DroidSans.ttf")) {
+                        fonts.put( "Droid Sans", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("DroidSans-Bold.ttf")) {
+                        fonts.put( "Droid Sans Bold", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-Black.ttf")) {
+                        fonts.put( "Roboto Bold", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-Black.ttf")) {
+                        fonts.put( "Roboto Bold Italic", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-Italic.ttf")) {
+                        fonts.put( "Roboto Italic", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-BoldItalic.ttf")) {
+                        fonts.put( "Roboto Bold Italic", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-Light.ttf")) {
+                        fonts.put( "Roboto Light", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-LightItalic.ttf")) {
+                        fonts.put( "Roboto Light Italic", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-Thin.ttf")) {
+                        fonts.put( "Roboto Thin", file.getAbsolutePath() );
+                    }
+                    if (filename.equals("Roboto-ThinItalic.ttf")) {
+                        fonts.put( "Roboto Thin Italic", file.getAbsolutePath() );
+                    }
+                }
             }
         }
 

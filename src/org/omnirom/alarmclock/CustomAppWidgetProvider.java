@@ -265,7 +265,7 @@ public class CustomAppWidgetProvider extends AppWidgetProvider {
                                    boolean clockShadow, boolean showDate, boolean showAlarm, boolean hasAlarm) {
         if (showDate || showAlarm) {
             float fontSize = context.getResources().getDimension(org.omnirom.deskclock.R.dimen.custom_widget_label_font_size);
-            Typeface dateFont = Typeface.create("sans-serif", Typeface.NORMAL);
+            Typeface dateFont = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
             Bitmap dateBitmap = WidgetUtils.createDataAlarmBitmap(context, dateFont, fontSize, clockColor,
                     clockShadow, 0.15f, showDate, showAlarm);
