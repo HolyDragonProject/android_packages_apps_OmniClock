@@ -733,7 +733,6 @@ public class TimerReceiver extends BroadcastReceiver {
                 .setSmallIcon(org.omnirom.deskclock.R.drawable.ic_notify_timer)
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_MAX)
-                .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary));

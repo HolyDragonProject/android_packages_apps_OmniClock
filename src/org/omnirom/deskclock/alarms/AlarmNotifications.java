@@ -228,7 +228,6 @@ public final class AlarmNotifications {
                 .setSmallIcon(org.omnirom.deskclock.R.drawable.ic_notify_alarm)
                 .setAutoCancel(false)
                 .setPriority(Notification.PRIORITY_MAX)
-                .setDefaults(Notification.DEFAULT_LIGHTS)
                 .setCategory(Notification.CATEGORY_ALARM)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setColor(resources.getColor(org.omnirom.deskclock.R.color.primary));
