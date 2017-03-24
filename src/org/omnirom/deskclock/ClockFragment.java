@@ -163,12 +163,6 @@ public class ClockFragment extends DeskClockFragment {
         View footerView = inflater.inflate(R.layout.blank_footer_view, mList, false);
         mList.addFooterView(footerView, null, false);
 
-        boolean isLandscape = getResources().getConfiguration().orientation
-                == Configuration.ORIENTATION_LANDSCAPE;
-        if (!isLandscape) {
-            View headerView = inflater.inflate(R.layout.blank_header_view, mList, false);
-            mList.addHeaderView(headerView, null, false);
-        }
         mAdapter = new WorldClockAdapter(getActivity());
         mList.setAdapter(mAdapter);
         return v;

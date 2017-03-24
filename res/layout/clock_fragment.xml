@@ -32,6 +32,8 @@
             android:layout_height="wrap_content"
             android:clickable="false"
             android:scrollbars="none"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:clipToPadding="false" />
     </LinearLayout>
 </FrameLayout>

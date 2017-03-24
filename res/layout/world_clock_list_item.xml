@@ -23,7 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         card_view:cardCornerRadius="2dp"
         card_view:contentPadding="8dp"
         card_view:cardBackgroundColor="@color/view_background">

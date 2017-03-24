@@ -26,5 +26,7 @@
         android:layout_height="match_parent"
         android:clickable="false"
         android:scrollbars="none"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:clipToPadding="false" />
 </FrameLayout>
