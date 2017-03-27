@@ -32,26 +32,26 @@ import org.omnirom.deskclock.provider.ClockContract;
 public class AlarmPluginFactory {
 
     public static Intent getAlarmServiceIntent(Context context, AlarmInstance instance, boolean preAlarm) {
-        Intent intent = null;
         if (Utils.isSpotifyAlarm(instance, preAlarm) && Utils.isSpotifyPluginInstalled(context)) {
-            intent = new Intent();
-            intent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
-                    "com.maxwen.deskclock.alarms.SpotifyAlarmService"));
-            intent.setData(instance.getUri(instance.mId));
+            String packageName = Utils.getSpotifyPluginPackageName(context);
+            if (packageName != null) {
+                Intent intent = new Intent();
+                intent.setComponent(new ComponentName(packageName,
+                        "com.maxwen.deskclock.alarms.SpotifyAlarmService"));
+                intent.setData(instance.getUri(instance.mId));
 
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            String speed = prefs.getString(SettingsActivity.KEY_VOLUME_INCREASE_SPEED, "5");
-            intent.putExtra(AlarmConstants.DATA_ALARM_VOLUME_INCREASE_SPEED, speed);
-            String stream = prefs.getString(SettingsActivity.KEY_AUDIO_STREAM, "1");
-            intent.putExtra(AlarmConstants.DATA_ALARM_AUDIO_STREAM, stream);
-            intent.putExtra(AlarmConstants.DATA_ALARM_NOTIF_WEARABLE, Utils.showWearNotification(context));
-            intent.putExtra(AlarmConstants.DATA_ALARM_CAN_SNOOZE, AlarmStateManager.canSnooze(context));
-            intent.putExtra(AlarmConstants.DATA_ALARM_NOTIF_VIBRATE, Utils.isNotificationVibrate(context));
-            intent.putExtra(AlarmConstants.DATA_OMNICLOCK_AUTHORITY, ClockContract.AUTHORITY);
-
-        } else {
-            intent = AlarmInstance.createIntent(context, AlarmService.class, instance.mId);
+                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                String speed = prefs.getString(SettingsActivity.KEY_VOLUME_INCREASE_SPEED, "5");
+                intent.putExtra(AlarmConstants.DATA_ALARM_VOLUME_INCREASE_SPEED, speed);
+                String stream = prefs.getString(SettingsActivity.KEY_AUDIO_STREAM, "1");
+                intent.putExtra(AlarmConstants.DATA_ALARM_AUDIO_STREAM, stream);
+                intent.putExtra(AlarmConstants.DATA_ALARM_NOTIF_WEARABLE, Utils.showWearNotification(context));
+                intent.putExtra(AlarmConstants.DATA_ALARM_CAN_SNOOZE, AlarmStateManager.canSnooze(context));
+                intent.putExtra(AlarmConstants.DATA_ALARM_NOTIF_VIBRATE, Utils.isNotificationVibrate(context));
+                intent.putExtra(AlarmConstants.DATA_OMNICLOCK_AUTHORITY, ClockContract.AUTHORITY);
+                return intent;
+            }
         }
-        return intent;
+        return AlarmInstance.createIntent(context, AlarmService.class, instance.mId);
     }
 }

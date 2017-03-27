@@ -776,7 +776,16 @@ public class Utils {
         return sharedPref.getBoolean(SettingsActivity.KEY_VIBRATE_NOTIFICATION, true);
     }
 
-    public static boolean isSpotifyPluginInstalled(final Context context) {
+    private static boolean isNewSpotifyPluginInstalled(final Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo("com.maxwen.deskclock.spotify2", 0);
+            return info != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private static boolean isOldSpotifyPluginInstalled(final Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo("com.maxwen.deskclock.spotify", 0);
             if (info != null) {
@@ -788,6 +797,13 @@ public class Utils {
         } catch (PackageManager.NameNotFoundException e) {
         }
         return false;
+    }
+
+    public static boolean isSpotifyPluginInstalled(final Context context) {
+        if (!isNewSpotifyPluginInstalled(context)) {
+            return isOldSpotifyPluginInstalled(context);
+        }
+        return true;
     }
 
     public static boolean isSpotifyAlarm(AlarmInstance instance, boolean preAlarm) {
@@ -810,8 +826,8 @@ public class Utils {
 
     public static Intent getSpotifyTestPlayIntent(final Context context, Alarm alarm) {
         Intent spotifyIntent = new Intent();
-        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
-                "com.maxwen.deskclock.spotify.TestPlayActivity"));
+        ComponentName cn = getSpotifyComponentName(context, "TestPlayActivity");
+        spotifyIntent.setComponent(cn);
         spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_URI, alarm.alert.toString());
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, alarm.getRingtoneName());
@@ -822,19 +838,10 @@ public class Utils {
 
     public static Intent getSpotifyFirstStartIntent(final Context context) {
         Intent spotifyIntent = new Intent();
-        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
-                "com.maxwen.deskclock.spotify.FirstStartActivity"));
+        ComponentName cn = getSpotifyComponentName(context, "FirstStartActivity");
+        spotifyIntent.setComponent(cn);
         spotifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return spotifyIntent;
-    }
-
-    public static int getSpotifyPluginVersionNumber(final Context context) {
-        try {
-            PackageInfo info = context.getPackageManager().getPackageInfo("com.maxwen.deskclock.spotify", 0);
-            return info.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-        }
-        return -1;
     }
 
     public static int getHighNotificationOffset(Context context) {
@@ -845,8 +852,8 @@ public class Utils {
 
     public static Intent getSpotifyBrowseIntent(final Context context, Alarm alarm) {
         Intent spotifyIntent = new Intent();
-        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
-                "com.maxwen.deskclock.spotify.BrowseActivity"));
+        ComponentName cn = getSpotifyComponentName(context, "BrowseActivity");
+        spotifyIntent.setComponent(cn);
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_URI, alarm.alert.toString());
         spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
         return spotifyIntent;
@@ -854,8 +861,8 @@ public class Utils {
 
     public static Intent getSpotifySettingsIntent(final Context context) {
         Intent spotifyIntent = new Intent();
-        spotifyIntent.setComponent(new ComponentName("com.maxwen.deskclock.spotify",
-                "com.maxwen.deskclock.spotify.SpotifyActivity"));
+        ComponentName cn = getSpotifyComponentName(context, "SpotifyActivity");
+        spotifyIntent.setComponent(cn);
         spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
         spotifyIntent.putExtra(AlarmConstants.DATA_OMNICLOCK_PARENT, true);
         return spotifyIntent;
@@ -1176,6 +1183,22 @@ public class Utils {
             }
         }
         return true;
+    }
+
+    public static String getSpotifyPluginPackageName(Context context) {
+        String packageName = isNewSpotifyPluginInstalled(context) ?
+                "com.maxwen.deskclock.spotify2" :
+                (isOldSpotifyPluginInstalled(context) ?
+                        "com.maxwen.deskclock.spotify" : null);
+        return packageName;
+    }
+
+    public static ComponentName getSpotifyComponentName(Context context, String activity) {
+        String packageName = getSpotifyPluginPackageName(context);
+        if (packageName == null) {
+            return null;
+        }
+        return new ComponentName(packageName, packageName + "." + activity);
     }
 }
 
