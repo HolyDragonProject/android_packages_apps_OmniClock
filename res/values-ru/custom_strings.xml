@@ -73,6 +73,7 @@
   <string name="entry_ten_minute">10 мин.</string>
   <string name="entry_fifteen_minute">15 минут</string>
   <string name="entry_thirty_minute">30 минут</string>
+  <string name="entry_sixty_minute">1 час</string>
   <string name="prealarm_default_label">Предварительный сигнал</string>
   <string name="fullscreen_alarm_settings">Полноэкранные будильники</string>
   <string name="fullscreen_alarm_title">Полноэкранные будильники</string>
@@ -98,4 +99,5 @@
   <string name="timer_alarm_custom_title">Другая мелодия таймера</string>
   <string name="week_start_title">Неделя начинается с</string>
   <string name="default_week_start">По умолчанию для данного региона</string>
+  <string name="clock_shadow_title">Тень</string>
 </resources>
