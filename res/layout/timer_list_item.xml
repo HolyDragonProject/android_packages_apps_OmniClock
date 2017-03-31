@@ -83,8 +83,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/timer_plus_one"
-            android:gravity="center"
-            android:src="@drawable/ic_plusone_tint"/>
+            android:gravity="center" />
 
     </org.omnirom.deskclock.CircleButtonsLayout>
 

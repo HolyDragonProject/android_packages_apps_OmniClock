@@ -72,7 +72,7 @@ public class TimerListItem extends LinearLayout {
     }
 
     public void start() {
-        mResetAddButton.setImageResource(org.omnirom.deskclock.R.drawable.ic_plusone_tint);
+        mResetAddButton.setImageResource(Utils.isLightTheme(getContext()) ? org.omnirom.deskclock.R.drawable.ic_plusone_black : org.omnirom.deskclock.R.drawable.ic_plusone);
         mResetAddButton.setContentDescription(getResources().getString(org.omnirom.deskclock.R.string.timer_plus_one));
         mCircleView.startIntervalAnimation();
         mTimerText.showTime(true);
@@ -80,7 +80,7 @@ public class TimerListItem extends LinearLayout {
     }
 
     public void pause() {
-        mResetAddButton.setImageResource(org.omnirom.deskclock.R.drawable.ic_reset_tint);
+        mResetAddButton.setImageResource(Utils.isLightTheme(getContext()) ? org.omnirom.deskclock.R.drawable.ic_reset_black : org.omnirom.deskclock.R.drawable.ic_reset);
         mResetAddButton.setContentDescription(getResources().getString(org.omnirom.deskclock.R.string.timer_reset));
         mCircleView.pauseIntervalAnimation();
         mTimerText.showTime(true);
@@ -121,8 +121,10 @@ public class TimerListItem extends LinearLayout {
         if (mResetAddButton == null) {
             mResetAddButton = (ImageView) findViewById(org.omnirom.deskclock.R.id.reset_add);
         }
-        mResetAddButton.setImageResource(isRunning ? org.omnirom.deskclock.R.drawable.ic_plusone_tint :
-                org.omnirom.deskclock.R.drawable.ic_reset_tint);
+
+        mResetAddButton.setImageResource(isRunning ?
+                (Utils.isLightTheme(getContext()) ? org.omnirom.deskclock.R.drawable.ic_plusone_black : org.omnirom.deskclock.R.drawable.ic_plusone) :
+                ((Utils.isLightTheme(getContext()) ? org.omnirom.deskclock.R.drawable.ic_reset_black : org.omnirom.deskclock.R.drawable.ic_reset)));
         mResetAddButton.setContentDescription(getResources().getString(
                 isRunning ? org.omnirom.deskclock.R.string.timer_plus_one : org.omnirom.deskclock.R.string.timer_reset));
         mResetAddButton.setOnClickListener(listener);
