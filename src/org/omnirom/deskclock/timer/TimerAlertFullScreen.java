@@ -46,7 +46,6 @@ public class TimerAlertFullScreen extends Activity implements OnEmptyListListene
         super.onCreate(savedInstanceState);
 
         setContentView(org.omnirom.deskclock.R.layout.timer_alert_full_screen);
-        final View view = findViewById(org.omnirom.deskclock.R.id.fragment_container);
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         final boolean keepScreenOn = prefs.getBoolean(SettingsActivity.KEY_KEEP_SCREEN_ON, true);
