@@ -145,7 +145,7 @@
   <string name="alarm_uri_unkown"> (gelöscht)</string>
   <string name="choose_folder">Wählen</string>
   <string name="musicType">Musik</string>
-  <string name="no_alarm_sound_hint">Keine Standard-Alarm-Klingelton in den Systemeinstellungen festlegen.</string>
+  <string name="no_alarm_sound_hint">Keine Standard-Alarmton in den Systemeinstellungen festgelegt.</string>
   <string name="tile_create_alarm">Alarm</string>
   <string name="make_screen_dark_summary">Bildschirm bei aktiven Alarm dimmen</string>
   <string name="make_screen_dark_title">Display dimmen</string>

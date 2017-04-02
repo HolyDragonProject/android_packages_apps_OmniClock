@@ -142,6 +142,7 @@
   <string name="local_query_album">Álbuns</string>
   <string name="local_query_track">Músicas</string>
   <string name="local_query_folder">Pasta</string>
+  <string name="alarm_uri_unkown"> (excluído)</string>
   <string name="choose_folder">Escolher</string>
   <string name="musicType">Música</string>
   <string name="no_alarm_sound_hint">Sem toque de alarme padrão definido nas configurações do sistema.</string>
