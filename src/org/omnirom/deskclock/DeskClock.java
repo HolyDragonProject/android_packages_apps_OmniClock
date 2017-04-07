@@ -215,7 +215,7 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
             setTheme(R.style.SettingsThemeDark);
         }
 
-        mSelectedTab = CLOCK_TAB_INDEX;
+        mSelectedTab = Utils.getDefaultPage(this);
         if (icicle != null) {
             mSelectedTab = icicle.getInt(KEY_SELECTED_TAB, mSelectedTab);
         }

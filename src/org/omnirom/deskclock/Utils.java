@@ -1200,6 +1200,12 @@ public class Utils {
         }
         return new ComponentName(packageName, packageName + "." + activity);
     }
+
+    public static int getDefaultPage(final Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return Integer.valueOf(sharedPref.getString(SettingsActivity.KEY_DEFAULT_PAGE,
+                String.valueOf(DeskClock.CLOCK_TAB_INDEX)));
+    }
 }
 
 

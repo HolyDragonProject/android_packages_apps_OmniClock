@@ -110,6 +110,7 @@ public class SettingsActivity extends PreferenceActivity
     public static final String KEY_MAKE_SCREEN_DARK = "make_screen_dark";
     public static final String KEY_SHOW_BACKGROUND_IMAGE = "show_background_image";
     public static final String KEY_VIBRATE_NOTIFICATION = "vibrate_notification";
+    public static final String KEY_DEFAULT_PAGE= "default_page";
 
     // default action for alarm action
     public static final String DEFAULT_ALARM_ACTION = "0";
@@ -249,6 +250,10 @@ public class SettingsActivity extends PreferenceActivity
             final int idx = listPref.findIndexOfValue((String) newValue);
             listPref.setSummary(listPref.getEntries()[idx]);
             notifyColorThemeChanged();
+        } else if (KEY_DEFAULT_PAGE.equals(pref.getKey())) {
+            final ListPreference listPref = (ListPreference) pref;
+            final int idx = listPref.findIndexOfValue((String) newValue);
+            listPref.setSummary(listPref.getEntries()[idx]);
         }
 
         return true;
@@ -362,6 +367,10 @@ public class SettingsActivity extends PreferenceActivity
         listPref.setOnPreferenceChangeListener(this);
 
         listPref = (ListPreference) findPreference(KEY_COLOR_THEME);
+        listPref.setSummary(listPref.getEntry());
+        listPref.setOnPreferenceChangeListener(this);
+
+        listPref = (ListPreference) findPreference(KEY_DEFAULT_PAGE);
         listPref.setSummary(listPref.getEntry());
         listPref.setOnPreferenceChangeListener(this);
     }

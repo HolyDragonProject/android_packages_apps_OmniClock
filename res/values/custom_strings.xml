@@ -159,4 +159,6 @@
     <string name="vibrate_notification_title">Notification vibrate</string>
     <string name="all_cities_label">Add</string>
     <string name="entry_never">Never</string>
+    <string name="default_page_title">Default start page</string>
+    <string name="global_settings">Global</string>
 </resources>
