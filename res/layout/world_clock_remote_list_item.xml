@@ -60,8 +60,7 @@
                     android:layout_marginLeft="@dimen/style_label_space"
                     android:layout_marginStart="@dimen/style_label_space"
                     android:ellipsize="none"
-                    android:singleLine="true"
-                    android:textColor="@color/clock_gray" />
+                    android:singleLine="true" />
             </LinearLayout>
         </LinearLayout>
 
@@ -102,8 +101,7 @@
                     android:layout_marginLeft="@dimen/style_label_space"
                     android:layout_marginStart="@dimen/style_label_space"
                     android:ellipsize="none"
-                    android:singleLine="true"
-                    android:textColor="@color/clock_gray" />
+                    android:singleLine="true" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

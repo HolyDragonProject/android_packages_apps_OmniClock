@@ -105,6 +105,11 @@ public class DigitalWidgetViewsFactory implements RemoteViewsFactory {
             // Home city or city not in DB , use data from the save selected cities list
             clock.setTextViewText(labelId, Utils.getCityName(cityObj, cityInDb));
 
+            int clockColor = WidgetUtils.getClockColor(mContext, mId);
+            clock.setTextColor(clockId, clockColor);
+            clock.setTextColor(labelId, clockColor);
+            clock.setTextColor(dayId, clockColor);
+
             if (myDayOfWeek != cityDayOfWeek) {
                 clock.setTextViewText(dayId, mContext.getString(
                         org.omnirom.deskclock.R.string.world_day_of_week_label, now.getDisplayName(
