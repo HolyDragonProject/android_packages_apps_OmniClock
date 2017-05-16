@@ -118,13 +118,13 @@
   <string name="audio_stream_title">Audio-Stream für lokale Alarmtöne</string>
   <string name="audio_stream_music">Musik-stream</string>
   <string name="audio_stream_alam">Alarm-stream</string>
-  <string name="first_alarm_created_hint">Tippen Sie auf die Weckzeit um umzuschalten. Langes Drücken um Alarmzeit zu bearbeiten.</string>
+  <string name="first_alarm_created_hint">Zum umschalten auf die Weckzeit tippen. Gedrückt halten um Weckzeit zu bearbeiten.</string>
   <string name="menu_item_version">Versionsinfo</string>
   <string name="editor_contentshint">Text hier eingeben</string>
   <string name="editor_save">Änderungen speichern</string>
   <string name="menu_item_spotify">Spotify</string>
-  <string name="wear_notification_summary">Alarm und Timer-Benachrichtigung auf tragbare Geräte anzeigen</string>
-  <string name="wear_notification_title">Benachrichtigungen auf tragbare Geräte aktivieren</string>
+  <string name="wear_notification_summary">Alarm und Timer-Benachrichtigung auf tragbaren Geräten anzeigen</string>
+  <string name="wear_notification_title">Benachrichtigungen auf tragbaren Geräten aktivieren</string>
   <string name="no_spotify_message">Keine Spotify-Unterstützung zur Verfügung.\nBitte wählen Sie einen anderen Alarm.</string>
   <string name="pre_alarm_notification_show_title">Kommende Alarm-Benachrichtigungen</string>
   <string name="pre_alarm_notification_show_summary">Benachrichtigungen für anstehende Alarme anzeigen</string>
@@ -149,11 +149,13 @@
   <string name="tile_create_alarm">Alarm</string>
   <string name="make_screen_dark_summary">Bildschirm bei aktiven Alarm dimmen</string>
   <string name="make_screen_dark_title">Display dimmen</string>
-  <string name="shortcut_start_timer">Timer</string>
+  <string name="shortcut_start_timer">Zeitmesser</string>
   <string name="shortcut_stopwatch">Stoppuhr</string>
   <string name="show_background_image_title">Hintergrundbild anzeigen</string>
   <string name="vibrate_notification_summary">Vibration für aktive Alarm und Timer-Benachrichtigungen aktivieren</string>
   <string name="vibrate_notification_title">Benachrichtigungsvibration</string>
   <string name="all_cities_label">Hinzufügen</string>
   <string name="entry_never">Niemals</string>
+  <string name="default_page_title">Standard-Startseite</string>
+  <string name="global_settings">Global</string>
 </resources>

@@ -147,5 +147,15 @@
   <string name="musicType">Muzyka</string>
   <string name="no_alarm_sound_hint">Domyślny dzwonek alarmu nie jest ustawiony.</string>
   <string name="tile_create_alarm">Alarm</string>
+  <string name="make_screen_dark_summary">Jeśli ekran pozostaje aktywny, przygaś go, gdy alarm jest aktywny</string>
+  <string name="make_screen_dark_title">Przygaś ekran</string>
+  <string name="shortcut_start_timer">Minutnik</string>
+  <string name="shortcut_stopwatch">Stoper</string>
+  <string name="show_background_image_title">Pokaż obraz tła</string>
+  <string name="vibrate_notification_summary">Włącz wibracje dla aktywnych powiadomień alarmu i zegara</string>
+  <string name="vibrate_notification_title">Wibracja powiadomień</string>
+  <string name="all_cities_label">Dodaj</string>
   <string name="entry_never">Nigdy</string>
+  <string name="default_page_title">Domyślna strona początkowa</string>
+  <string name="global_settings">Globalnie</string>
 </resources>

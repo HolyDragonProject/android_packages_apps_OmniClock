@@ -156,4 +156,6 @@
   <string name="vibrate_notification_title">Értesítési rezgés</string>
   <string name="all_cities_label">Hozzáad</string>
   <string name="entry_never">Soha</string>
+  <string name="default_page_title">Alapértelmezett kezdőlap</string>
+  <string name="global_settings">Globális</string>
 </resources>
