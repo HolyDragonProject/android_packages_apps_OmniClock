@@ -73,9 +73,11 @@
   <string name="entry_ten_minute">10 minuten</string>
   <string name="entry_fifteen_minute">15 minuten</string>
   <string name="entry_thirty_minute">30 minuten</string>
+  <string name="entry_sixty_minute">1 uur</string>
   <string name="prealarm_default_label">Vooralarm</string>
   <string name="fullscreen_alarm_settings">Volledig scherm alarmen</string>
   <string name="fullscreen_alarm_title">Volledig scherm alarmen</string>
+  <string name="fullscreen_alarm_summary">Gebruik altijd het volledige scherm bij het alarm in plaats van een heads-up notificatie</string>
   <string name="take_persistent_grant_uri_permission_failed_msg">Het is niet gelukt om de permanente permissie toe te kennen voor ringtones</string>
   <string name="notification_settings">Notificaties</string>
   <!-- User-defined cities -->
@@ -101,4 +103,30 @@
   <string name="clone_alarm">Alarm kopiëren</string>
   <string name="storage_title">Opslag:</string>
   <string name="folders_scanning">Scannen\u2026</string>
+  <string name="alarm_action_category">Acties voor volledig scherm alarmen</string>
+  <string name="alarm_action_header"><b>Opmerking:</b> Deze opties zijn alleen beschikbaar voor volledig scherm alarm notificaties</string>
+  <string name="show_world_clock_title">Wereldklokken weergeven</string>
+  <string name="show_alarm_title">Toon volgende alarm</string>
+  <string name="show_date_title">Toon datum</string>
+  <string name="font_sample_text">11:57</string>
+  <string name="clock_font_title">Lettertype</string>
+  <string name="custom_gadget">Digitale klok</string>
+  <string name="clock_color_title">Kleur</string>
+  <string name="clock_shadow_title">Schaduw</string>
+  <string name="world_clocks_title">Toon wereld klokken</string>
+  <string name="alarm_action_wireless_header_title">Opmerking: Voor dit apparaat zullen de schud en flip acties worden uitgeschakeld bij het gebruik van draadloos opladen</string>
+  <string name="audio_stream_title">Audio stream voor lokale alarm geluiden</string>
+  <string name="audio_stream_music">Muziek stream</string>
+  <string name="audio_stream_alam">Alarm stream</string>
+  <string name="first_alarm_created_hint">Tik op alarmtijd voor in- of uitschakelen. Druk lang om de alarmtijd te wijzigen.</string>
+  <string name="menu_item_version">Versie info</string>
+  <string name="editor_contentshint">Voer tekst hier in</string>
+  <string name="editor_save">Wijzigingen opslaan</string>
+  <string name="menu_item_spotify">Spotify</string>
+  <string name="wear_notification_summary">Toon alarm en timer meldingen op aangesloten draagbare apparaten</string>
+  <string name="wear_notification_title">Inschakelen van meldingen op draagbaere aparaten</string>
+  <string name="no_spotify_message">Geen Spotify-ondersteuning beschikbaar. \nKies een andere alarm type.</string>
+  <string name="pre_alarm_notification_show_title">Aankomende alarm meldingen</string>
+  <string name="pre_alarm_notification_show_summary">Toon meldingen voor aankomende alarmen</string>
+  <string name="default_page_title">Standaard start pagina</string>
 </resources>

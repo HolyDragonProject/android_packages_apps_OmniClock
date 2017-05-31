@@ -77,15 +77,19 @@
   <string name="prealarm_default_label">Foralarm</string>
   <string name="fullscreen_alarm_settings">Fullskjerm alarmer</string>
   <string name="fullscreen_alarm_title">Fullskjerm alarmer</string>
+  <string name="fullscreen_alarm_summary">Bruk alltid fullskjerm alarmer i stedet for vindus-varsling</string>
+  <string name="take_persistent_grant_uri_permission_failed_msg">Klarte ikke å gi permanent tillatelse for ringetone</string>
   <string name="notification_settings">Varsler</string>
   <!-- User-defined cities -->
   <string name="menu_item_add">Legg til</string>
   <string name="cities_add_city_title">Legg til by</string>
   <string name="cities_add_city_city">By:</string>
   <string name="cities_add_city_timezone">Tidssone:</string>
-  <string name="cities_add_city_gps_cd">Trykk for å lokalisere din nåværende by</string>
+  <string name="cities_add_city_gps_cd">Tapp for å lokalisere din nåværende by</string>
   <string name="cities_add_loading">Henter\u2026</string>
   <string name="cities_add_searching">Søker\u2026</string>
+  <string name="cities_add_gps_no_results">GPS forspørsel gir ingen posisjonering</string>
+  <string name="cities_add_gps_not_available">GPS: ikke tilgjengelig</string>
   <string name="cities_add_already_exists">Byen finnes allerede i databasen</string>
   <string name="cities_add_city_failed">Kan ikke opprette byen</string>
   <string name="cities_delete_city_title">Slett by</string>
@@ -95,6 +99,7 @@
   <string name="timer_alarm_title">Ringetone</string>
   <string name="timer_alarm_custom_title">Egendefinert tidtakerlyd</string>
   <string name="week_start_title">Ukestart på</string>
+  <string name="default_week_start">Nasjonal standard</string>
   <string name="clone_alarm">Kopier alarm</string>
   <string name="storage_title">Lagring:</string>
   <string name="folders_scanning">Avleser\u2026</string>
@@ -110,6 +115,10 @@
   <string name="clock_shadow_title">Skygge</string>
   <string name="world_clocks_title">Vis verdensklokker</string>
   <string name="alarm_action_wireless_header_title">Merk: På denne enheten deaktivers vende og ristehandlinger ved bruk av trådløs lading</string>
+  <string name="audio_stream_title">Lydstrøm for lokal alarmlyd</string>
+  <string name="audio_stream_music">Musikkstrøm</string>
+  <string name="audio_stream_alam">Alarmstrøm</string>
+  <string name="first_alarm_created_hint">Tapp alarmen for veksling. Langt-trykk for å redigere alarmen.</string>
   <string name="menu_item_version">Versjonsinfo</string>
   <string name="editor_contentshint">Skriv tekst her</string>
   <string name="editor_save">Lagre endringer</string>
