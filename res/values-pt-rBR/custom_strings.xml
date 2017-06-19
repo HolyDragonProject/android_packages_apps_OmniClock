@@ -156,4 +156,6 @@
   <string name="vibrate_notification_title">Vibrar na notificação</string>
   <string name="all_cities_label">Adicionar</string>
   <string name="entry_never">Nunca</string>
+  <string name="default_page_title">Página de início padrão</string>
+  <string name="global_settings">Global</string>
 </resources>
