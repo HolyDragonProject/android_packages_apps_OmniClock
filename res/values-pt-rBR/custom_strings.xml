@@ -125,7 +125,7 @@
   <string name="menu_item_spotify">Spotify</string>
   <string name="wear_notification_summary">Mostrar notificação de alarme e temporizador em dispositivos conectados</string>
   <string name="wear_notification_title">Ativar notificações que podem ser usadas</string>
-  <string name="no_spotify_message">Não há suporte Spotify disponível. \nPor favor selecione um tipo de alarme diferente.</string>
+  <string name="no_spotify_message">Não há suporte dispnível para Spotify.\nPor favor selecione um tipo de alarme diferente.</string>
   <string name="pre_alarm_notification_show_title">Notificações de alarme próximos</string>
   <string name="pre_alarm_notification_show_summary">Mostrar notificações para os alarmes programados</string>
   <string name="pre_alarm_notification_time_title">Notificações de alarme próximos</string>
@@ -135,9 +135,9 @@
   <string name="randomMusicType">Músicas aleatórias</string>
   <string name="browse_activity_title">Procurar</string>
   <string name="local_query_alarm">Alarmes</string>
-  <string name="local_query_ringtone">Ringtones</string>
+  <string name="local_query_ringtone">Toques</string>
   <string name="local_query_recent">Recente</string>
-  <string name="local_query_hint">Pesquisa</string>
+  <string name="local_query_hint">Pesquisar</string>
   <string name="local_query_artist">Artistas</string>
   <string name="local_query_album">Álbuns</string>
   <string name="local_query_track">Músicas</string>
