@@ -162,7 +162,6 @@ public class ClockFragment extends DeskClockFragment {
                 (int) (mDigitalClock.getTextSize() / 3));
         View footerView = inflater.inflate(R.layout.blank_footer_view, mList, false);
         mList.addFooterView(footerView, null, false);
-
         mAdapter = new WorldClockAdapter(getActivity());
         mList.setAdapter(mAdapter);
         return v;
@@ -234,7 +233,7 @@ public class ClockFragment extends DeskClockFragment {
         if (mFab == null || !activity.isClockTab()) {
             return;
         }
-        mFab.setImageResource(R.drawable.ic_earth);
+        mFab.setImageResource(R.drawable.ic_fab_earth);
         mFab.setContentDescription(getString(R.string.button_cities));
 
         final AnimatorSet animatorSet = getFabButtonTransition(true);

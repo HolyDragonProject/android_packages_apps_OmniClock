@@ -181,5 +181,7 @@
 
     <dimen name="analog_widget_font_size">10sp</dimen>
     <dimen name="alarm_undo_bar_height">48dip</dimen>
+    <dimen name="browse_item_height">48dip</dimen>
+    <dimen name="browse_item_icon_size">36dip</dimen>
 
 </resources>

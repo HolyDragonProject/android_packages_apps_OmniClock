@@ -74,10 +74,10 @@ import org.omnirom.deskclock.worldclock.db.DbCities;
 import org.omnirom.deskclock.worldclock.db.DbCity;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilterInputStream;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.text.Collator;
 import java.text.SimpleDateFormat;
@@ -127,6 +127,11 @@ public class Utils {
             R.drawable.sunrise_wear, R.drawable.sunrise_wear, R.drawable.sunrise_wear, R.drawable.day_wear, R.drawable.day_wear,
             R.drawable.day_wear, R.drawable.day_wear, R.drawable.day_wear, R.drawable.day_wear, R.drawable.sunset_wear, R.drawable.sunset_wear,
             R.drawable.sunset_wear, R.drawable.sunset_wear, R.drawable.night_wear, R.drawable.night_wear, R.drawable.night_wear};
+
+    public static final String M3U_HEADER = "#EXTM3U";
+    public static final String M3U_ENTRY = "#EXTINF:";
+    private static final String STREAM_FILE_TAG = "STREAM_M3U";
+
     /**
      * Returns whether the SDK is Nougat or later
      */
@@ -1027,20 +1032,21 @@ public class Utils {
 
         List<Uri> playlistFiles = new ArrayList<>();
 
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
             long id = c.getLong(0);
-            c = context.getContentResolver().query(
-                    MediaStore.Audio.Playlists.Members.getContentUri("external",id),
+            Cursor c1 = context.getContentResolver().query(
+                    MediaStore.Audio.Playlists.Members.getContentUri("external", id),
                     projectionMembers,
-                    MediaStore.Audio.Media.IS_MUSIC +" != 0 ",
+                    MediaStore.Audio.Media.IS_MUSIC + " != 0 ",
                     null,
                     null);
-            while(c.moveToNext()) {
+            while (c1.moveToNext()) {
                 Uri mediaFile = Uri.withAppendedPath(
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                        String.valueOf(c.getLong(0)));
+                        String.valueOf(c1.getLong(0)));
                 playlistFiles.add(mediaFile);
             }
+            c1.close();
         }
         c.close();
         return playlistFiles;
@@ -1131,6 +1137,8 @@ public class Utils {
             return R.drawable.ic_artist;
         } else if (isLocalTrackUri(uri)) {
             return R.drawable.ic_track;
+        } else if (isStreamM3UFile(uri)) {
+            return R.drawable.ic_earth;
         } else if (isStorageUri(uri)) {
             if (isStorageFileUri(uri)) {
                 return R.drawable.ic_playlist;
@@ -1159,7 +1167,7 @@ public class Utils {
         return uri.contains("/audio/playlists/");
     }
 
-    public static boolean isLocalMediaUri(String uri) {
+    private static boolean isLocalMediaUri(String uri) {
         return isLocalAlbumUri(uri) || isLocalArtistUri(uri) || isLocalTrackUri(uri)
                 || isStorageUri(uri) || isLocalPlaylistUri(uri);
     }
@@ -1195,14 +1203,6 @@ public class Utils {
             if (f.isFile() && f.exists()) {
                 return true;
             }
-        }
-        return false;
-    }
-
-    public static boolean isM3UFileUri(String uri) {
-        if (isStorageFileUri(uri)) {
-            String path = Uri.parse(uri).getPath();
-            return isM3UFile(path);
         }
         return false;
     }
@@ -1283,6 +1283,10 @@ public class Utils {
             if (!Utils.checkPlaylistExists(context, ringtoneUri)) {
                 return false;
             }
+        } else if (type == BrowseActivity.QUERY_TYPE_STREAM) {
+            if (!Utils.isStreamM3UFile(ringtoneUri.toString())) {
+                return false;
+            }
         }
         return true;
     }
@@ -1309,37 +1313,44 @@ public class Utils {
                 String.valueOf(DeskClock.CLOCK_TAB_INDEX)));
     }
 
-    public static boolean isM3UFile(String file) {
-        return file.toUpperCase().endsWith(".M3U");
+    public static File getStreamM3UDirectory(Context context) {
+        return new File(context.getExternalFilesDir(null), "streams");
     }
 
     public static List<Uri> parseM3UPlaylist(String uri) {
-        final String EXTENDED_INFO_TAG = "#EXTM3U";
-        final String RECORD_TAG = "^[#][E|e][X|x][T|t][I|i][N|n][F|f].*";
         List<Uri> files = new ArrayList<>();
 
-        if (isM3UFileUri(uri)) {
+        if (isStorageUri(uri)) {
             String path = Uri.parse(uri).getPath();
             File f = new File(path);
 
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                reader.mark(1024);
                 String line = reader.readLine();
                 if (line != null) {
                     boolean extM3U = false;
-                    if (line.equalsIgnoreCase(EXTENDED_INFO_TAG)) {
+                    if (line.equalsIgnoreCase(M3U_HEADER)) {
                         extM3U = true;
+                    } else {
+                        reader.reset();
                     }
                     while ((line = reader.readLine()) != null) {
+                        if (TextUtils.isEmpty(line)) {
+                            continue;
+                        }
                         String entryUriString = line;
-                        if (extM3U && line.matches(RECORD_TAG)) {
+                        if (extM3U && line.startsWith(M3U_ENTRY)) {
                             entryUriString = reader.readLine();
                         }
-                        File file = new File(entryUriString);
-                        if (!file.isAbsolute()) {
-                            file = new File(f.getParent(), file.getPath());
+                        Uri entryUri = Uri.parse(entryUriString);
+                        if (entryUri.getScheme() == null) {
+                            File file = new File(entryUriString);
+                            if (!file.isAbsolute()) {
+                                file = new File(f.getParent(), file.getPath());
+                            }
+                            entryUri = Uri.fromFile(file);
                         }
-                        Uri entryUri = Uri.fromFile(file);
                         files.add(entryUri);
 
                     }
@@ -1348,6 +1359,60 @@ public class Utils {
             }
         }
         return files;
+    }
+
+    public static boolean isStreamM3UFile(String uri) {
+        if (isStorageUri(uri)) {
+            String path = Uri.parse(uri).getPath();
+            File f = new File(path);
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains(STREAM_FILE_TAG)) {
+                        return true;
+
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
+        return false;
+    }
+
+    public static String getStreamM3UName(String uri) {
+        if (isStreamM3UFile(uri)) {
+            String path = Uri.parse(uri).getPath();
+            File f = new File(path);
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains(STREAM_FILE_TAG)) {
+                        return line.substring((M3U_ENTRY + STREAM_FILE_TAG + ":").length());
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
+        return null;
+    }
+
+    public static File writeStreamM3UFile(File dir, String label, String url) {
+        try {
+            File f = File.createTempFile("stream",  null, dir);
+            BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+            bw.write(M3U_HEADER);
+            bw.newLine();
+            bw.write(M3U_ENTRY + STREAM_FILE_TAG + ":" + label);
+            bw.newLine();
+            bw.write(url);
+            bw.close();
+            return f;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
 

@@ -55,17 +55,14 @@ public class StorageChooserDialog extends DialogFragment
     private int mTextColor;
     private int mTextColorDisabled;
     private ChosenStorageListener mListener;
-    private boolean mPlaylistChooser;
 
     public interface ChosenStorageListener {
         public void onChooseDirOk(Uri chosenDir);
-        public void onChooseFileOk(Uri chosenFile);
         public void onChooseDirCancel();
     }
 
-    public static StorageChooserDialog newInstance(ChosenStorageListener listener, boolean playlistChooser) {
+    public static StorageChooserDialog newInstance(ChosenStorageListener listener) {
         StorageChooserDialog fragment = new StorageChooserDialog();
-        fragment.setPlaylistChooser(playlistChooser);
         fragment.setChoosenListener(listener);
         return fragment;
     }
@@ -74,10 +71,6 @@ public class StorageChooserDialog extends DialogFragment
         mSDCardDirectory = Environment.getExternalStorageDirectory();
     }
 
-    public void setPlaylistChooser(boolean playlistChooser) {
-        mPlaylistChooser = playlistChooser;
-
-    }
     public static File getDefaultStartDirectory() {
         File musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
         File startFolder;
@@ -101,7 +94,7 @@ public class StorageChooserDialog extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setTitle(!mPlaylistChooser ? R.string.folder_dialog_title : R.string.playlist_dialog_title)
+                .setTitle(R.string.folder_dialog_title)
                 .setPositiveButton("", this)
                 .setNegativeButton(android.R.string.cancel, this)
                 .setView(createDialogView());
@@ -131,7 +124,7 @@ public class StorageChooserDialog extends DialogFragment
                 dirs.add(0, mSDCardDirectory);
             }
             for (File file : dirFile.listFiles()) {
-                if (!file.getName().startsWith(".")) {
+                if (!file.getName().startsWith(".") && !file.getAbsolutePath().equals("/storage/self")) {
                     dirs.add(file);
                 }
             }
@@ -181,11 +174,7 @@ public class StorageChooserDialog extends DialogFragment
                 File f = mSubDirs.get(position);
                 tv.setText(f.getName());
                 if (f.isFile()) {
-                    if (mPlaylistChooser && isM3UFile(f)) {
-                        tv.setTextColor(mTextColor);
-                    } else {
-                        tv.setTextColor(mTextColorDisabled);
-                    }
+                    tv.setTextColor(mTextColorDisabled);
                 } else {
                     tv.setTextColor(mTextColor);
                 }
@@ -222,15 +211,6 @@ public class StorageChooserDialog extends DialogFragment
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 File f = mListAdapter.getItem(position);
-                if (mPlaylistChooser && f.isFile()) {
-                    if (isM3UFile(f)) {
-                        mCurrentSelection = mListAdapter.getItem(position);
-                        Uri uri = Uri.fromFile(mCurrentSelection);
-                        mListener.onChooseFileOk(uri);
-                        dismiss();
-                    }
-                    return;
-                }
                 if (f.getName().equals("..")) {
                     mCurrentSelection = mCurrentSelection.getParentFile();
                 } else {
@@ -254,9 +234,5 @@ public class StorageChooserDialog extends DialogFragment
         } else if (which == DialogInterface.BUTTON_NEGATIVE) {
             mListener.onChooseDirCancel();
         }
-    }
-
-    private boolean isM3UFile(File f) {
-        return Utils.isM3UFile(f.getName());
     }
 }

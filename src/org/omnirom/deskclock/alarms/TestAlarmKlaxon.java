@@ -135,7 +135,7 @@ public class TestAlarmKlaxon {
                         collectArtistSongs(context, alarmNoise);
                     }
                     if (Utils.isStorageUri(alarmNoise.toString())) {
-                        if (Utils.isM3UFileUri(alarmNoise.toString())) {
+                        if (Utils.isStreamM3UFile(alarmNoise.toString())) {
                             collectM3UFiles(alarmNoise);
                         } else {
                             collectFiles(context, alarmNoise);
@@ -222,10 +222,15 @@ public class TestAlarmKlaxon {
             if (!sRandomMusicMode && !sLocalMediaMode) {
                 sMediaPlayer.setLooping(true);
             }
-            sMediaPlayer.prepare();
+            sMediaPlayer.prepareAsync();
             sAudioManager.requestAudioFocus(null, getAudioStream(context),
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-            sMediaPlayer.start();
+            sMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer player) {
+                    sMediaPlayer.start();
+                }
+            });
         } catch (Exception ex) {
             sError = true;
             sErrorHandler.onError("Error playing alarm sound");
@@ -370,14 +375,18 @@ public class TestAlarmKlaxon {
         sErrorHandler.startProgress();
 
         for (final Uri fileEntry : files) {
-            String file = fileEntry.getPath();
-            File f = new File(file);
-            if (f.exists()) {
-                if (Utils.isValidAudioFile(f.getName())) {
-                    mSongs.add(fileEntry);
+            if (fileEntry.getScheme() == "file") {
+                File f = new File(fileEntry.getPath());
+                if (f.exists()) {
+                    if (Utils.isValidAudioFile(f.getName())) {
+                        mSongs.add(fileEntry);
+                    }
                 }
+            } else {
+                mSongs.add(fileEntry);
             }
         }
+
         if (sRandomPlayback) {
             Collections.shuffle(mSongs);
         } else {

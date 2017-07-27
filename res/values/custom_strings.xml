@@ -54,7 +54,6 @@
     <string name="keep_screen_on_title">Keep screen on</string>
     <string name="keep_screen_on_summary">Screen will not be turned off when alarm is active</string>
     <string name="folder_dialog_title">Select folder</string>
-    <string name="playlist_dialog_title">Select folder or playlist</string>
     <string name="play_error_title">Error playing alarm</string>
     <string name="random_mode_enable_title">Shuffle</string>
     <string name="volume_increase_speed_title">Volume increase interval</string>
@@ -137,14 +136,13 @@
     <string name="color_theme_title">Theme</string>
     <string name="randomMusicType">Random music</string>
     <string name="browse_activity_title">Browse</string>
-    <string name="local_query_alarm">Alarms</string>
-    <string name="local_query_ringtone">Ringtones</string>
+    <string name="local_query_alarm_ringtones">Alarms and ringtones</string>
     <string name="local_query_recent">Recent</string>
     <string name="local_query_hint">Search</string>
     <string name="local_query_artist">Artists</string>
     <string name="local_query_album">Albums</string>
     <string name="local_query_track">Songs</string>
-    <string name="local_query_folder">Folders and playlists</string>
+    <string name="local_query_folder">Folder</string>
     <string name="alarm_uri_unkown"> (deleted)</string>
     <string name="choose_folder">Choose</string>
     <string name="musicType">Music</string>
@@ -163,4 +161,7 @@
     <string name="default_page_title">Default start page</string>
     <string name="global_settings">Global</string>
     <string name="local_query_playlist">Playlists</string>
+    <string name="url_paste_hint">Paste URL</string>
+    <string name="playlist_file_name">Name</string>
+    <string name="local_query_stream">Streams</string>
 </resources>

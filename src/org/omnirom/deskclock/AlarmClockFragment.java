@@ -116,7 +116,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
     // can not be found, and toast message will pop up that the alarm has be deleted.
     public static final String SCROLL_TO_ALARM_INTENT_EXTRA = "deskclock.scroll.to.alarm";
 
-    private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 0;
+    private static final int PERMISSIONS_REQUEST_EXTERNAL_STORAGE = 0;
 
     private FrameLayout mMainLayout;
     private ListView mAlarmsList;
@@ -771,15 +771,12 @@ public class AlarmClockFragment extends DeskClockFragment implements
 
             boolean spotifyAlarm = false;
             boolean randomMusicAlarm = false;
-            boolean localMediaAlarm = false;
             if (alarm.alert != null) {
                 if (!Alarm.NO_RINGTONE_URI.equals(alarm.alert)) {
                     if (Utils.isSpotifyUri(alarm.alert.toString())) {
                         spotifyAlarm = true;
                     } else if (Utils.isRandomUri(alarm.alert.toString())) {
                         randomMusicAlarm = true;
-                    } else if (Utils.isLocalMediaUri(alarm.alert.toString())) {
-                        localMediaAlarm = true;
                     }
                 }
 
@@ -892,7 +889,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
 
             spotifyAlarm = false;
             randomMusicAlarm = false;
-            localMediaAlarm = false;
             ringtoneImageId = R.drawable.ic_alarm;
 
             if (alarm.preAlarmAlert != null) {
@@ -901,8 +897,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
                         spotifyAlarm = true;
                     } else if (Utils.isRandomUri(alarm.preAlarmAlert.toString())) {
                         randomMusicAlarm = true;
-                    } else if (Utils.isLocalMediaUri(alarm.preAlarmAlert.toString())) {
-                        localMediaAlarm = true;
                     }
                 }
 
@@ -1316,11 +1310,29 @@ public class AlarmClockFragment extends DeskClockFragment implements
     }
 
     private void checkStoragePermissions(Runnable runAfter) {
-        if (ContextCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        boolean needRequest = false;
+        String[] permissions = {
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+        };
+        ArrayList<String> permissionList = new ArrayList<String>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(getActivity(), permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(permission);
+                needRequest = true;
+            }
+        }
+
+        if (needRequest) {
             mRunAfter = runAfter;
-            FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                    PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            int count = permissionList.size();
+            if (count > 0) {
+                String[] permissionArray = new String[count];
+                for (int i = 0; i < count; i++) {
+                    permissionArray[i] = permissionList.get(i);
+                }
+                FragmentCompat.requestPermissions(this, permissionArray, PERMISSIONS_REQUEST_EXTERNAL_STORAGE);
+            }
         } else {
             runAfter.run();
         }
@@ -1329,7 +1341,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
+            case PERMISSIONS_REQUEST_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

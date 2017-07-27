@@ -201,7 +201,7 @@ public class AlarmKlaxon {
                         collectArtistSongs(context, alarmNoise);
                     }
                     if (Utils.isStorageUri(alarmNoise.toString())) {
-                        if (Utils.isM3UFileUri(alarmNoise.toString())) {
+                        if (Utils.isStreamM3UFile(alarmNoise.toString())) {
                             collectM3UFiles(alarmNoise);
                         } else {
                             collectFiles(context, alarmNoise);
@@ -345,10 +345,15 @@ public class AlarmKlaxon {
             if (!sRandomMusicMode && !sLocalMediaMode) {
                 player.setLooping(true);
             }
-            player.prepare();
+            player.prepareAsync();
             sAudioManager.requestAudioFocus(null, getAudioStream(context),
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-            player.start();
+            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer player) {
+                    player.start();
+                }
+            });
         }
     }
 
@@ -507,14 +512,18 @@ public class AlarmKlaxon {
         mSongs.clear();
 
         for (final Uri fileEntry : files) {
-            String file = fileEntry.getPath();
-            File f = new File(file);
-            if (f.exists()) {
-                if (Utils.isValidAudioFile(f.getName())) {
-                    mSongs.add(fileEntry);
+            if (fileEntry.getScheme() == "file") {
+                File f = new File(fileEntry.getPath());
+                if (f.exists()) {
+                    if (Utils.isValidAudioFile(f.getName())) {
+                        mSongs.add(fileEntry);
+                    }
                 }
+            } else {
+                mSongs.add(fileEntry);
             }
         }
+
         if (sRandomPlayback) {
             Collections.shuffle(mSongs);
         } else {

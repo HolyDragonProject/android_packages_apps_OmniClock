@@ -130,11 +130,14 @@ public class AlarmTestDialog extends DialogFragment implements
                                 mHandler.post(new Runnable() {
                                     public void run() {
                                         String title = null;
-
                                         if (Utils.isLocalTrackUri(track.toString())) {
                                             title = Utils.resolveTrack(getActivity(), track);
-                                        } else if (track.getPath() != null) {
-                                            title = track.getLastPathSegment();
+                                        } else {
+                                            if (track.getScheme() == "file") {
+                                                title = track.getLastPathSegment();
+                                            } else {
+                                                title = track.toString();
+                                            }
                                         }
                                         if (title != null) {
                                             mPlayInfoSub.setVisibility(View.VISIBLE);

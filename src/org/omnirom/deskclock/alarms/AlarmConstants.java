@@ -34,5 +34,5 @@ public class AlarmConstants {
     public static final String DATA_OMNICLOCK_PARENT = "omniclock_parent";
     public static final String DATA_OMNICLOCK_AUTHORITY = "omniclock_alarm_authority";
     public static final String DATA_ALARM_EXTRA_TYPE = "alarm_type";
-
+    public static final String DATA_BROWSE_EXTRA_FALLBACK = "alarm_type_fallback";
 }
