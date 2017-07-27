@@ -134,8 +134,15 @@ public class TestAlarmKlaxon {
                     if (Utils.isLocalArtistUri(alarmNoise.toString())) {
                         collectArtistSongs(context, alarmNoise);
                     }
-                    if (Utils.isFolderUri(alarmNoise.toString())) {
-                        collectFiles(context, alarmNoise);
+                    if (Utils.isStorageUri(alarmNoise.toString())) {
+                        if (Utils.isM3UFileUri(alarmNoise.toString())) {
+                            collectM3UFiles(alarmNoise);
+                        } else {
+                            collectFiles(context, alarmNoise);
+                        }
+                    }
+                    if (Utils.isLocalPlaylistUri(alarmNoise.toString())) {
+                        collectPlaylistSongs(context, alarmNoise);
                     }
                     if (mSongs.size() != 0) {
                         sErrorHandler.onInfo("Scanned files: " + mSongs.size());
@@ -305,6 +312,16 @@ public class TestAlarmKlaxon {
         sErrorHandler.stopProgress();
     }
 
+    private static void collectPlaylistSongs(Context context, Uri playlistUri) {
+        mSongs.clear();
+        sErrorHandler.startProgress();
+        mSongs = Utils.getPlaylistSongs(context, playlistUri);
+        if (sRandomPlayback) {
+            Collections.shuffle(mSongs);
+        }
+        sErrorHandler.stopProgress();
+    }
+
     private static void collectSub(Context context, File folder) {
         if (!sTestStarted) {
             return;
@@ -345,5 +362,28 @@ public class TestAlarmKlaxon {
             sErrorHandler.onTrackChanged(song);
         }
         playTestAlarm(context, instance, song);
+    }
+
+    private static void collectM3UFiles(Uri m3UFileUri) {
+        List<Uri> files = Utils.parseM3UPlaylist(m3UFileUri.toString());
+        mSongs.clear();
+        sErrorHandler.startProgress();
+
+        for (final Uri fileEntry : files) {
+            String file = fileEntry.getPath();
+            File f = new File(file);
+            if (f.exists()) {
+                if (Utils.isValidAudioFile(f.getName())) {
+                    mSongs.add(fileEntry);
+                }
+            }
+        }
+        if (sRandomPlayback) {
+            Collections.shuffle(mSongs);
+        } else {
+            Collections.sort(mSongs);
+        }
+
+        sErrorHandler.stopProgress();
     }
 }

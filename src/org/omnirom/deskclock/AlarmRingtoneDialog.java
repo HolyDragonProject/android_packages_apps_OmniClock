@@ -569,7 +569,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             if (mCurrentMediaType == ALARM_TYPE_BROWSE) {
                 boolean unknownAlarm = false;
                 if (mRingtoneName == null) {
-                    if (Utils.isFolderUri(ringtoneUri.toString())){
+                    if (Utils.isStorageUri(ringtoneUri.toString())){
                         ringtoneTitle = ringtoneUri.getLastPathSegment();
                     } else {
                         ringtoneTitle = getRingToneTitle(ringtoneUri);

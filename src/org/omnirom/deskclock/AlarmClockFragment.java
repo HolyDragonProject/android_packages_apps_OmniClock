@@ -794,7 +794,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     if (Alarm.NO_RINGTONE_URI.equals(alarm.alert)) {
                         ringtone = "";
                     } else if (alarm.getRingtoneName() == null) {
-                        if (Utils.isFolderUri(alarm.alert.toString())) {
+                        if (Utils.isStorageUri(alarm.alert.toString())) {
                             ringtone = alarm.alert.getLastPathSegment();
                         } else {
                             ringtone = getRingToneTitle(alarm.alert);
@@ -917,7 +917,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     if (Alarm.NO_RINGTONE_URI.equals(alarm.preAlarmAlert)) {
                         ringtone = "";
                     } else if (alarm.getPreAlarmRingtoneName() == null) {
-                        if (Utils.isFolderUri(alarm.preAlarmAlert.toString())) {
+                        if (Utils.isStorageUri(alarm.preAlarmAlert.toString())) {
                             ringtone = alarm.preAlarmAlert.getLastPathSegment();
                         } else {
                             ringtone = getRingToneTitle(alarm.preAlarmAlert);

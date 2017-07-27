@@ -18,13 +18,6 @@
 
 package org.omnirom.deskclock;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -43,7 +36,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class DirectoryChooserDialog extends DialogFragment
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public class StorageChooserDialog extends DialogFragment
     implements DialogInterface.OnClickListener {
 
     private File mSDCardDirectory;
@@ -54,24 +54,30 @@ public class DirectoryChooserDialog extends DialogFragment
     private String mTag;
     private int mTextColor;
     private int mTextColorDisabled;
-    private ChosenDirectoryListener mListener;
+    private ChosenStorageListener mListener;
+    private boolean mPlaylistChooser;
 
-    public interface ChosenDirectoryListener {
+    public interface ChosenStorageListener {
         public void onChooseDirOk(Uri chosenDir);
         public void onChooseFileOk(Uri chosenFile);
         public void onChooseDirCancel();
     }
 
-    public static DirectoryChooserDialog newInstance(ChosenDirectoryListener listener) {
-        DirectoryChooserDialog fragment = new DirectoryChooserDialog();
+    public static StorageChooserDialog newInstance(ChosenStorageListener listener, boolean playlistChooser) {
+        StorageChooserDialog fragment = new StorageChooserDialog();
+        fragment.setPlaylistChooser(playlistChooser);
         fragment.setChoosenListener(listener);
         return fragment;
     }
 
-    public DirectoryChooserDialog() {
+    public StorageChooserDialog() {
         mSDCardDirectory = Environment.getExternalStorageDirectory();
     }
 
+    public void setPlaylistChooser(boolean playlistChooser) {
+        mPlaylistChooser = playlistChooser;
+
+    }
     public static File getDefaultStartDirectory() {
         File musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
         File startFolder;
@@ -88,14 +94,14 @@ public class DirectoryChooserDialog extends DialogFragment
         return startFolder;
     }
 
-    public void setChoosenListener(ChosenDirectoryListener listener) {
+    public void setChoosenListener(ChosenStorageListener listener) {
         mListener = listener;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.folder_dialog_title)
+                .setTitle(!mPlaylistChooser ? R.string.folder_dialog_title : R.string.playlist_dialog_title)
                 .setPositiveButton("", this)
                 .setNegativeButton(android.R.string.cancel, this)
                 .setView(createDialogView());
@@ -175,7 +181,7 @@ public class DirectoryChooserDialog extends DialogFragment
                 File f = mSubDirs.get(position);
                 tv.setText(f.getName());
                 if (f.isFile()) {
-                    if (isM3UFile(f)) {
+                    if (mPlaylistChooser && isM3UFile(f)) {
                         tv.setTextColor(mTextColor);
                     } else {
                         tv.setTextColor(mTextColorDisabled);
@@ -216,9 +222,12 @@ public class DirectoryChooserDialog extends DialogFragment
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 File f = mListAdapter.getItem(position);
-                if (f.isFile()) {
+                if (mPlaylistChooser && f.isFile()) {
                     if (isM3UFile(f)) {
                         mCurrentSelection = mListAdapter.getItem(position);
+                        Uri uri = Uri.fromFile(mCurrentSelection);
+                        mListener.onChooseFileOk(uri);
+                        dismiss();
                     }
                     return;
                 }
@@ -238,10 +247,7 @@ public class DirectoryChooserDialog extends DialogFragment
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            if (mCurrentSelection.isFile() && isM3UFile(mCurrentSelection)){
-                Uri uri = Uri.fromFile(mCurrentSelection);
-                mListener.onChooseFileOk(uri);
-            } else if (mCurrentSelection.isDirectory()){
+            if (mCurrentSelection.isDirectory()){
                 Uri uri = Uri.fromFile(mCurrentSelection);
                 mListener.onChooseDirOk(uri);
             }
@@ -251,8 +257,6 @@ public class DirectoryChooserDialog extends DialogFragment
     }
 
     private boolean isM3UFile(File f) {
-        return false;
-        // TODO
-        //return f.getName().endsWith("m3u");
+        return Utils.isM3UFile(f.getName());
     }
 }

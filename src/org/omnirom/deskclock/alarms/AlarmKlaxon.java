@@ -200,8 +200,15 @@ public class AlarmKlaxon {
                     if (Utils.isLocalArtistUri(alarmNoise.toString())) {
                         collectArtistSongs(context, alarmNoise);
                     }
-                    if (Utils.isFolderUri(alarmNoise.toString())) {
-                        collectFiles(context, alarmNoise);
+                    if (Utils.isStorageUri(alarmNoise.toString())) {
+                        if (Utils.isM3UFileUri(alarmNoise.toString())) {
+                            collectM3UFiles(alarmNoise);
+                        } else {
+                            collectFiles(context, alarmNoise);
+                        }
+                    }
+                    if (Utils.isLocalPlaylistUri(alarmNoise.toString())) {
+                        collectPlaylistSongs(context, alarmNoise);
                     }
                     if (mSongs.size() != 0) {
                         alarmNoise = mSongs.get(0);
@@ -471,6 +478,47 @@ public class AlarmKlaxon {
         mSongs = Utils.getArtistSongs(context, artistUri);
         if (sRandomPlayback) {
             Collections.shuffle(mSongs);
+        }
+    }
+
+    private static void collectPlaylistSongs(Context context, Uri playlistUri) {
+        mSongs.clear();
+        mSongs = Utils.getPlaylistSongs(context, playlistUri);
+        if (sRandomPlayback) {
+            Collections.shuffle(mSongs);
+        }
+    }
+
+    private static void updateMetaDataInfo() {
+        String title = null;
+        if (Utils.isLocalTrackUri(mCurrentTone.toString())) {
+            title = Utils.resolveTrack(sContext, mCurrentTone);
+        } else if (mCurrentTone.getPath() != null) {
+            title = mCurrentTone.getLastPathSegment();
+        }
+        LogUtils.v("AlarmKlaxon: send broadcast " + AlarmConstants.ALARM_MEDIA_ACTION + " " + title);
+        Intent metaDataIntent = new Intent(AlarmConstants.ALARM_MEDIA_ACTION);
+        metaDataIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, title);
+        sContext.sendBroadcast(metaDataIntent);
+    }
+
+    private static void collectM3UFiles(Uri m3UFileUri) {
+        List<Uri> files = Utils.parseM3UPlaylist(m3UFileUri.toString());
+        mSongs.clear();
+
+        for (final Uri fileEntry : files) {
+            String file = fileEntry.getPath();
+            File f = new File(file);
+            if (f.exists()) {
+                if (Utils.isValidAudioFile(f.getName())) {
+                    mSongs.add(fileEntry);
+                }
+            }
+        }
+        if (sRandomPlayback) {
+            Collections.shuffle(mSongs);
+        } else {
+            Collections.sort(mSongs);
         }
     }
 }

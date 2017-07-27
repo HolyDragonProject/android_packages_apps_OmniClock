@@ -54,6 +54,7 @@
     <string name="keep_screen_on_title">Keep screen on</string>
     <string name="keep_screen_on_summary">Screen will not be turned off when alarm is active</string>
     <string name="folder_dialog_title">Select folder</string>
+    <string name="playlist_dialog_title">Select folder or playlist</string>
     <string name="play_error_title">Error playing alarm</string>
     <string name="random_mode_enable_title">Shuffle</string>
     <string name="volume_increase_speed_title">Volume increase interval</string>
@@ -143,7 +144,7 @@
     <string name="local_query_artist">Artists</string>
     <string name="local_query_album">Albums</string>
     <string name="local_query_track">Songs</string>
-    <string name="local_query_folder">Folder</string>
+    <string name="local_query_folder">Folders and playlists</string>
     <string name="alarm_uri_unkown"> (deleted)</string>
     <string name="choose_folder">Choose</string>
     <string name="musicType">Music</string>
@@ -161,4 +162,5 @@
     <string name="entry_never">Never</string>
     <string name="default_page_title">Default start page</string>
     <string name="global_settings">Global</string>
+    <string name="local_query_playlist">Playlists</string>
 </resources>

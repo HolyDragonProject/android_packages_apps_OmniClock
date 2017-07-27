@@ -73,6 +73,12 @@ import org.omnirom.deskclock.worldclock.CityObj;
 import org.omnirom.deskclock.worldclock.db.DbCities;
 import org.omnirom.deskclock.worldclock.db.DbCity;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FilterInputStream;
+import java.io.InputStreamReader;
 import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -897,7 +903,7 @@ public class Utils {
                 "RANDOM() LIMIT " + size);
 
         List<Uri> mediaFiles = new ArrayList<>(size);
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
             Uri mediaFile = Uri.withAppendedPath(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     String.valueOf(c.getLong(0)));
@@ -924,7 +930,7 @@ public class Utils {
                 MediaStore.Audio.Media.TITLE);
 
         List<Uri> albumFiles = new ArrayList<>();
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
             Uri mediaFile = Uri.withAppendedPath(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     String.valueOf(c.getLong(0)));
@@ -970,7 +976,7 @@ public class Utils {
                 MediaStore.Audio.Media.TITLE);
 
         List<Uri> albumFiles = new ArrayList<>();
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
             Uri mediaFile = Uri.withAppendedPath(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                     String.valueOf(c.getLong(0)));
@@ -998,6 +1004,66 @@ public class Utils {
         return c.getCount() != 0;
     }
 
+    public static List<Uri> getPlaylistSongs(Context context, Uri playlist) {
+        String playlistId = playlist.getLastPathSegment();
+        String selection = MediaStore.Audio.Playlists._ID + " = " + Integer.valueOf(playlistId).intValue();
+
+        String[] projection = {
+                MediaStore.Audio.Playlists._ID,
+                MediaStore.Audio.Playlists.NAME
+        };
+        String[] projectionMembers = {
+                MediaStore.Audio.Playlists.Members.AUDIO_ID,
+                MediaStore.Audio.Playlists.Members.ARTIST,
+                MediaStore.Audio.Playlists.Members.TITLE,
+                MediaStore.Audio.Playlists.Members._ID
+        };
+        Cursor c = context.getContentResolver().query(
+                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                null,
+                null);
+
+        List<Uri> playlistFiles = new ArrayList<>();
+
+        while(c.moveToNext()) {
+            long id = c.getLong(0);
+            c = context.getContentResolver().query(
+                    MediaStore.Audio.Playlists.Members.getContentUri("external",id),
+                    projectionMembers,
+                    MediaStore.Audio.Media.IS_MUSIC +" != 0 ",
+                    null,
+                    null);
+            while(c.moveToNext()) {
+                Uri mediaFile = Uri.withAppendedPath(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                        String.valueOf(c.getLong(0)));
+                playlistFiles.add(mediaFile);
+            }
+        }
+        c.close();
+        return playlistFiles;
+    }
+
+    public static boolean checkPlaylistExists(Context context, Uri playlist) {
+        String playlistId = playlist.getLastPathSegment();
+        String selection = MediaStore.Audio.Playlists._ID + " = " + Integer.valueOf(playlistId).intValue();
+
+        String[] projection = {
+                MediaStore.Audio.Playlists._ID,
+                MediaStore.Audio.Playlists.NAME
+        };
+
+        Cursor c = context.getContentResolver().query(
+                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                null,
+                MediaStore.Audio.Playlists.NAME);
+        return c.getCount() != 0;
+    }
+
     public static String resolveTrack(Context context, Uri track) {
         String trackId = track.getLastPathSegment();
         String selection = MediaStore.Audio.Media._ID + " = " + Integer.valueOf(trackId).intValue();
@@ -1015,7 +1081,7 @@ public class Utils {
                 null);
 
         String title = null;
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
             title = c.getString(1);
             break;
         }
@@ -1026,6 +1092,7 @@ public class Utils {
     public static String getRandomUriString() {
         return "random:/";
     }
+
     public static boolean isRandomUri(String uri) {
         return uri.startsWith(getRandomUriString());
     }
@@ -1064,8 +1131,14 @@ public class Utils {
             return R.drawable.ic_artist;
         } else if (isLocalTrackUri(uri)) {
             return R.drawable.ic_track;
-        } else if (isFolderUri(uri)) {
-            return R.drawable.ic_folder;
+        } else if (isStorageUri(uri)) {
+            if (isStorageFileUri(uri)) {
+                return R.drawable.ic_playlist;
+            } else {
+                return R.drawable.ic_folder;
+            }
+        } else if (isLocalPlaylistUri(uri)) {
+            return R.drawable.ic_playlist;
         }
         return R.drawable.ic_alarm;
     }
@@ -1082,9 +1155,13 @@ public class Utils {
         return uri.contains("/audio/media/");
     }
 
+    public static boolean isLocalPlaylistUri(String uri) {
+        return uri.contains("/audio/playlists/");
+    }
+
     public static boolean isLocalMediaUri(String uri) {
         return isLocalAlbumUri(uri) || isLocalArtistUri(uri) || isLocalTrackUri(uri)
-                || isFolderUri(uri);
+                || isStorageUri(uri) || isLocalPlaylistUri(uri);
     }
 
     public static boolean isLocalMediaAlarm(Alarm alarm, boolean preAlarm) {
@@ -1099,14 +1176,35 @@ public class Utils {
             return true;
         } else if (isLocalArtistUri(uri)) {
             return true;
-        } else if (isFolderUri(uri)) {
+        } else if (isStorageUri(uri)) {
+            return true;
+        } else if (isLocalPlaylistUri(uri)) {
             return true;
         }
         return false;
     }
 
-    public static boolean isFolderUri(String uri) {
+    public static boolean isStorageUri(String uri) {
         return uri.startsWith("file:/");
+    }
+
+    public static boolean isStorageFileUri(String uri) {
+        if (isStorageUri(uri)) {
+            String path = Uri.parse(uri).getPath();
+            File f = new File(path);
+            if (f.isFile() && f.exists()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isM3UFileUri(String uri) {
+        if (isStorageFileUri(uri)) {
+            String path = Uri.parse(uri).getPath();
+            return isM3UFile(path);
+        }
+        return false;
     }
 
     public static Uri getDefaultAlarmUri(Context context) {
@@ -1134,45 +1232,6 @@ public class Utils {
         }
         return null;
     }
-
-
-    /*public static void printLocalPlaylists(Context context) {
-        String[] projection = {
-                MediaStore.Audio.Playlists._ID,
-                MediaStore.Audio.Playlists.NAME
-        };
-        String[] projectionMembers = {
-                MediaStore.Audio.Playlists.Members.AUDIO_ID,
-                MediaStore.Audio.Playlists.Members.ARTIST,
-                MediaStore.Audio.Playlists.Members.TITLE,
-                MediaStore.Audio.Playlists.Members._ID
-        };
-        Cursor c = context.getContentResolver().query(
-                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
-
-        while(c.moveToNext()) {
-            Uri playlist = Uri.withAppendedPath(
-                    MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
-                    String.valueOf(c.getLong(0)));
-            long id = c.getLong(0);
-            Log.d("maxwen", "" + playlist + " " + c.getString(1));
-            c = context.getContentResolver().query(
-                    MediaStore.Audio.Playlists.Members.getContentUri("external",id),
-                    projectionMembers,
-                    MediaStore.Audio.Media.IS_MUSIC +" != 0 ",
-                    null,
-                    null);
-            while(c.moveToNext()) {
-                Log.d("maxwen", "   " + c.getString(1) + ":" + c.getString(2));
-            }
-
-        }
-        c.close();
-    }*/
 
     public static boolean isAlarmUriValid(Context context, Uri uri) {
         final RingtoneManager rm = new RingtoneManager(context);
@@ -1220,6 +1279,10 @@ public class Utils {
             if (title == null) {
                 return false;
             }
+        } else if (type == BrowseActivity.QUERY_TYPE_PLAYLIST) {
+            if (!Utils.checkPlaylistExists(context, ringtoneUri)) {
+                return false;
+            }
         }
         return true;
     }
@@ -1244,6 +1307,47 @@ public class Utils {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return Integer.valueOf(sharedPref.getString(SettingsActivity.KEY_DEFAULT_PAGE,
                 String.valueOf(DeskClock.CLOCK_TAB_INDEX)));
+    }
+
+    public static boolean isM3UFile(String file) {
+        return file.toUpperCase().endsWith(".M3U");
+    }
+
+    public static List<Uri> parseM3UPlaylist(String uri) {
+        final String EXTENDED_INFO_TAG = "#EXTM3U";
+        final String RECORD_TAG = "^[#][E|e][X|x][T|t][I|i][N|n][F|f].*";
+        List<Uri> files = new ArrayList<>();
+
+        if (isM3UFileUri(uri)) {
+            String path = Uri.parse(uri).getPath();
+            File f = new File(path);
+
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                String line = reader.readLine();
+                if (line != null) {
+                    boolean extM3U = false;
+                    if (line.equalsIgnoreCase(EXTENDED_INFO_TAG)) {
+                        extM3U = true;
+                    }
+                    while ((line = reader.readLine()) != null) {
+                        String entryUriString = line;
+                        if (extM3U && line.matches(RECORD_TAG)) {
+                            entryUriString = reader.readLine();
+                        }
+                        File file = new File(entryUriString);
+                        if (!file.isAbsolute()) {
+                            file = new File(f.getParent(), file.getPath());
+                        }
+                        Uri entryUri = Uri.fromFile(file);
+                        files.add(entryUri);
+
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
+        return files;
     }
 }
 

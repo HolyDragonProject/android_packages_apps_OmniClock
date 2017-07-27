@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BrowseActivity extends Activity implements SearchView.OnQueryTextListener,
-        DirectoryChooserDialog.ChosenDirectoryListener {
+        StorageChooserDialog.ChosenStorageListener {
 
     public static final int QUERY_TYPE_ALARM = 0;
     public static final int QUERY_TYPE_RINGTONE = 1;
@@ -49,6 +49,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     public static final int QUERY_TYPE_ALBUM = 4;
     public static final int QUERY_TYPE_TRACK = 5;
     public static final int QUERY_TYPE_FOLDER = 6;
+    public static final int QUERY_TYPE_PLAYLIST = 7;
     public static final int QUERY_TYPE_UNKNOWN = -1;
 
     private static final String PREF_RECENT_URI = "local_recent_uri";
@@ -76,6 +77,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     private ImageView mAlbumHeader;
     private ImageView mTrackHeader;
     private ImageView mFolderHeader;
+    private ImageView mPlaylistHeader;
     private View mAlarmHeaderBar;
     private View mRingtoneHeaderBar;
     private View mRecentHeaderBar;
@@ -83,6 +85,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     private View mAlbumHeaderBar;
     private View mTrackHeaderBar;
     private View mFolderHeaderBar;
+    private View mPlaylistHeaderBar;
     private boolean mPreAlarm;
     private List<QueryItem> mAlarms;
     private List<QueryItem> mRingtones;
@@ -147,7 +150,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         mChooseFolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchFolderPicker();
+                launchStoragePicker(true);
             }
         });
 
@@ -259,6 +262,21 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         });
         mFolderHeaderBar = findViewById(R.id.query_folder_bar);
 
+        mPlaylistHeader = (ImageView) findViewById(R.id.query_playlist);
+        mPlaylistHeader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSearchView.setVisibility(View.VISIBLE);
+                mChooseFolder.setVisibility(View.INVISIBLE);
+                mQueryType = QUERY_TYPE_PLAYLIST;
+                mQueryTypeText.setText(R.string.local_query_playlist);
+                clearList();
+                updateTabs();
+                doQuery(mCurrentQueryText, 0);
+            }
+        });
+        mPlaylistHeaderBar = findViewById(R.id.query_playlist_bar);
+
         updateTabs();
 
         mQueryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -302,7 +320,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     public void onPause() {
         super.onPause();
         closeAlarmTestDialog();
-        closeFolderPicker();
+        closeStoragePicker();
     }
 
     @Override
@@ -580,6 +598,66 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         }.execute();
     }
 
+    private void searchPlaylists(final String query, final int startIndex) {
+        if (!mHasStoragePerms) {
+            return;
+        }
+        startProgress();
+        final List<QueryItem> queryResultList = new ArrayList<QueryItem>();
+        final int startQueryType = mQueryType;
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(final Void... params) {
+                String selection = null;
+                if (!TextUtils.isEmpty(query)) {
+                    selection = MediaStore.Audio.Playlists.NAME + " LIKE '%" + query + "%' ";
+                }
+
+                String[] projection = {
+                        MediaStore.Audio.Playlists._ID,
+                        MediaStore.Audio.Playlists.NAME
+                };
+
+                Cursor c = getContentResolver().query(
+                        MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                        projection,
+                        selection,
+                        null,
+                        MediaStore.Audio.Playlists.NAME);
+
+                while (c.moveToNext()) {
+                    Uri track = Uri.withAppendedPath(
+                            MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                            String.valueOf(c.getLong(0)));
+                    String playlistTitle = c.getString(1);
+
+                    if (!TextUtils.isEmpty(playlistTitle)) {
+                        QueryItem item = new QueryItem();
+                        item.mName = playlistTitle;
+                        item.mUri = track.toString();
+                        item.mQueryType = QUERY_TYPE_PLAYLIST;
+                        item.mIconId = R.drawable.ic_playlist;
+                        queryResultList.add(item);
+                    }
+                }
+                c.close();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(final Void result) {
+                if (mQueryType == startQueryType) {
+                    mQueryResultList.clear();
+                    mQueryResultList.addAll(queryResultList);
+                    mAdapter.notifyDataSetChanged();
+                    mQueryList.setSelection(0);
+                }
+                stopProgress();
+            }
+        }.execute();
+    }
+
     private boolean resolveAlbum(String album, QueryItem item) {
         if (!mHasStoragePerms) {
             return false;
@@ -719,6 +797,40 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         return false;
     }
 
+    private boolean resolvePlaylist(String playlist, QueryItem item) {
+        if (!mHasStoragePerms) {
+            return false;
+        }
+        String playlistId = Uri.parse(playlist).getLastPathSegment();
+        String selection = MediaStore.Audio.Playlists._ID + " = " + Integer.valueOf(playlistId).intValue();
+
+        String[] projection = {
+                MediaStore.Audio.Playlists._ID,
+                MediaStore.Audio.Playlists.NAME
+        };
+
+        Cursor c = getContentResolver().query(
+                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                projection,
+                selection,
+                null,
+                null);
+
+        try {
+            while (c.moveToNext()) {
+                String title = c.getString(1);
+
+                item.mName = title;
+                item.mQueryType = QUERY_TYPE_PLAYLIST;
+                item.mIconId = R.drawable.ic_playlist;
+                return true;
+            }
+        } finally {
+            c.close();
+        }
+        return false;
+    }
+
     private boolean resolveFolder(String folder, QueryItem item) {
         String path = Uri.parse(folder).getPath();
         File f = new File(path);
@@ -726,6 +838,18 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
             item.mName = Uri.parse(folder).getLastPathSegment();
             item.mQueryType = QUERY_TYPE_FOLDER;
             item.mIconId = R.drawable.ic_folder;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean resolveFile(String folder, QueryItem item) {
+        String path = Uri.parse(folder).getPath();
+        File f = new File(path);
+        if (f.isFile() && f.exists()) {
+            item.mName = Uri.parse(folder).getLastPathSegment();
+            item.mQueryType = QUERY_TYPE_FOLDER;
+            item.mIconId = R.drawable.ic_playlist;
             return true;
         }
         return false;
@@ -768,6 +892,10 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 break;
             case QUERY_TYPE_FOLDER:
                 clearList();
+                break;
+            case QUERY_TYPE_PLAYLIST:
+                clearList();
+                searchPlaylists(query, startIndex);
                 break;
             case QUERY_TYPE_RECENT:
                 clearList();
@@ -843,11 +971,17 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 unknownTone = false;
             }
         }
-        if (unknownTone && Utils.isFolderUri(uri)) {
+        if (unknownTone && Utils.isStorageUri(uri)) {
             QueryItem queryItem = new QueryItem();
             queryItem.mQueryType = QUERY_TYPE_FOLDER;
             queryItem.mUri = uri;
-            if (resolveFolder(uri, queryItem)) {
+            boolean resolved = false;
+            if (Utils.isStorageFileUri(uri)) {
+                resolved = resolveFile(uri, queryItem);
+            } else {
+                resolved = resolveFolder(uri, queryItem);
+            }
+            if (resolved) {
                 iconId = queryItem.mIconId;
                 icon.setImageResource(iconId);
                 title.setText(queryItem.mName);
@@ -856,7 +990,19 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 unknownTone = false;
             }
         }
-
+        if (unknownTone && Utils.isLocalPlaylistUri(uri)) {
+            QueryItem queryItem = new QueryItem();
+            queryItem.mQueryType = QUERY_TYPE_PLAYLIST;
+            queryItem.mUri = uri;
+            if (resolvePlaylist(uri, queryItem)) {
+                iconId = queryItem.mIconId;
+                icon.setImageResource(iconId);
+                title.setText(queryItem.mName);
+                subTitle.setVisibility(View.GONE);
+                playIcon.setVisibility(View.VISIBLE);
+                unknownTone = false;
+            }
+        }
         if (unknownTone || TextUtils.isEmpty(title.getText())) {
             mCurrentUri.setVisibility(View.INVISIBLE);
         }
@@ -904,8 +1050,19 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 unknownTone = false;
             }
         }
-        if (unknownTone && Utils.isFolderUri(uri)) {
-            if (resolveFolder(uri, queryItem)) {
+        if (unknownTone && Utils.isStorageUri(uri)) {
+            if (Utils.isStorageFileUri(uri)) {
+                if (resolveFile(uri, queryItem)) {
+                    unknownTone = false;
+                }
+            } else {
+                if (resolveFolder(uri, queryItem)) {
+                    unknownTone = false;
+                }
+            }
+        }
+        if (unknownTone && Utils.isLocalPlaylistUri(uri)) {
+            if (resolvePlaylist(uri, queryItem)) {
                 unknownTone = false;
             }
         }
@@ -998,6 +1155,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
                 mTrackHeader.setImageResource(R.drawable.ic_track_gray);
                 mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
                 mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
                 mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1005,6 +1163,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
             case QUERY_TYPE_RINGTONE:
                 mRecentHeader.setImageResource(R.drawable.ic_star_gray);
@@ -1014,6 +1173,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
                 mTrackHeader.setImageResource(R.drawable.ic_track_gray);
                 mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
                 mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
@@ -1021,6 +1181,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
             case QUERY_TYPE_RECENT:
                 mRecentHeader.setImageResource(R.drawable.ic_star_white);
@@ -1030,6 +1191,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
                 mTrackHeader.setImageResource(R.drawable.ic_track_gray);
                 mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
                 mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
                 mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1037,6 +1199,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
             case QUERY_TYPE_ARTIST:
                 mRecentHeader.setImageResource(R.drawable.ic_star_gray);
@@ -1046,6 +1209,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
                 mTrackHeader.setImageResource(R.drawable.ic_track_gray);
                 mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
                 mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1053,6 +1217,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
             case QUERY_TYPE_ALBUM:
                 mRecentHeader.setImageResource(R.drawable.ic_star_gray);
@@ -1062,6 +1227,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeader.setImageResource(R.drawable.ic_album_white);
                 mTrackHeader.setImageResource(R.drawable.ic_track_gray);
                 mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
                 mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1069,6 +1235,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
                 mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
             case QUERY_TYPE_TRACK:
                 mRecentHeader.setImageResource(R.drawable.ic_star_gray);
@@ -1078,6 +1245,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
                 mTrackHeader.setImageResource(R.drawable.ic_track_white);
                 mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
                 mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1085,6 +1253,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
                 mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
             case QUERY_TYPE_FOLDER:
                 mRecentHeader.setImageResource(R.drawable.ic_star_gray);
@@ -1094,6 +1263,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
                 mTrackHeader.setImageResource(R.drawable.ic_track_gray);
                 mFolderHeader.setImageResource(R.drawable.ic_folder_white);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
                 mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -1101,6 +1271,25 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
                 mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                break;
+            case QUERY_TYPE_PLAYLIST:
+                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
+                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
+                mRingtoneHeader.setImageResource(R.drawable.ic_bell_gray);
+                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
+                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
+                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
+                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
+                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_white);
+                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mRingtoneHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
                 break;
         }
     }
@@ -1181,15 +1370,15 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         return null;
     }
 
-    private void launchFolderPicker() {
-        closeFolderPicker();
+    private void launchStoragePicker(boolean playlistChooser) {
+        closeStoragePicker();
 
-        final DirectoryChooserDialog fragment = DirectoryChooserDialog.newInstance(this);
-        fragment.show(getFragmentManager(), "choose_folder");
+        final StorageChooserDialog fragment = StorageChooserDialog.newInstance(this, playlistChooser);
+        fragment.show(getFragmentManager(), "choose_dialog");
     }
 
-    private void closeFolderPicker() {
-        final Fragment prev = getFragmentManager().findFragmentByTag("choose_folder");
+    private void closeStoragePicker() {
+        final Fragment prev = getFragmentManager().findFragmentByTag("choose_dialog");
         if (prev != null) {
             ((DialogFragment) prev).dismiss();
         }
@@ -1207,7 +1396,12 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
 
     @Override
     public void onChooseFileOk(Uri chosenFile) {
-        // TODO
+        mQueryResultList.clear();
+        QueryItem item = new QueryItem();
+        item.mUri = chosenFile.toString();
+        resolveFile(chosenFile.toString(), item);
+        mQueryResultList.add(item);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
