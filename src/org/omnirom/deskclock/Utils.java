@@ -1135,6 +1135,45 @@ public class Utils {
         return null;
     }
 
+
+    /*public static void printLocalPlaylists(Context context) {
+        String[] projection = {
+                MediaStore.Audio.Playlists._ID,
+                MediaStore.Audio.Playlists.NAME
+        };
+        String[] projectionMembers = {
+                MediaStore.Audio.Playlists.Members.AUDIO_ID,
+                MediaStore.Audio.Playlists.Members.ARTIST,
+                MediaStore.Audio.Playlists.Members.TITLE,
+                MediaStore.Audio.Playlists.Members._ID
+        };
+        Cursor c = context.getContentResolver().query(
+                MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+
+        while(c.moveToNext()) {
+            Uri playlist = Uri.withAppendedPath(
+                    MediaStore.Audio.Playlists.EXTERNAL_CONTENT_URI,
+                    String.valueOf(c.getLong(0)));
+            long id = c.getLong(0);
+            Log.d("maxwen", "" + playlist + " " + c.getString(1));
+            c = context.getContentResolver().query(
+                    MediaStore.Audio.Playlists.Members.getContentUri("external",id),
+                    projectionMembers,
+                    MediaStore.Audio.Media.IS_MUSIC +" != 0 ",
+                    null,
+                    null);
+            while(c.moveToNext()) {
+                Log.d("maxwen", "   " + c.getString(1) + ":" + c.getString(2));
+            }
+
+        }
+        c.close();
+    }*/
+
     public static boolean isAlarmUriValid(Context context, Uri uri) {
         final RingtoneManager rm = new RingtoneManager(context);
         rm.setType(RingtoneManager.TYPE_ALL);

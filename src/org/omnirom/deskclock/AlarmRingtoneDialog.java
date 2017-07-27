@@ -57,8 +57,7 @@ import org.omnirom.deskclock.provider.Alarm;
 
 public class AlarmRingtoneDialog extends DialogFragment implements
         DialogInterface.OnClickListener,
-        SeekBar.OnSeekBarChangeListener,
-        DirectoryChooserDialog.ChosenDirectoryListener {
+        SeekBar.OnSeekBarChangeListener {
 
     private static final int REQUEST_CODE_MEDIA = 1;
     private static final int REQUEST_CODE_SPOTIFY = 2;
@@ -649,7 +648,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void showAlarmTestDialog(Alarm alarm, boolean preAlarm) {
         if (mCurrentMediaType == ALARM_TYPE_SPOTIFY && Utils.isSpotifyAlarm(alarm, preAlarm)) {
-             if (Utils.isSpotifyPluginInstalled(getActivity())) {
+            if (Utils.isSpotifyPluginInstalled(getActivity())) {
                 // ignore pre alarm here - spotify activities assume it stored in there
                 alarm.alert = mRingtone;
                 alarm.setRingtoneName(mRingtoneName, mRingtoneType);
@@ -692,7 +691,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void selectRingtone(int mediaType) {
         if (mediaType == ALARM_TYPE_SPOTIFY) {
-             if (Utils.isSpotifyPluginInstalled(getActivity())) {
+            if (Utils.isSpotifyPluginInstalled(getActivity())) {
                 Alarm testAlarm = new Alarm();
                 saveChanges(testAlarm);
                 // ignore pre alarm here - spotify activities assume it stored in there
@@ -723,15 +722,6 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         testAlarm.alert = mRingtone;
         startActivityForResult(Utils.getLocalBrowseIntent(getActivity(),
                 testAlarm), REQUEST_CODE_BROWSE);
-    }
-    @Override
-    public void onChooseDirOk(Uri chosenDir) {
-        mRingtone = chosenDir;
-        updateRingtoneName();
-    }
-
-    @Override
-    public void onChooseDirCancel() {
     }
 
     private void updateOkButtonState(boolean value) {

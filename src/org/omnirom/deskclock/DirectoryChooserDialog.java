@@ -46,8 +46,8 @@ import android.widget.TextView;
 public class DirectoryChooserDialog extends DialogFragment
     implements DialogInterface.OnClickListener {
 
-    private String mSDCardDirectory;
-    private String mCurrentDir;
+    private File mSDCardDirectory;
+    private File mCurrentSelection;
     private List<File> mSubDirs;
     private ArrayAdapter<File> mListAdapter;
     private ListView mListView;
@@ -58,7 +58,7 @@ public class DirectoryChooserDialog extends DialogFragment
 
     public interface ChosenDirectoryListener {
         public void onChooseDirOk(Uri chosenDir);
-
+        public void onChooseFileOk(Uri chosenFile);
         public void onChooseDirCancel();
     }
 
@@ -69,11 +69,23 @@ public class DirectoryChooserDialog extends DialogFragment
     }
 
     public DirectoryChooserDialog() {
-        mSDCardDirectory = Environment.getExternalStorageDirectory().getAbsolutePath();
-        try {
-            mSDCardDirectory = new File(mSDCardDirectory).getCanonicalPath();
-        } catch (IOException ioe) {
+        mSDCardDirectory = Environment.getExternalStorageDirectory();
+    }
+
+    public static File getDefaultStartDirectory() {
+        File musicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
+        File startFolder;
+        if (musicDir.exists() && musicDir.isDirectory()) {
+            startFolder = musicDir;
+        } else {
+            File externalStorage = Environment.getExternalStorageDirectory();
+            if (externalStorage.exists() && externalStorage.isDirectory()) {
+                startFolder = externalStorage;
+            } else {
+                startFolder = new File("/"); // root
+            }
         }
+        return startFolder;
     }
 
     public void setChoosenListener(ChosenDirectoryListener listener) {
@@ -91,15 +103,27 @@ public class DirectoryChooserDialog extends DialogFragment
         return builder.create();
     }
 
-    private List<File> getDirectories(String dir) {
+    private static File tryGetCanonicalFile(File file) {
+        try {
+            return file.getCanonicalFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return file;
+        }
+    }
+
+    private List<File> getDirectories(File dir) {
         List<File> dirs = new ArrayList<File>();
+        File dirFile = tryGetCanonicalFile(dir);
 
         try {
-            File dirFile = new File(dir);
             if (!dirFile.exists() || !dirFile.isDirectory()) {
                 return dirs;
             }
 
+            if (dirFile.equals(mSDCardDirectory.getParentFile())) {
+                dirs.add(0, mSDCardDirectory);
+            }
             for (File file : dirFile.listFiles()) {
                 if (!file.getName().startsWith(".")) {
                     dirs.add(file);
@@ -119,7 +143,7 @@ public class DirectoryChooserDialog extends DialogFragment
                 return o1.getName().compareToIgnoreCase(o2.getName());
             }
         });
-        if (!dir.equals(mSDCardDirectory)) {
+        if (!dir.equals(new File("/storage"))) {
             dirs.add(0, new File(".."));
         }
         return dirs;
@@ -127,9 +151,9 @@ public class DirectoryChooserDialog extends DialogFragment
 
     private void updateDirectory() {
         mSubDirs.clear();
-        mSubDirs.addAll(getDirectories(mCurrentDir));
+        mSubDirs.addAll(getDirectories(mCurrentSelection));
         mListAdapter.notifyDataSetChanged();
-        boolean enableOk = !mCurrentDir.equals(mSDCardDirectory);
+        boolean enableOk = !mCurrentSelection.equals(new File("/storage")) && !mCurrentSelection.equals(mSDCardDirectory.getParentFile());
         ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setText(getResources().getString(android.R.string.ok));
         ((AlertDialog) getDialog()).getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(enableOk ? View.VISIBLE : View.GONE);
     }
@@ -151,7 +175,11 @@ public class DirectoryChooserDialog extends DialogFragment
                 File f = mSubDirs.get(position);
                 tv.setText(f.getName());
                 if (f.isFile()) {
-                    tv.setTextColor(mTextColorDisabled);
+                    if (isM3UFile(f)) {
+                        tv.setTextColor(mTextColor);
+                    } else {
+                        tv.setTextColor(mTextColorDisabled);
+                    }
                 } else {
                     tv.setTextColor(mTextColor);
                 }
@@ -176,8 +204,8 @@ public class DirectoryChooserDialog extends DialogFragment
             mTextColorDisabled = getActivity().getResources().getColor(R.color.folder_dialog_file_color_dark);
         }
 
-        mCurrentDir = mSDCardDirectory;
-        mSubDirs = getDirectories(mSDCardDirectory);
+        mCurrentSelection = getDefaultStartDirectory();
+        mSubDirs = getDirectories(mCurrentSelection);
 
         mListAdapter = createListAdapter(mSubDirs);
         mListView = (ListView) view.findViewById(R.id.folders);
@@ -189,16 +217,16 @@ public class DirectoryChooserDialog extends DialogFragment
                     int position, long id) {
                 File f = mListAdapter.getItem(position);
                 if (f.isFile()) {
+                    if (isM3UFile(f)) {
+                        mCurrentSelection = mListAdapter.getItem(position);
+                    }
                     return;
                 }
                 if (f.getName().equals("..")) {
-                    if (!mCurrentDir.equals(mSDCardDirectory)) {
-                        // Navigate back to an upper directory
-                        mCurrentDir = new File(mCurrentDir).getParent();
-                    }
+                    mCurrentSelection = mCurrentSelection.getParentFile();
                 } else {
                     // Navigate into the sub-directory
-                    mCurrentDir = mListAdapter.getItem(position).getAbsolutePath();
+                    mCurrentSelection = mListAdapter.getItem(position);
                 }
                 updateDirectory();
             }
@@ -210,10 +238,21 @@ public class DirectoryChooserDialog extends DialogFragment
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            Uri uri = Uri.fromFile(new File(mCurrentDir));
-            mListener.onChooseDirOk(uri);
+            if (mCurrentSelection.isFile() && isM3UFile(mCurrentSelection)){
+                Uri uri = Uri.fromFile(mCurrentSelection);
+                mListener.onChooseFileOk(uri);
+            } else if (mCurrentSelection.isDirectory()){
+                Uri uri = Uri.fromFile(mCurrentSelection);
+                mListener.onChooseDirOk(uri);
+            }
         } else if (which == DialogInterface.BUTTON_NEGATIVE) {
             mListener.onChooseDirCancel();
         }
+    }
+
+    private boolean isM3UFile(File f) {
+        return false;
+        // TODO
+        //return f.getName().endsWith("m3u");
     }
 }

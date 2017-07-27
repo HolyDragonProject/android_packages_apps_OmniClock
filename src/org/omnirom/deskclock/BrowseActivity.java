@@ -1206,6 +1206,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     }
 
     @Override
+    public void onChooseFileOk(Uri chosenFile) {
+        // TODO
+    }
+
+    @Override
     public void onChooseDirCancel() {
     }
 
