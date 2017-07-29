@@ -23,12 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
@@ -56,7 +61,7 @@ public class TestAlarmKlaxon {
     private static boolean sError;
     private static boolean sRandomMusicMode;
     private static boolean sLocalMediaMode;
-
+    private static boolean sStreamMediaMode;
 
     public interface ErrorHandler {
         public void onError(String msg);
@@ -70,6 +75,24 @@ public class TestAlarmKlaxon {
         public void onTrackChanged(final Uri track);
     }
 
+    private static BroadcastReceiver sNetworkListener = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            if (sTestStarted && sStreamMediaMode) {
+                if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                    if (!isNetworkConnectivity(context)) {
+                        if (sMediaPlayer != null) {
+                            sMediaPlayer.stop();
+                            sMediaPlayer.reset();
+                        }
+                        sError = true;
+                        sErrorHandler.onError("No network");
+                    }
+                }
+            }
+        }
+    };
+
     private static int getAudioStream(Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String stream = prefs.getString(SettingsActivity.KEY_AUDIO_STREAM, "1");
@@ -78,7 +101,6 @@ public class TestAlarmKlaxon {
     }
 
     public static void test(final Context context, Alarm instance, boolean preAlarm, ErrorHandler errorHandler) {
-        sTestStarted = true;
         sError = false;
         sErrorHandler = errorHandler;
 
@@ -104,6 +126,7 @@ public class TestAlarmKlaxon {
         Uri alarmNoise = null;
         sRandomMusicMode = false;
         sLocalMediaMode = false;
+        sStreamMediaMode = false;
         sCurrentIndex = 0;
 
         if (preAlarm) {
@@ -128,6 +151,7 @@ public class TestAlarmKlaxon {
                 // can fail if no external storage permissions
                 try {
                     sLocalMediaMode = true;
+                    mSongs.clear();
                     if (Utils.isLocalAlbumUri(alarmNoise.toString())) {
                         collectAlbumSongs(context, alarmNoise);
                     }
@@ -136,7 +160,14 @@ public class TestAlarmKlaxon {
                     }
                     if (Utils.isStorageUri(alarmNoise.toString())) {
                         if (Utils.isStreamM3UFile(alarmNoise.toString())) {
-                            collectM3UFiles(alarmNoise);
+                            if (isNetworkConnectivity(context)) {
+                                sStreamMediaMode = true;
+                                collectM3UFiles(alarmNoise);
+                            } else {
+                                sError = true;
+                                sErrorHandler.onError("No network");
+                                return;
+                            }
                         } else {
                             collectFiles(context, alarmNoise);
                         }
@@ -167,10 +198,16 @@ public class TestAlarmKlaxon {
             return;
         }
 
-        if (alarmNoise != null && sTestStarted) {
+        if (alarmNoise != null) {
+            sTestStarted = true;
             playTestAlarm(context, instance, alarmNoise);
-        }
 
+            if (sStreamMediaMode) {
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+                context.registerReceiver(sNetworkListener, intentFilter);
+            }
+        }
     }
 
     public static void stopTest(Context context, Alarm instance) {
@@ -190,11 +227,17 @@ public class TestAlarmKlaxon {
             sAudioManager.abandonAudioFocus(null);
             sAudioManager = null;
         }
-
+        try {
+            context.unregisterReceiver(sNetworkListener);
+        } catch (Exception e) {
+        }
         sTestStarted = false;
     }
 
     private static void playTestAlarm(final Context context, final Alarm instance, final Uri alarmNoise) {
+        if (sMediaPlayer != null) {
+            sMediaPlayer.reset();
+        }
         sMediaPlayer = new MediaPlayer();
         sMediaPlayer.setOnErrorListener(new OnErrorListener() {
             @Override
@@ -394,5 +437,15 @@ public class TestAlarmKlaxon {
         }
 
         sErrorHandler.stopProgress();
+    }
+
+    private static boolean isNetworkConnectivity(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

@@ -157,11 +157,12 @@
     <string name="vibrate_notification_summary">Enable vibration for active alarm and timer notifications</string>
     <string name="vibrate_notification_title">Notification vibrate</string>
     <string name="all_cities_label">Add</string>
-    <string name="entry_never">Never</string>
     <string name="default_page_title">Default start page</string>
     <string name="global_settings">Global</string>
     <string name="local_query_playlist">Playlists</string>
     <string name="url_paste_hint">Paste URL</string>
     <string name="playlist_file_name">Name</string>
     <string name="local_query_stream">Streams</string>
+    <string name="offline_notif_title">Device offline</string>
+    <string name="offline_notif_message">Please change your system settings</string>
 </resources>

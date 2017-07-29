@@ -22,15 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -54,6 +59,7 @@ public class AlarmKlaxon {
 
     private static final int INCREASING_VOLUME_START = 1;
     private static final int INCREASING_VOLUME_DELTA = 1;
+    public static final int OFFLINE_NOTIFICATION_ID = Integer.MAX_VALUE;
 
     private static boolean sStarted = false;
     private static AudioManager sAudioManager = null;
@@ -73,6 +79,7 @@ public class AlarmKlaxon {
     private static boolean sRandomMusicMode;
     private static boolean sLocalMediaMode;
     private static boolean sPlayFallbackAlarm;
+    private static boolean sStreamMediaMode;
 
     // Internal messages
     private static final int INCREASING_VOLUME = 1001;
@@ -93,6 +100,21 @@ public class AlarmKlaxon {
                         }
                     }
                     break;
+            }
+        }
+    };
+
+    private static BroadcastReceiver sNetworkListener = new BroadcastReceiver() {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            if (sStarted && sStreamMediaMode) {
+                if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                    if (!isNetworkConnectivity(context)) {
+                        createOfflineNotification(sContext);
+                        sPlayFallbackAlarm = true;
+                        playAlarm(sContext, null);
+                    }
+                }
             }
         }
     };
@@ -126,6 +148,10 @@ public class AlarmKlaxon {
 
             ((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE))
                     .cancel();
+            try {
+                context.unregisterReceiver(sNetworkListener);
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -168,6 +194,7 @@ public class AlarmKlaxon {
         sRandomMusicMode = false;
         sLocalMediaMode = false;
         sPlayFallbackAlarm = false;
+        sStreamMediaMode = false;
 
         sCurrentIndex = 0;
         if (sPreAlarmMode) {
@@ -194,6 +221,7 @@ public class AlarmKlaxon {
                 // can fail if no external storage permissions
                 try {
                     sLocalMediaMode = true;
+                    mSongs.clear();
                     if (Utils.isLocalAlbumUri(alarmNoise.toString())) {
                         collectAlbumSongs(context, alarmNoise);
                     }
@@ -202,7 +230,11 @@ public class AlarmKlaxon {
                     }
                     if (Utils.isStorageUri(alarmNoise.toString())) {
                         if (Utils.isStreamM3UFile(alarmNoise.toString())) {
+                            sStreamMediaMode = true;
+                            // dont check for network right away cause device might need
+                            // a little bit after waking up - so rely on tiemout of media player
                             collectM3UFiles(alarmNoise);
+                            sStreamMediaMode = true;
                         } else {
                             collectFiles(context, alarmNoise);
                         }
@@ -250,10 +282,18 @@ public class AlarmKlaxon {
             vibrator.vibrate(sVibratePattern, 0);
         }
         sStarted = true;
+
+        if (sStreamMediaMode) {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            context.registerReceiver(sNetworkListener, intentFilter);
+        }
     }
 
     private static void playAlarm(final Context context, final Uri alarmNoise) {
-
+        if (sMediaPlayer != null) {
+            sMediaPlayer.reset();
+        }
         sMediaPlayer = new MediaPlayer();
         sMediaPlayer.setOnErrorListener(new OnErrorListener() {
             @Override
@@ -494,19 +534,6 @@ public class AlarmKlaxon {
         }
     }
 
-    private static void updateMetaDataInfo() {
-        String title = null;
-        if (Utils.isLocalTrackUri(mCurrentTone.toString())) {
-            title = Utils.resolveTrack(sContext, mCurrentTone);
-        } else if (mCurrentTone.getPath() != null) {
-            title = mCurrentTone.getLastPathSegment();
-        }
-        LogUtils.v("AlarmKlaxon: send broadcast " + AlarmConstants.ALARM_MEDIA_ACTION + " " + title);
-        Intent metaDataIntent = new Intent(AlarmConstants.ALARM_MEDIA_ACTION);
-        metaDataIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, title);
-        sContext.sendBroadcast(metaDataIntent);
-    }
-
     private static void collectM3UFiles(Uri m3UFileUri) {
         List<Uri> files = Utils.parseM3UPlaylist(m3UFileUri.toString());
         mSongs.clear();
@@ -529,5 +556,29 @@ public class AlarmKlaxon {
         } else {
             Collections.sort(mSongs);
         }
+    }
+
+    private static boolean isNetworkConnectivity(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static void createOfflineNotification(final Context context) {
+        Notification.Builder builder = new Notification.Builder(context);
+        builder.setContentTitle(context.getResources().getString(org.omnirom.deskclock.R.string.offline_notif_title))
+                .setContentText(context.getResources().getString(org.omnirom.deskclock.R.string.offline_notif_message))
+                .setSmallIcon(org.omnirom.deskclock.R.drawable.ic_notif_alarm)
+                .setLocalOnly(true)
+                .setColor(context.getResources().getColor(org.omnirom.deskclock.R.color.primary));
+
+        Notification notification = builder.build();
+        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.cancel(OFFLINE_NOTIFICATION_ID);
+        nm.notify(OFFLINE_NOTIFICATION_ID, notification);
     }
 }
