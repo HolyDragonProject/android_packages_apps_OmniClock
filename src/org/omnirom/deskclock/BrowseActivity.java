@@ -1611,7 +1611,48 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         }
     }
 
+    private void resolvePasteContents(final String pasteString, final String name) {
+        startProgress();
+        final List<String> pasteStringWrapper = new ArrayList<>();
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(final Void... params) {
+                String content = Utils.downloadUrlMemoryAsString(pasteString);
+                if (content != null) {
+                    List<String> playlistUrils = null;
+                    if (pasteString.endsWith("pls")) {
+                        playlistUrils = Utils.parsePLSPlaylistFromMemory(content);
+                    }
+                    if (pasteString.endsWith("m3u")) {
+                        playlistUrils = Utils.parseM3UPlaylistFromMemory(content);
+                    }
+                    if (playlistUrils != null && playlistUrils.size() != 0) {
+                        pasteStringWrapper.add(playlistUrils.get(0));
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(final Void result) {
+                stopProgress();
+                if (pasteStringWrapper.size() != 0) {
+                    doResolvePaste(pasteStringWrapper.get(0), name);
+                }
+            }
+        }.execute();
+    }
     private void resolvePaste(String pasteString, String name) {
+        if (pasteString.endsWith("pls") || pasteString.endsWith("m3u")) {
+            // looks like a playlist pasted try to get it and extract url
+            resolvePasteContents(pasteString, name);
+        } else {
+            doResolvePaste(pasteString, name);
+        }
+    }
+
+    private void doResolvePaste(String pasteString, String name) {
         // create on the fly m3u and add that
         File playlistDir = Utils.getStreamM3UDirectory(this);
         if (!playlistDir.exists()) {

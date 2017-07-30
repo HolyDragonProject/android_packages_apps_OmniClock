@@ -75,10 +75,17 @@ import org.omnirom.deskclock.worldclock.db.DbCity;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringBufferInputStream;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -131,6 +138,9 @@ public class Utils {
     public static final String M3U_HEADER = "#EXTM3U";
     public static final String M3U_ENTRY = "#EXTINF:";
     private static final String STREAM_FILE_TAG = "STREAM_M3U";
+
+    private static final int HTTP_READ_TIMEOUT = 30000;
+    private static final int HTTP_CONNECTION_TIMEOUT = 30000;
 
     /**
      * Returns whether the SDK is Nougat or later
@@ -1361,6 +1371,59 @@ public class Utils {
         return files;
     }
 
+    public static List<String> parseM3UPlaylistFromMemory(String m3uContent) {
+        List<String> files = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new StringReader(m3uContent));
+            reader.mark(1024);
+            String line = reader.readLine();
+            if (line != null) {
+                boolean extM3U = false;
+                if (line.equalsIgnoreCase(M3U_HEADER)) {
+                    extM3U = true;
+                } else {
+                    reader.reset();
+                }
+                while ((line = reader.readLine()) != null) {
+                    if (TextUtils.isEmpty(line)) {
+                        continue;
+                    }
+                    String entryUriString = line;
+                    if (extM3U && line.startsWith(M3U_ENTRY)) {
+                        entryUriString = reader.readLine();
+                    }
+                    files.add(entryUriString);
+                }
+            }
+        } catch (Exception e) {
+        }
+        return files;
+    }
+
+    public static List<String> parsePLSPlaylistFromMemory(String plsContent) {
+        List<String> files = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new StringReader(plsContent));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (TextUtils.isEmpty(line)) {
+                    continue;
+                }
+                if (line.startsWith("File")) {
+                    int idx = line.indexOf("=");
+                    if (idx != -1) {
+                        String entryUriString = line.substring(idx + 1);
+                        files.add(entryUriString);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+        return files;
+    }
+
     public static boolean isStreamM3UFile(String uri) {
         if (isStorageUri(uri)) {
             String path = Uri.parse(uri).getPath();
@@ -1400,7 +1463,7 @@ public class Utils {
 
     public static File writeStreamM3UFile(File dir, String label, String url) {
         try {
-            File f = File.createTempFile("stream",  null, dir);
+            File f = File.createTempFile("stream", null, dir);
             BufferedWriter bw = new BufferedWriter(new FileWriter(f));
             bw.write(M3U_HEADER);
             bw.newLine();
@@ -1413,6 +1476,64 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static HttpURLConnection setupHttpRequest(String urlStr) {
+        URL url;
+        HttpURLConnection urlConnection = null;
+        try {
+            url = new URL(urlStr);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(HTTP_CONNECTION_TIMEOUT);
+            urlConnection.setReadTimeout(HTTP_READ_TIMEOUT);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoInput(true);
+            urlConnection.connect();
+            int code = urlConnection.getResponseCode();
+            if (code != HttpURLConnection.HTTP_OK) {
+                LogUtils.e("response:" + code);
+                return null;
+            }
+            return urlConnection;
+        } catch (Exception e) {
+            LogUtils.e("Failed to connect to server", e);
+            return null;
+        }
+    }
+
+    public static String downloadUrlMemoryAsString(String url) {
+        HttpURLConnection urlConnection = null;
+        try {
+            urlConnection = setupHttpRequest(url);
+            if (urlConnection == null) {
+                return null;
+            }
+
+            InputStream is = urlConnection.getInputStream();
+            ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+            int byteInt;
+
+            while ((byteInt = is.read()) >= 0) {
+                byteArray.write(byteInt);
+            }
+
+            byte[] bytes = byteArray.toByteArray();
+            if (bytes == null) {
+                return null;
+            }
+            String responseBody = new String(bytes, StandardCharsets.UTF_8);
+
+            return responseBody;
+        } catch (Exception e) {
+            // Download failed for any number of reasons, timeouts, connection
+            // drops, etc. Just log it in debugging mode.
+            LogUtils.e("", e);
+            return null;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
     }
 }
 
