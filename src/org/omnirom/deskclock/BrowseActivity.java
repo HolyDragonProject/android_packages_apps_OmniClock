@@ -89,7 +89,6 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     private View mFooterView;
     private TextView mQueryTypeText;
     private List<QueryItem> mQueryResultListCopy = new ArrayList<QueryItem>();
-    private boolean mLightTheme = true;
     private ImageView mAlarmHeader;
     private ImageView mRecentHeader;
     private ImageView mArtistHeader;
@@ -130,19 +129,19 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (getIntent().hasExtra(AlarmConstants.DATA_COLOR_THEME_ID)) {
+            int themeId = getIntent().getIntExtra(AlarmConstants.DATA_COLOR_THEME_ID, 0);
+            setTheme(Utils.getThemeResourceId(this, themeId));
+        } else if (getIntent().hasExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT)) {
+            boolean lightTheme = getIntent().getBooleanExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, true);
+            setTheme(Utils.getThemeResourceId(this, lightTheme ? 0 : 1));
+        } else {
+            setTheme(Utils.getThemeResourceId(this));
+        }
+
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (getIntent().hasExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT)) {
-            mLightTheme = getIntent().getBooleanExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, true);
-        } else {
-            mLightTheme = Utils.isLightTheme(this);
-        }
-        if (mLightTheme) {
-            setTheme(R.style.DeskClock);
-        } else {
-            setTheme(R.style.DeskClockDark);
-        }
         if (getIntent().hasExtra(AlarmConstants.DATA_ALARM_EXTRA)) {
             mAlarm = getIntent().getParcelableExtra(AlarmConstants.DATA_ALARM_EXTRA);
             if (mAlarm != null) {

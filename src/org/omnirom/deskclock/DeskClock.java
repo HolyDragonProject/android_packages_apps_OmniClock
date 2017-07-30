@@ -208,12 +208,7 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
         intentFilter.addAction(COLOR_THEME_UPDATE_INTENT);
         registerReceiver(mColorThemeReceiver, intentFilter);
 
-        boolean light = Utils.isLightTheme(this);
-        if (light) {
-            setTheme(R.style.SettingsTheme);
-        } else {
-            setTheme(R.style.SettingsThemeDark);
-        }
+        setTheme(Utils.getThemeResourceId(this));
 
         mSelectedTab = Utils.getDefaultPage(this);
         if (icicle != null) {

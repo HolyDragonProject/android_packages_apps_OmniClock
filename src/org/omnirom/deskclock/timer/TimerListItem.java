@@ -53,10 +53,7 @@ public class TimerListItem extends LinearLayout {
         super.onFinishInflate();
         mTimerText = (CountingTimerView) findViewById(org.omnirom.deskclock.R.id.timer_time_text);
         mCircleView = (CircleTimerView) findViewById(org.omnirom.deskclock.R.id.timer_time);
-        mCircleView.setBackgroundResource(Utils.isLightTheme(getContext()) ?
-                org.omnirom.deskclock.R.drawable.bg_circle_view :
-                org.omnirom.deskclock.R.drawable.bg_circle_view_dark);
-        mResetAddButton = (ImageView) findViewById(org.omnirom.deskclock.R.id.reset_add);
+        mCircleView.setBackgroundResource(Utils.getCircleViewBackgroundResourceId(getContext()));        mResetAddButton = (ImageView) findViewById(org.omnirom.deskclock.R.id.reset_add);
         mCircleView.setTimerMode(true);
     }
 

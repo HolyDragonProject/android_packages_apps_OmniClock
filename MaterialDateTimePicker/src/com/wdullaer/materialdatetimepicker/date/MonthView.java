@@ -38,7 +38,9 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
+import com.wdullaer.materialdatetimepicker.date.MonthAdapter.CalendarDay;
 
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
@@ -198,37 +200,37 @@ public abstract class MonthView extends View {
         mDayLabelCalendar = Calendar.getInstance();
         mCalendar = Calendar.getInstance();
 
-        mDayOfWeekTypeface = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_day_of_week_label_typeface);
-        mMonthTitleTypeface = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_sans_serif);
+        mDayOfWeekTypeface = res.getString(R.string.mdtp_day_of_week_label_typeface);
+        mMonthTitleTypeface = res.getString(R.string.mdtp_sans_serif);
 
         boolean darkTheme = mController != null && mController.isThemeDark();
         if(darkTheme) {
-            mDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_normal_dark_theme);
-            mMonthDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_month_day_dark_theme);
-            mDisabledDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_disabled_dark_theme);
-            mHighlightedDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_highlighted_dark_theme);
+            mDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_normal_dark_theme);
+            mMonthDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_month_day_dark_theme);
+            mDisabledDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled_dark_theme);
+            mHighlightedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_highlighted_dark_theme);
         }
         else {
-            mDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_normal);
-            mMonthDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_month_day);
-            mDisabledDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_disabled);
-            mHighlightedDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_highlighted);
+            mDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_normal);
+            mMonthDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_month_day);
+            mDisabledDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled);
+            mHighlightedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_highlighted);
         }
-        mSelectedDayTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_white);
+        mSelectedDayTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
         mTodayNumberColor = mController.getAccentColor();
-        mMonthTitleColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_white);
+        mMonthTitleColor = ContextCompat.getColor(context, R.color.mdtp_white);
 
         mStringBuilder = new StringBuilder(50);
         mFormatter = new Formatter(mStringBuilder, Locale.getDefault());
 
-        MINI_DAY_NUMBER_TEXT_SIZE = res.getDimensionPixelSize(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_day_number_size);
-        MONTH_LABEL_TEXT_SIZE = res.getDimensionPixelSize(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_month_label_size);
-        MONTH_DAY_LABEL_TEXT_SIZE = res.getDimensionPixelSize(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_month_day_label_text_size);
-        MONTH_HEADER_SIZE = res.getDimensionPixelOffset(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_month_list_item_header_height);
+        MINI_DAY_NUMBER_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_day_number_size);
+        MONTH_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_label_size);
+        MONTH_DAY_LABEL_TEXT_SIZE = res.getDimensionPixelSize(R.dimen.mdtp_month_day_label_text_size);
+        MONTH_HEADER_SIZE = res.getDimensionPixelOffset(R.dimen.mdtp_month_list_item_header_height);
         DAY_SELECTED_CIRCLE_SIZE = res
-                .getDimensionPixelSize(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_day_number_select_circle_radius);
+                .getDimensionPixelSize(R.dimen.mdtp_day_number_select_circle_radius);
 
-        mRowHeight = (res.getDimensionPixelOffset(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_date_picker_view_animator_height)
+        mRowHeight = (res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height)
                 - getMonthHeaderSize()) / MAX_NUM_ROWS;
 
         // Set up accessibility components.
@@ -450,7 +452,7 @@ public abstract class MonthView extends View {
         Locale locale = Locale.getDefault();
         String pattern = "MMMM yyyy";
 
-        if(Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_date_v1_monthyear);
+        if(Build.VERSION.SDK_INT < 18) pattern = getContext().getResources().getString(R.string.mdtp_date_v1_monthyear);
         else pattern = DateFormat.getBestDateTimePattern(locale, pattern);
 
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, locale);
@@ -585,7 +587,7 @@ public abstract class MonthView extends View {
 
 
         if (mOnDayClickListener != null) {
-            mOnDayClickListener.onDayClick(this, new MonthAdapter.CalendarDay(mYear, mMonth, day));
+            mOnDayClickListener.onDayClick(this, new CalendarDay(mYear, mMonth, day));
         }
 
         // This is a no-op if accessibility is turned off.
@@ -663,10 +665,10 @@ public abstract class MonthView extends View {
      * @return The date that has accessibility focus, or {@code null} if no date
      *         has focus
      */
-    public MonthAdapter.CalendarDay getAccessibilityFocus() {
+    public CalendarDay getAccessibilityFocus() {
         final int day = mTouchHelper.getFocusedVirtualView();
         if (day >= 0) {
-            return new MonthAdapter.CalendarDay(mYear, mMonth, day);
+            return new CalendarDay(mYear, mMonth, day);
         }
         return null;
     }
@@ -686,7 +688,7 @@ public abstract class MonthView extends View {
      * @return {@code false} if the date is not valid for this month view, or
      *         {@code true} if the date received focus
      */
-    public boolean restoreAccessibilityFocus(MonthAdapter.CalendarDay day) {
+    public boolean restoreAccessibilityFocus(CalendarDay day) {
         if ((day.year != mYear) || (day.month != mMonth) || (day.day > mNumCells)) {
             return false;
         }
@@ -805,7 +807,7 @@ public abstract class MonthView extends View {
                     mTempCalendar.getTimeInMillis());
 
             if (day == mSelectedDay) {
-                return getContext().getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_item_is_selected, date);
+                return getContext().getString(R.string.mdtp_item_is_selected, date);
             }
 
             return date;
@@ -816,6 +818,6 @@ public abstract class MonthView extends View {
      * Handles callbacks when the user clicks on a time object.
      */
     public interface OnDayClickListener {
-        void onDayClick(MonthView view, MonthAdapter.CalendarDay day);
+        void onDayClick(MonthView view, CalendarDay day);
     }
 }

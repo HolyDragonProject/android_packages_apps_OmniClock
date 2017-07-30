@@ -32,6 +32,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.wdullaer.materialdatetimepicker.R;
+
 /**
  * A view to show a series of numbers in a circular pattern.
  */
@@ -98,22 +100,22 @@ public class RadialTextsView extends View {
         context.getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
         int textColorRes = typedValue.resourceId;
         mPaint.setColor(ContextCompat.getColor(context, textColorRes));
-        String typefaceFamily = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_radial_numbers_typeface);
+        String typefaceFamily = res.getString(R.string.mdtp_radial_numbers_typeface);
         mTypefaceLight = Typeface.create(typefaceFamily, Typeface.NORMAL);
-        String typefaceFamilyRegular = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_sans_serif);
+        String typefaceFamilyRegular = res.getString(R.string.mdtp_sans_serif);
         mTypefaceRegular = Typeface.create(typefaceFamilyRegular, Typeface.NORMAL);
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Align.CENTER);
 
         // Set up the selected paint
-        int selectedTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_white);
+        int selectedTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
         mSelectedPaint.setColor(selectedTextColor);
         mSelectedPaint.setAntiAlias(true);
         mSelectedPaint.setTextAlign(Align.CENTER);
 
         // Set up the inactive paint
-        int inactiveColorRes = controller.isThemeDark() ? com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_disabled_dark_theme
-                : com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_disabled;
+        int inactiveColorRes = controller.isThemeDark() ? R.color.mdtp_date_picker_text_disabled_dark_theme
+                : R.color.mdtp_date_picker_text_disabled;
         mInactivePaint.setColor(ContextCompat.getColor(context, inactiveColorRes));
         mInactivePaint.setAntiAlias(true);
         mInactivePaint.setTextAlign(Align.CENTER);
@@ -126,12 +128,12 @@ public class RadialTextsView extends View {
         // Calculate the radius for the main circle.
         if (mIs24HourMode) {
             mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_circle_radius_multiplier_24HourMode));
+                    res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
             mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_circle_radius_multiplier));
+                    res.getString(R.string.mdtp_circle_radius_multiplier));
             mAmPmCircleRadiusMultiplier =
-                    Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_ampm_circle_radius_multiplier));
+                    Float.parseFloat(res.getString(R.string.mdtp_ampm_circle_radius_multiplier));
         }
 
         // Initialize the widths and heights of the grid, and calculate the values for the numbers.
@@ -139,21 +141,21 @@ public class RadialTextsView extends View {
         mTextGridWidths = new float[7];
         if (mHasInnerCircle) {
             mNumbersRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_numbers_radius_multiplier_outer));
+                    res.getString(R.string.mdtp_numbers_radius_multiplier_outer));
             mTextSizeMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_text_size_multiplier_outer));
+                    res.getString(R.string.mdtp_text_size_multiplier_outer));
             mInnerNumbersRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_numbers_radius_multiplier_inner));
+                    res.getString(R.string.mdtp_numbers_radius_multiplier_inner));
             mInnerTextSizeMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_text_size_multiplier_inner));
+                    res.getString(R.string.mdtp_text_size_multiplier_inner));
 
             mInnerTextGridHeights = new float[7];
             mInnerTextGridWidths = new float[7];
         } else {
             mNumbersRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_numbers_radius_multiplier_normal));
+                    res.getString(R.string.mdtp_numbers_radius_multiplier_normal));
             mTextSizeMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_text_size_multiplier_normal));
+                    res.getString(R.string.mdtp_text_size_multiplier_normal));
         }
 
         mAnimationRadiusMultiplier = 1;

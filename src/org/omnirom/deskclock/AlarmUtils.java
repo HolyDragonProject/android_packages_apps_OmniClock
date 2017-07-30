@@ -83,7 +83,7 @@ public class AlarmUtils {
         }
         final TimePickerDialog timePickerFragment = TimePickerDialog.newInstance((TimePickerDialog.OnTimeSetListener)fragment,
                 hour, minute, DateFormat.is24HourFormat(fragment.getActivity()),
-                !Utils.isLightTheme(fragment.getActivity()));
+                Utils.getThemeId(fragment.getActivity()));
         timePickerFragment.show(manager, FRAG_TAG_TIME_PICKER);
     }
 

@@ -27,10 +27,10 @@
     <color name="mdtp_numbers_text_color">#ff212121</color>
 
     <color name="mdtp_transparent_black">#7f000000</color>
-    <color name="mdtp_accent_color">#009688</color>
+    <color name="mdtp_accent_color">#245c75</color>
     <color name="mdtp_accent_color_focused">#76ffffff</color>
     <color name="mdtp_neutral_pressed">#33999999</color>
-    <color name="mdtp_accent_color_dark">#00796b</color>
+    <color name="mdtp_accent_color_dark">#245c75</color>
     <color name="mdtp_date_picker_text_normal">#ff212121</color>
     <color name="mdtp_date_picker_text_highlighted">@color/mdtp_date_picker_text_normal</color>
     <color name="mdtp_date_picker_text_disabled">#ccc</color>
@@ -51,7 +51,7 @@
     <color name="mdtp_button_selected">#33969696</color>
 
     <!-- TimePicker Dark Theme -->
-    <color name="mdtp_circle_background_dark_theme">#525252</color>
+    <color name="mdtp_circle_background_dark_theme">#21282b</color>
 
     <!-- Colors for red theme -->
     <color name="mdtp_red">@color/mdtp_accent_color</color>

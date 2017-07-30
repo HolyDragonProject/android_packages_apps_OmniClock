@@ -23,6 +23,6 @@
     android:singleLine="true"
     android:ellipsize="marquee"
     android:gravity="center_vertical"
-    style="@style/TextAppearanceDayNight" >
+    style="@style/SpinnerTextStyle" >
 
 </TextView>

@@ -38,6 +38,8 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
+import com.wdullaer.materialdatetimepicker.R;
+
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -139,7 +141,7 @@ public class RadialPickerLayout extends FrameLayout implements OnTouchListener {
         mGrayBox = new View(context);
         mGrayBox.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mGrayBox.setBackgroundColor(ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_transparent_black));
+        mGrayBox.setBackgroundColor(ContextCompat.getColor(context, R.color.mdtp_transparent_black));
         mGrayBox.setVisibility(View.INVISIBLE);
         addView(mGrayBox);
 

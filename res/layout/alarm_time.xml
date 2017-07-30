@@ -201,7 +201,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/primary"
+                    android:background="?android:attr/colorPrimary"
                     android:orientation="horizontal"
                     android:paddingEnd="@dimen/alarm_side_padding"
                     android:paddingStart="@dimen/alarm_side_padding" >

@@ -53,4 +53,8 @@ public interface TimePickerController {
      * @return timepoint - the nearest valid timepoint
      */
     Timepoint roundToNearest(Timepoint time, Timepoint.TYPE type);
+
+    /**
+     */
+    int getViewBackgroundColor();
 }

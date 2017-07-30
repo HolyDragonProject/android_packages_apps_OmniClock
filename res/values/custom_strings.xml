@@ -166,4 +166,5 @@
     <string name="local_query_stream">Streams</string>
     <string name="offline_notif_title">Device offline</string>
     <string name="offline_notif_message">Please change your system settings</string>
+    <string name="color_theme_black">Black</string>
 </resources>

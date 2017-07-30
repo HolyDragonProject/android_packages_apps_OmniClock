@@ -128,19 +128,14 @@ public class SettingsActivity extends PreferenceActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Utils.getThemeResourceId(this));
+        getWindow().getDecorView().setBackgroundColor(Utils.getViewBackgroundColor(this));
+
         super.onCreate(savedInstanceState);
+
         addPreferencesFromResource(R.xml.settings);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        boolean light = Utils.isLightTheme(this);
-        if (light) {
-            setTheme(R.style.SettingsTheme);
-            getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.view_background));
-        } else {
-            setTheme(R.style.SettingsThemeDark);
-            getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.view_background_dark));
-        }
 
         // We don't want to reconstruct the timezone list every single time
         // onResume() is called so we do it once in onCreate
@@ -266,12 +261,6 @@ public class SettingsActivity extends PreferenceActivity
             setTimerAlarmSummary();
             return true;
         }
-        return false;
-    }
-
-    @Override
-    protected boolean isValidFragment(String fragmentName) {
-        // Exported activity but no headers we support.
         return false;
     }
 
@@ -497,5 +486,10 @@ public class SettingsActivity extends PreferenceActivity
         Intent i = new Intent();
         i.setAction(DeskClock.COLOR_THEME_UPDATE_INTENT);
         sendBroadcast(i);
+    }
+
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
+        return false;
     }
 }

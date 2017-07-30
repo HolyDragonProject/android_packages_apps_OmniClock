@@ -42,8 +42,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
+import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.text.SimpleDateFormat;
@@ -133,9 +134,9 @@ public class DatePickerDialog extends DialogFragment implements
     private boolean mDismissOnPause = false;
     private boolean mAutoDismiss = false;
     private int mDefaultView = MONTH_AND_DAY_VIEW;
-    private int mOkResid = com.wdullaer.materialdatetimepicker.R.string.mdtp_ok;
+    private int mOkResid = R.string.mdtp_ok;
     private String mOkString;
-    private int mCancelResid = com.wdullaer.materialdatetimepicker.R.string.mdtp_cancel;
+    private int mCancelResid = R.string.mdtp_cancel;
     private String mCancelString;
 
     private HapticFeedbackController mHapticFeedbackController;
@@ -256,14 +257,14 @@ public class DatePickerDialog extends DialogFragment implements
         // All options have been set at this point: round the initial selection if necessary
         setToNearestDate(mCalendar);
 
-        View view = inflater.inflate(com.wdullaer.materialdatetimepicker.R.layout.mdtp_date_picker_dialog, container, false);
+        View view = inflater.inflate(R.layout.mdtp_date_picker_dialog, container, false);
 
-        mDayOfWeekView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.date_picker_header);
-        mMonthAndDayView = (LinearLayout) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.date_picker_month_and_day);
+        mDayOfWeekView = (TextView) view.findViewById(R.id.date_picker_header);
+        mMonthAndDayView = (LinearLayout) view.findViewById(R.id.date_picker_month_and_day);
         mMonthAndDayView.setOnClickListener(this);
-        mSelectedMonthTextView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.date_picker_month);
-        mSelectedDayTextView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.date_picker_day);
-        mYearView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.date_picker_year);
+        mSelectedMonthTextView = (TextView) view.findViewById(R.id.date_picker_month);
+        mSelectedDayTextView = (TextView) view.findViewById(R.id.date_picker_day);
+        mYearView = (TextView) view.findViewById(R.id.date_picker_year);
         mYearView.setOnClickListener(this);
 
         int listPosition = -1;
@@ -304,15 +305,15 @@ public class DatePickerDialog extends DialogFragment implements
         }
 
         Resources res = getResources();
-        mDayPickerDescription = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_day_picker_description);
-        mSelectDay = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_select_day);
-        mYearPickerDescription = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_year_picker_description);
-        mSelectYear = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_select_year);
+        mDayPickerDescription = res.getString(R.string.mdtp_day_picker_description);
+        mSelectDay = res.getString(R.string.mdtp_select_day);
+        mYearPickerDescription = res.getString(R.string.mdtp_year_picker_description);
+        mSelectYear = res.getString(R.string.mdtp_select_year);
 
-        int bgColorResource = mThemeDark ? com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_view_animator_dark_theme : com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_view_animator;
+        int bgColorResource = mThemeDark ? R.color.mdtp_date_picker_view_animator_dark_theme : R.color.mdtp_date_picker_view_animator;
         view.setBackgroundColor(ContextCompat.getColor(activity, bgColorResource));
 
-        mAnimator = (AccessibleDateAnimator) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.animator);
+        mAnimator = (AccessibleDateAnimator) view.findViewById(R.id.animator);
         mAnimator.addView(mDayPickerView);
         mAnimator.addView(mYearPickerView);
         mAnimator.setDateMillis(mCalendar.getTimeInMillis());
@@ -325,7 +326,7 @@ public class DatePickerDialog extends DialogFragment implements
         animation2.setDuration(ANIMATION_DURATION);
         mAnimator.setOutAnimation(animation2);
 
-        Button okButton = (Button) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.ok);
+        Button okButton = (Button) view.findViewById(R.id.ok);
         okButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -339,7 +340,7 @@ public class DatePickerDialog extends DialogFragment implements
         if(mOkString != null) okButton.setText(mOkString);
         else okButton.setText(mOkResid);
 
-        Button cancelButton = (Button) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.cancel);
+        Button cancelButton = (Button) view.findViewById(R.id.cancel);
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -357,12 +358,12 @@ public class DatePickerDialog extends DialogFragment implements
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
         if(mDayOfWeekView != null) mDayOfWeekView.setBackgroundColor(Utils.darkenColor(mAccentColor));
-        view.findViewById(com.wdullaer.materialdatetimepicker.R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
+        view.findViewById(R.id.day_picker_selected_date_layout).setBackgroundColor(mAccentColor);
         okButton.setTextColor(mAccentColor);
         cancelButton.setTextColor(mAccentColor);
 
         if(getDialog() == null) {
-            view.findViewById(com.wdullaer.materialdatetimepicker.R.id.done_background).setVisibility(View.GONE);
+            view.findViewById(R.id.done_background).setVisibility(View.GONE);
         }
 
         updateDisplay(false);
@@ -783,9 +784,9 @@ public class DatePickerDialog extends DialogFragment implements
     @Override
     public void onClick(View v) {
         tryVibrate();
-        if (v.getId() == com.wdullaer.materialdatetimepicker.R.id.date_picker_year) {
+        if (v.getId() == R.id.date_picker_year) {
             setCurrentView(YEAR_VIEW);
-        } else if (v.getId() == com.wdullaer.materialdatetimepicker.R.id.date_picker_month_and_day) {
+        } else if (v.getId() == R.id.date_picker_month_and_day) {
             setCurrentView(MONTH_AND_DAY_VIEW);
         }
     }

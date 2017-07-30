@@ -132,9 +132,7 @@ public class ClockFragment extends DeskClockFragment {
         });
 
         CardView clockFrameCard = (CardView) v.findViewById(R.id.main_clock_frame_card);
-        clockFrameCard.setCardBackgroundColor(Utils.isLightTheme(getActivity()) ?
-                getResources().getColor(R.color.view_background) :
-                getResources().getColor(R.color.view_background_dark));
+        clockFrameCard.setCardBackgroundColor(Utils.getViewBackgroundColor(getActivity()));
 
         final TextView dateDisplay = (TextView) mClockFrame.findViewById(R.id.date);
         if (dateDisplay != null) {

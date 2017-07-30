@@ -228,9 +228,7 @@ public class WorldClockAdapter extends BaseAdapter {
         aclock.setWorldClock(true);
 
         CardView worldCLockCard = (CardView) clock.findViewById(org.omnirom.deskclock.R.id.world_clock_card);
-        worldCLockCard.setCardBackgroundColor(Utils.isLightTheme(mContext) ?
-                mContext.getResources().getColor(org.omnirom.deskclock.R.color.view_background) :
-                mContext.getResources().getColor(org.omnirom.deskclock.R.color.view_background_dark));
+        worldCLockCard.setCardBackgroundColor(Utils.getViewBackgroundColor(mContext));
 
         if (mClockStyle.equals("analog")) {
             dclock.setVisibility(View.GONE);

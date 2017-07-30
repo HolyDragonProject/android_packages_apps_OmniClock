@@ -26,6 +26,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 import java.text.DateFormatSymbols;
@@ -81,31 +82,31 @@ public class AmPmCirclesView extends View {
         Resources res = context.getResources();
 
         if (controller.isThemeDark()) {
-            mUnselectedColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_circle_background_dark_theme);
-            mAmPmTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_white);
-            mAmPmDisabledTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_disabled_dark_theme);
+            mUnselectedColor = ContextCompat.getColor(context, R.color.mdtp_circle_background_dark_theme);
+            mAmPmTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
+            mAmPmDisabledTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled_dark_theme);
             mSelectedAlpha = SELECTED_ALPHA_THEME_DARK;
         } else {
-            mUnselectedColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_circle_color);
-            mAmPmTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_ampm_text_color);
-            mAmPmDisabledTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_date_picker_text_disabled);
+            mUnselectedColor = ContextCompat.getColor(context, R.color.mdtp_circle_color);
+            mAmPmTextColor = ContextCompat.getColor(context, R.color.mdtp_ampm_text_color);
+            mAmPmDisabledTextColor = ContextCompat.getColor(context, R.color.mdtp_date_picker_text_disabled);
             mSelectedAlpha = SELECTED_ALPHA;
         }
 
         mSelectedColor = controller.getAccentColor();
         mTouchedColor = Utils.darkenColor(mSelectedColor);
-        mAmPmSelectedTextColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_white);
+        mAmPmSelectedTextColor = ContextCompat.getColor(context, R.color.mdtp_white);
 
-        String typefaceFamily = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_sans_serif);
+        String typefaceFamily = res.getString(R.string.mdtp_sans_serif);
         Typeface tf = Typeface.create(typefaceFamily, Typeface.NORMAL);
         mPaint.setTypeface(tf);
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Align.CENTER);
 
         mCircleRadiusMultiplier =
-                Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_circle_radius_multiplier));
+                Float.parseFloat(res.getString(R.string.mdtp_circle_radius_multiplier));
         mAmPmCircleRadiusMultiplier =
-                Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_ampm_circle_radius_multiplier));
+                Float.parseFloat(res.getString(R.string.mdtp_ampm_circle_radius_multiplier));
         String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
         mAmText = amPmTexts[0];
         mPmText = amPmTexts[1];

@@ -256,7 +256,7 @@ public class AddCityDialog implements OnClickListener,
 
         // Create the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context,
-                Utils.isLightTheme(context) ? org.omnirom.deskclock.R.style.DialogTheme : org.omnirom.deskclock.R.style.DialogThemeDark);
+                Utils.getDialogThemeResourceId(context));
         builder.setTitle(org.omnirom.deskclock.R.string.cities_add_city_title);
         builder.setView(dlgView);
         builder.setPositiveButton(context.getString(android.R.string.ok), this);

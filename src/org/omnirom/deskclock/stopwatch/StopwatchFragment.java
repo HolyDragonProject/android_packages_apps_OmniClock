@@ -385,10 +385,7 @@ public class StopwatchFragment extends DeskClockFragment
         ViewGroup v = (ViewGroup)inflater.inflate(org.omnirom.deskclock.R.layout.stopwatch_fragment, container, false);
 
         mTime = (CircleTimerView)v.findViewById(org.omnirom.deskclock.R.id.stopwatch_time);
-        mTime.setBackgroundResource(Utils.isLightTheme(getActivity()) ?
-                org.omnirom.deskclock.R.drawable.bg_circle_view :
-                org.omnirom.deskclock.R.drawable.bg_circle_view_dark);
-        mTimeText = (CountingTimerView)v.findViewById(org.omnirom.deskclock.R.id.stopwatch_time_text);
+        mTime.setBackgroundResource(Utils.getCircleViewBackgroundResourceId(getActivity()));        mTimeText = (CountingTimerView)v.findViewById(org.omnirom.deskclock.R.id.stopwatch_time_text);
         mLapsList = (ListView)v.findViewById(org.omnirom.deskclock.R.id.laps_list);
         mLapsList.setDividerHeight(0);
         mLapsAdapter = new LapsListAdapter(getActivity());

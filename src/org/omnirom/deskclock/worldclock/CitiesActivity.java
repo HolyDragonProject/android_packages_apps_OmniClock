@@ -114,8 +114,6 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
     private SharedPreferences mPrefs;
     private int mSortType;
 
-    private boolean mLightTheme = true;
-
     private class SearchActionExpandListener implements OnActionExpandListener {
         private Menu mMenu;
 
@@ -525,6 +523,8 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Utils.getThemeResourceId(this));
+
         super.onCreate(savedInstanceState);
         mFactory = LayoutInflater.from(this);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -535,13 +535,6 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
             mPosition = savedInstanceState.getInt(KEY_LIST_POSITION);
         }
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mLightTheme = Utils.isLightTheme(this);
-        if (mLightTheme) {
-            setTheme(org.omnirom.deskclock.R.style.DeskClock);
-        } else {
-            setTheme(org.omnirom.deskclock.R.style.DeskClockDark);
-        }
 
         updateLayout();
     }
@@ -574,19 +567,9 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
     private void updateLayout() {
         setContentView(org.omnirom.deskclock.R.layout.cities_activity);
         mCitiesList = (ListView) findViewById(org.omnirom.deskclock.R.id.cities_list);
-        if (mLightTheme) {
-            mCitiesList.setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background));
-        } else {
-            mCitiesList.setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background_dark));
-        }
         mCitiesList.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
 
         mSelectedCitiesList = (ListView) findViewById(org.omnirom.deskclock.R.id.selected_cities_list);
-        if (mLightTheme) {
-            mSelectedCitiesList.setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background));
-        } else {
-            mSelectedCitiesList.setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background_dark));
-        }
         mSelectedCitiesList.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
 
         setFastScroll(TextUtils.isEmpty(mQueryTextBuffer.toString().trim()));

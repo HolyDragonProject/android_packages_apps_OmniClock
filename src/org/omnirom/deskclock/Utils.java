@@ -854,6 +854,7 @@ public class Utils {
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME, alarm.getRingtoneName());
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_RANDOM, alarm.getRandomMode(false));
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_VOLUME, alarm.alarmVolume);
+        spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_ID, getThemeId(context));
         return spotifyIntent;
     }
 
@@ -877,7 +878,7 @@ public class Utils {
         spotifyIntent.setComponent(cn);
         spotifyIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_URI, alarm.alert.toString());
         spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
-        return spotifyIntent;
+        spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_ID, getThemeId(context));        return spotifyIntent;
     }
 
     public static Intent getSpotifySettingsIntent(final Context context) {
@@ -886,6 +887,7 @@ public class Utils {
         spotifyIntent.setComponent(cn);
         spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
         spotifyIntent.putExtra(AlarmConstants.DATA_OMNICLOCK_PARENT, true);
+        spotifyIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_ID, getThemeId(context));
         return spotifyIntent;
     }
 
@@ -893,13 +895,91 @@ public class Utils {
         Intent browseIntent = new Intent(context, BrowseActivity.class);
         browseIntent.putExtra(AlarmConstants.DATA_ALARM_EXTRA, alarm);
         browseIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_LIGHT, isLightTheme(context));
-        return browseIntent;
+        browseIntent.putExtra(AlarmConstants.DATA_COLOR_THEME_ID, getThemeId(context));        return browseIntent;
     }
 
     public static boolean isLightTheme(final Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String color = prefs.getString(SettingsActivity.KEY_COLOR_THEME, "0");
         return color.equals("0");
+    }
+
+    public static int getThemeId(final Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String color = prefs.getString(SettingsActivity.KEY_COLOR_THEME, "0");
+        return Integer.valueOf(color);
+    }
+
+    public static int getThemeResourceId(final Context context) {
+        switch (getThemeId(context)) {
+            case 0:
+                return R.style.DeskClock;
+            case 1:
+                return R.style.DeskClockDark;
+            case 2:
+                return R.style.DeskClockBlack;
+        }
+        return R.style.DeskClock;
+    }
+
+    public static int getThemeResourceId(final Context context, int themeId) {
+        switch (themeId) {
+            case 0:
+                return R.style.DeskClock;
+            case 1:
+                return R.style.DeskClockDark;
+            case 2:
+                return R.style.DeskClockBlack;
+        }
+        return R.style.DeskClock;
+    }
+
+    public static int getDialogThemeResourceId(final Context context) {
+        switch (getThemeId(context)) {
+            case 0:
+                return R.style.DialogTheme;
+            case 1:
+                return R.style.DialogThemeDark;
+            case 2:
+                return R.style.DialogThemeBlack;
+        }
+        return R.style.DialogTheme;
+    }
+
+    public static int getViewBackgroundColor(final Context context) {
+        switch (getThemeId(context)) {
+            case 0:
+                return context.getResources().getColor(R.color.view_background);
+            case 1:
+                return context.getResources().getColor(R.color.view_background_dark);
+            case 2:
+                return context.getResources().getColor(R.color.view_background_black);
+        }
+        return context.getResources().getColor(R.color.view_background);
+    }
+
+    public static int getViewBackgroundColor(final Context context, int themeId) {
+        switch (themeId) {
+            case 0:
+                return context.getResources().getColor(R.color.view_background);
+            case 1:
+                return context.getResources().getColor(R.color.view_background_dark);
+            case 2:
+                return context.getResources().getColor(R.color.view_background_black);
+        }
+        return context.getResources().getColor(R.color.view_background);
+    }
+
+    public static int getCircleViewBackgroundResourceId(final Context context) {
+        switch (getThemeId(context)) {
+            case 0:
+                return R.drawable.bg_circle_view;
+            case 1:
+                return R.drawable.bg_circle_view_dark;
+            case 2:
+                return R.drawable.bg_circle_view_black;
+        }
+        return R.drawable.bg_circle_view;
     }
 
     public static List<Uri> getRandomMusicFiles(Context context, int size) {

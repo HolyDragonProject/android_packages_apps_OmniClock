@@ -158,6 +158,22 @@ public class Utils {
         return ContextCompat.getColor(context, R.color.mdtp_accent_color);
     }
 
+    public static int getPrimaryColorFromThemeIfAvailable(Context context) {
+        TypedValue typedValue = new TypedValue();
+        // First, try the android:colorAccent
+        if (Build.VERSION.SDK_INT >= 21) {
+            context.getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true);
+            return typedValue.data;
+        }
+        // Next, try colorAccent from support lib
+        int colorAccentResId = context.getResources().getIdentifier("colorPrimary", "attr", context.getPackageName());
+        if (colorAccentResId != 0 && context.getTheme().resolveAttribute(colorAccentResId, typedValue, true)) {
+            return typedValue.data;
+        }
+        // Return the value in mdtp_accent_color
+        return ContextCompat.getColor(context, R.color.mdtp_background_color);
+    }
+
     /**
      * Gets dialog type (Light/Dark) from current theme
      * @param context The context to use as reference for the boolean

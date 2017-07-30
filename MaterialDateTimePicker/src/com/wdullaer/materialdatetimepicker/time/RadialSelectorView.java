@@ -25,9 +25,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.Utils;
 
 /**
@@ -100,11 +102,10 @@ public class RadialSelectorView extends View {
 
         Resources res = context.getResources();
 
-        int accentColor = controller.getAccentColor();
-        mPaint.setColor(accentColor);
+        mPaint.setColor(ContextCompat.getColor(context, R.color.mdtp_accent_color_dark));
         mPaint.setAntiAlias(true);
 
-        mDotPaint.setColor(getResources().getColor(com.wdullaer.materialdatetimepicker.R.color.mdtp_white));
+        mDotPaint.setColor(getResources().getColor(R.color.mdtp_white));
         mDotPaint.setAntiAlias(true);
 
         mSelectionAlpha = controller.isThemeDark() ? SELECTED_ALPHA_THEME_DARK : SELECTED_ALPHA;
@@ -113,27 +114,27 @@ public class RadialSelectorView extends View {
         mIs24HourMode = controller.is24HourMode();
         if (mIs24HourMode) {
             mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_circle_radius_multiplier_24HourMode));
+                    res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
             mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_circle_radius_multiplier));
+                    res.getString(R.string.mdtp_circle_radius_multiplier));
             mAmPmCircleRadiusMultiplier =
-                    Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_ampm_circle_radius_multiplier));
+                    Float.parseFloat(res.getString(R.string.mdtp_ampm_circle_radius_multiplier));
         }
 
         // Calculate values for the radius size(s) of the numbers circle(s).
         mHasInnerCircle = hasInnerCircle;
         if (hasInnerCircle) {
             mInnerNumbersRadiusMultiplier =
-                    Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_numbers_radius_multiplier_inner));
+                    Float.parseFloat(res.getString(R.string.mdtp_numbers_radius_multiplier_inner));
             mOuterNumbersRadiusMultiplier =
-                    Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_numbers_radius_multiplier_outer));
+                    Float.parseFloat(res.getString(R.string.mdtp_numbers_radius_multiplier_outer));
         } else {
             mNumbersRadiusMultiplier =
-                    Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_numbers_radius_multiplier_normal));
+                    Float.parseFloat(res.getString(R.string.mdtp_numbers_radius_multiplier_normal));
         }
         mSelectionRadiusMultiplier =
-                Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_selection_radius_multiplier));
+                Float.parseFloat(res.getString(R.string.mdtp_selection_radius_multiplier));
 
         // Calculate values for the transition mid-way states.
         mAnimationRadiusMultiplier = 1;

@@ -166,7 +166,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
-                Utils.isLightTheme(getActivity()) ? R.style.DialogTheme : R.style.DialogThemeDark)
+                Utils.getDialogThemeResourceId(getActivity()))
                 .setTitle(mPreAlarm ? R.string.prealarm_title : R.string.alarm_title)
                 .setPositiveButton(android.R.string.ok, this)
                 .setNeutralButton(R.string.alarm_test_button, null)
@@ -372,20 +372,6 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         cacheRingtones();
         initView();
         return view;
-    }
-
-    private void launchAlarmMediaPicker() {
-        Intent intent = new Intent();
-        intent.setType("*/*");
-        String[] mimetypes = {"audio/*", "application/ogg"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(
-                Intent.createChooser(intent,
-                        getResources().getString(R.string.pick_media)),
-                REQUEST_CODE_MEDIA);
     }
 
     private void checkStoragePermissions(Runnable runAfter) {
@@ -797,7 +783,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
 
     private void showSpotifyErrorDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
-                Utils.isLightTheme(getActivity()) ? R.style.DialogTheme : R.style.DialogThemeDark);
+                Utils.getDialogThemeResourceId(getActivity()));
         builder.setTitle(android.R.string.dialog_alert_title);
         builder.setMessage(R.string.no_spotify_message);
         builder.setPositiveButton(android.R.string.ok, null);

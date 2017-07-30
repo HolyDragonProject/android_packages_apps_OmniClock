@@ -48,8 +48,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.wdullaer.materialdatetimepicker.HapticFeedbackController;
+import com.wdullaer.materialdatetimepicker.R;
 import com.wdullaer.materialdatetimepicker.TypefaceHelper;
 import com.wdullaer.materialdatetimepicker.Utils;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout.OnValueSelectedListener;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -61,7 +63,7 @@ import java.util.Locale;
  * Dialog to set a time.
  */
 public class TimePickerDialog extends DialogFragment implements
-        RadialPickerLayout.OnValueSelectedListener, TimePickerController {
+        OnValueSelectedListener, TimePickerController {
     private static final String TAG = "TimePickerDialog";
 
     private static final String KEY_INITIAL_TIME = "initial_time";
@@ -123,8 +125,10 @@ public class TimePickerDialog extends DialogFragment implements
     private String mTitle;
     private boolean mThemeDark;
     private boolean mThemeDarkChanged;
+    private int mThemeId;
     private boolean mVibrate;
     private int mAccentColor = -1;
+    private int mPrimaryColor;
     private boolean mDismissOnPause;
     private Timepoint[] mSelectableTimes;
     private Timepoint mMinTime;
@@ -176,34 +180,35 @@ public class TimePickerDialog extends DialogFragment implements
     }
 
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
-            int hourOfDay, int minute, int second, boolean is24HourMode, boolean darkMode) {
+            int hourOfDay, int minute, int second, boolean is24HourMode, int darkMode) {
         TimePickerDialog ret = new TimePickerDialog();
         ret.initialize(callback, hourOfDay, minute, second, is24HourMode, darkMode);
         return ret;
     }
 
     public static TimePickerDialog newInstance(OnTimeSetListener callback,
-            int hourOfDay, int minute, boolean is24HourMode, boolean darkMode) {
-        return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode, darkMode);
+            int hourOfDay, int minute, boolean is24HourMode, int themeId) {
+        return TimePickerDialog.newInstance(callback, hourOfDay, minute, 0, is24HourMode, themeId);
     }
 
     public void initialize(OnTimeSetListener callback,
-            int hourOfDay, int minute, int second, boolean is24HourMode, boolean darkMode) {
+            int hourOfDay, int minute, int second, boolean is24HourMode, int themeId) {
         mCallback = callback;
 
         mInitialTime = new Timepoint(hourOfDay, minute, second);
         mIs24HourMode = is24HourMode;
         mInKbMode = false;
         mTitle = "";
-        mThemeDark = darkMode;
+        mThemeId = themeId;
+        mThemeDark = mThemeId != 0;
         mThemeDarkChanged = false;
         mAccentColor = -1;
         mVibrate = true;
         mDismissOnPause = false;
         mEnableSeconds = false;
         mEnableMinutes = true;
-        mOkResid = com.wdullaer.materialdatetimepicker.R.string.mdtp_ok;
-        mCancelResid = com.wdullaer.materialdatetimepicker.R.string.mdtp_cancel;
+        mOkResid = R.string.mdtp_ok;
+        mCancelResid = R.string.mdtp_cancel;
     }
 
     /**
@@ -258,6 +263,19 @@ public class TimePickerDialog extends DialogFragment implements
     @Override
     public int getAccentColor() {
         return mAccentColor;
+    }
+
+    @Override
+    public int getViewBackgroundColor() {
+        switch (mThemeId) {
+            case 0:
+                return getResources().getColor(R.color.view_background);
+            case 1:
+                return getResources().getColor(R.color.view_background_dark);
+            case 2:
+                return getResources().getColor(R.color.view_background_black);
+        }
+        return getResources().getColor(R.color.view_background);
     }
 
     /**
@@ -466,14 +484,15 @@ public class TimePickerDialog extends DialogFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        View view = inflater.inflate(com.wdullaer.materialdatetimepicker.R.layout.mdtp_time_picker_dialog, container,false);
+        View view = inflater.inflate(R.layout.mdtp_time_picker_dialog, container,false);
         KeyboardListener keyboardListener = new KeyboardListener();
-        view.findViewById(com.wdullaer.materialdatetimepicker.R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
+        view.findViewById(R.id.time_picker_dialog).setOnKeyListener(keyboardListener);
 
         // If an accent color has not been set manually, get it from the context
         if (mAccentColor == -1) {
             mAccentColor = Utils.getAccentColorFromThemeIfAvailable(getActivity());
         }
+        mPrimaryColor = Utils.getPrimaryColorFromThemeIfAvailable(getActivity());
 
         // if theme mode has not been set by java code, check if it is specified in Style.xml
         if (!mThemeDarkChanged) {
@@ -482,25 +501,25 @@ public class TimePickerDialog extends DialogFragment implements
 
         Resources res = getResources();
         Context context = getActivity();
-        mHourPickerDescription = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_hour_picker_description);
-        mSelectHours = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_select_hours);
-        mMinutePickerDescription = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_minute_picker_description);
-        mSelectMinutes = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_select_minutes);
-        mSecondPickerDescription = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_second_picker_description);
-        mSelectSeconds = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_select_seconds);
-        mSelectedColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_white);
-        mUnselectedColor = ContextCompat.getColor(context, com.wdullaer.materialdatetimepicker.R.color.mdtp_accent_color_focused);
+        mHourPickerDescription = res.getString(R.string.mdtp_hour_picker_description);
+        mSelectHours = res.getString(R.string.mdtp_select_hours);
+        mMinutePickerDescription = res.getString(R.string.mdtp_minute_picker_description);
+        mSelectMinutes = res.getString(R.string.mdtp_select_minutes);
+        mSecondPickerDescription = res.getString(R.string.mdtp_second_picker_description);
+        mSelectSeconds = res.getString(R.string.mdtp_select_seconds);
+        mSelectedColor = ContextCompat.getColor(context, R.color.mdtp_white);
+        mUnselectedColor = ContextCompat.getColor(context, R.color.mdtp_accent_color_focused);
 
-        mHourView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.hours);
+        mHourView = (TextView) view.findViewById(R.id.hours);
         mHourView.setOnKeyListener(keyboardListener);
-        mHourSpaceView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.hour_space);
-        mMinuteSpaceView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.minutes_space);
-        mMinuteView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.minutes);
+        mHourSpaceView = (TextView) view.findViewById(R.id.hour_space);
+        mMinuteSpaceView = (TextView) view.findViewById(R.id.minutes_space);
+        mMinuteView = (TextView) view.findViewById(R.id.minutes);
         mMinuteView.setOnKeyListener(keyboardListener);
-        mSecondSpaceView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.seconds_space);
-        mSecondView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.seconds);
+        mSecondSpaceView = (TextView) view.findViewById(R.id.seconds_space);
+        mSecondView = (TextView) view.findViewById(R.id.seconds);
         mSecondView.setOnKeyListener(keyboardListener);
-        mAmPmTextView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.ampm_label);
+        mAmPmTextView = (TextView) view.findViewById(R.id.ampm_label);
         mAmPmTextView.setOnKeyListener(keyboardListener);
         String[] amPmTexts = new DateFormatSymbols().getAmPmStrings();
         mAmText = amPmTexts[0];
@@ -514,7 +533,7 @@ public class TimePickerDialog extends DialogFragment implements
 
         mInitialTime = roundToNearest(mInitialTime);
 
-        mTimePicker = (RadialPickerLayout) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.time_picker);
+        mTimePicker = (RadialPickerLayout) view.findViewById(R.id.time_picker);
         mTimePicker.setOnValueSelectedListener(this);
         mTimePicker.setOnKeyListener(keyboardListener);
         mTimePicker.initialize(getActivity(), this, mInitialTime, mIs24HourMode);
@@ -549,7 +568,7 @@ public class TimePickerDialog extends DialogFragment implements
             }
         });
 
-        mOkButton = (Button) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.ok);
+        mOkButton = (Button) view.findViewById(R.id.ok);
         mOkButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -567,7 +586,7 @@ public class TimePickerDialog extends DialogFragment implements
         if(mOkString != null) mOkButton.setText(mOkString);
         else mOkButton.setText(mOkResid);
 
-        mCancelButton = (Button) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.cancel);
+        mCancelButton = (Button) view.findViewById(R.id.cancel);
         mCancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -581,7 +600,7 @@ public class TimePickerDialog extends DialogFragment implements
         mCancelButton.setVisibility(isCancelable() ? View.VISIBLE : View.GONE);
 
         // Enable or disable the AM/PM view.
-        mAmPmHitspace = view.findViewById(com.wdullaer.materialdatetimepicker.R.id.ampm_hitspace);
+        mAmPmHitspace = view.findViewById(R.id.ampm_hitspace);
         if (mIs24HourMode) {
             mAmPmTextView.setVisibility(View.GONE);
         } else {
@@ -608,13 +627,13 @@ public class TimePickerDialog extends DialogFragment implements
         // Disable seconds picker
         if (!mEnableSeconds) {
             mSecondView.setVisibility(View.GONE);
-            view.findViewById(com.wdullaer.materialdatetimepicker.R.id.separator_seconds).setVisibility(View.GONE);
+            view.findViewById(R.id.separator_seconds).setVisibility(View.GONE);
         }
 
         // Disable minutes picker
         if (!mEnableMinutes) {
             mMinuteSpaceView.setVisibility(View.GONE);
-            view.findViewById(com.wdullaer.materialdatetimepicker.R.id.separator).setVisibility(View.GONE);
+            view.findViewById(R.id.separator).setVisibility(View.GONE);
         }
 
         // Center stuff depending on what's visible
@@ -624,7 +643,7 @@ public class TimePickerDialog extends DialogFragment implements
                     LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
             );
             paramsSeparator.addRule(RelativeLayout.CENTER_IN_PARENT);
-            TextView separatorView = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.separator);
+            TextView separatorView = (TextView) view.findViewById(R.id.separator);
             separatorView.setLayoutParams(paramsSeparator);
         } else if (!mEnableMinutes && !mEnableSeconds) {
             // center the hour
@@ -638,17 +657,17 @@ public class TimePickerDialog extends DialogFragment implements
                 RelativeLayout.LayoutParams paramsAmPm = new RelativeLayout.LayoutParams(
                     LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
                 );
-                paramsAmPm.addRule(RelativeLayout.RIGHT_OF, com.wdullaer.materialdatetimepicker.R.id.hour_space);
-                paramsAmPm.addRule(RelativeLayout.ALIGN_BASELINE, com.wdullaer.materialdatetimepicker.R.id.hour_space);
+                paramsAmPm.addRule(RelativeLayout.RIGHT_OF, R.id.hour_space);
+                paramsAmPm.addRule(RelativeLayout.ALIGN_BASELINE, R.id.hour_space);
                 mAmPmTextView.setLayoutParams(paramsAmPm);
             }
         } else if (mEnableSeconds) {
             // link separator to minutes
-            final View separator = view.findViewById(com.wdullaer.materialdatetimepicker.R.id.separator);
+            final View separator = view.findViewById(R.id.separator);
             RelativeLayout.LayoutParams paramsSeparator = new RelativeLayout.LayoutParams(
                     LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
             );
-            paramsSeparator.addRule(RelativeLayout.LEFT_OF, com.wdullaer.materialdatetimepicker.R.id.minutes_space);
+            paramsSeparator.addRule(RelativeLayout.LEFT_OF, R.id.minutes_space);
             paramsSeparator.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
             separator.setLayoutParams(paramsSeparator);
 
@@ -664,7 +683,7 @@ public class TimePickerDialog extends DialogFragment implements
                 RelativeLayout.LayoutParams paramsMinutes = new RelativeLayout.LayoutParams(
                         LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT
                 );
-                paramsMinutes.addRule(RelativeLayout.RIGHT_OF, com.wdullaer.materialdatetimepicker.R.id.center_view);
+                paramsMinutes.addRule(RelativeLayout.RIGHT_OF, R.id.center_view);
                 mMinuteSpaceView.setLayoutParams(paramsMinutes);
             }
         }
@@ -675,8 +694,8 @@ public class TimePickerDialog extends DialogFragment implements
         setSecond(mInitialTime.getSecond());
 
         // Set up for keyboard mode.
-        mDoublePlaceholderText = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_time_placeholder);
-        mDeletedKeyFormat = res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_deleted_key);
+        mDoublePlaceholderText = res.getString(R.string.mdtp_time_placeholder);
+        mDeletedKeyFormat = res.getString(R.string.mdtp_deleted_key);
         mPlaceholderText = mDoublePlaceholderText.charAt(0);
         mAmKeyCode = mPmKeyCode = -1;
         generateLegalTimesTree();
@@ -689,22 +708,22 @@ public class TimePickerDialog extends DialogFragment implements
         }
 
         // Set the title (if any)
-        TextView timePickerHeader = (TextView) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.time_picker_header);
+        TextView timePickerHeader = (TextView) view.findViewById(R.id.time_picker_header);
         if (!mTitle.isEmpty()) {
             timePickerHeader.setVisibility(TextView.VISIBLE);
             timePickerHeader.setText(mTitle.toUpperCase(Locale.getDefault()));
         }
 
-        Spinner timeOffsetPicker = (Spinner) view.findViewById(com.wdullaer.materialdatetimepicker.R.id.time_offset_selector);
+        Spinner timeOffsetPicker = (Spinner) view.findViewById(R.id.time_offset_selector);
 
         List<String> offsetTimeEntries = new ArrayList<String>();
-        offsetTimeEntries.addAll(Arrays.asList(getResources().getStringArray(com.wdullaer.materialdatetimepicker.R.array.alarm_offset_entries)));
+        offsetTimeEntries.addAll(Arrays.asList(getResources().getStringArray(R.array.alarm_offset_entries)));
 
         final List<String> offsetTimeValues = new ArrayList<String>();
-        offsetTimeValues.addAll(Arrays.asList(getResources().getStringArray(com.wdullaer.materialdatetimepicker.R.array.alarm_offset_values)));
+        offsetTimeValues.addAll(Arrays.asList(getResources().getStringArray(R.array.alarm_offset_values)));
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity(),
-                com.wdullaer.materialdatetimepicker.R.layout.spinner_item, offsetTimeEntries);
+                R.layout.spinner_item, offsetTimeEntries);
         timeOffsetPicker.setAdapter(adapter);
 
         timeOffsetPicker.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -737,12 +756,12 @@ public class TimePickerDialog extends DialogFragment implements
         // Set the theme at the end so that the initialize()s above don't counteract the theme.
         mOkButton.setTextColor(mAccentColor);
         mCancelButton.setTextColor(mAccentColor);
-        timePickerHeader.setBackgroundColor(Utils.darkenColor(mAccentColor));
-        view.findViewById(com.wdullaer.materialdatetimepicker.R.id.time_display_background).setBackgroundColor(mAccentColor);
-        view.findViewById(com.wdullaer.materialdatetimepicker.R.id.time_display).setBackgroundColor(mAccentColor);
+        timePickerHeader.setBackgroundColor(mAccentColor);
+        view.findViewById(R.id.time_display_background).setBackgroundColor(mAccentColor);
+        view.findViewById(R.id.time_display).setBackgroundColor(mPrimaryColor);
 
         if(getDialog() == null) {
-            view.findViewById(com.wdullaer.materialdatetimepicker.R.id.done_background).setVisibility(View.GONE);
+            view.findViewById(R.id.done_background).setVisibility(View.GONE);
         }
 
         return view;

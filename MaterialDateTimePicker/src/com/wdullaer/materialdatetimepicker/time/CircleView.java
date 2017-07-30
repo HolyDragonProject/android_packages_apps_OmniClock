@@ -24,6 +24,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
+import com.wdullaer.materialdatetimepicker.R;
+
 /**
  * Draws a simple white circle on which the numbers will be drawn.
  */
@@ -57,20 +59,19 @@ public class CircleView extends View {
 
         Resources res = context.getResources();
 
-        int colorRes = controller.isThemeDark() ? com.wdullaer.materialdatetimepicker.R.color.mdtp_circle_background_dark_theme : com.wdullaer.materialdatetimepicker.R.color.mdtp_circle_color;
-        mCircleColor = ContextCompat.getColor(context, colorRes);
-        mDotColor = controller.getAccentColor();
+        mCircleColor = controller.getViewBackgroundColor();
+        mDotColor = ContextCompat.getColor(context, R.color.mdtp_accent_color_dark);
         mPaint.setAntiAlias(true);
 
         mIs24HourMode = controller.is24HourMode();
         if (mIs24HourMode) {
             mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_circle_radius_multiplier_24HourMode));
+                    res.getString(R.string.mdtp_circle_radius_multiplier_24HourMode));
         } else {
             mCircleRadiusMultiplier = Float.parseFloat(
-                    res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_circle_radius_multiplier));
+                    res.getString(R.string.mdtp_circle_radius_multiplier));
             mAmPmCircleRadiusMultiplier =
-                    Float.parseFloat(res.getString(com.wdullaer.materialdatetimepicker.R.string.mdtp_ampm_circle_radius_multiplier));
+                    Float.parseFloat(res.getString(R.string.mdtp_ampm_circle_radius_multiplier));
         }
 
         mIsInitialized = true;

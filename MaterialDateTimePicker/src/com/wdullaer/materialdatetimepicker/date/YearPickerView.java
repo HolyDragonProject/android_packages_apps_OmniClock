@@ -28,13 +28,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateChangedListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Displays a selectable list of years.
  */
-public class YearPickerView extends ListView implements OnItemClickListener, DatePickerDialog.OnDateChangedListener {
+public class YearPickerView extends ListView implements OnItemClickListener, OnDateChangedListener {
     private static final String TAG = "YearPickerView";
 
     private final DatePickerController mController;
@@ -54,8 +57,8 @@ public class YearPickerView extends ListView implements OnItemClickListener, Dat
                 LayoutParams.WRAP_CONTENT);
         setLayoutParams(frame);
         Resources res = context.getResources();
-        mViewSize = res.getDimensionPixelOffset(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_date_picker_view_animator_height);
-        mChildSize = res.getDimensionPixelOffset(com.wdullaer.materialdatetimepicker.R.dimen.mdtp_year_label_height);
+        mViewSize = res.getDimensionPixelOffset(R.dimen.mdtp_date_picker_view_animator_height);
+        mChildSize = res.getDimensionPixelOffset(R.dimen.mdtp_year_label_height);
         setVerticalFadingEdgeEnabled(true);
         setFadingEdgeLength(mChildSize / 3);
         init(context);
@@ -70,7 +73,7 @@ public class YearPickerView extends ListView implements OnItemClickListener, Dat
         for (int year = mController.getMinYear(); year <= mController.getMaxYear(); year++) {
             years.add(String.format("%d", year));
         }
-        mAdapter = new YearAdapter(context, com.wdullaer.materialdatetimepicker.R.layout.mdtp_year_label_text_view, years);
+        mAdapter = new YearAdapter(context, R.layout.mdtp_year_label_text_view, years);
         setAdapter(mAdapter);
     }
 

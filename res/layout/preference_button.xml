@@ -20,5 +20,5 @@
         android:layout_height="wrap_content"
         android:onClick="handleOkClick"
         style="@android:style/TextAppearance.Material.Button"
-        android:textColor="@color/primary" />
+        android:textColor="?android:attr/colorPrimary" />
 

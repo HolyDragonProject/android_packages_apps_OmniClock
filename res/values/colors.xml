@@ -56,10 +56,14 @@
     <color name="window_background">@color/material_grey_300</color>
     <color name="view_background_dark">@color/material_grey_800</color>
     <color name="window_background_dark">@color/material_grey_900</color>
+    <color name="view_background_black">#000000</color>
+    <color name="window_background_black">#ff151515</color>
     <color name="primary">#245c75</color>
     <color name="primary_dark">#183d4d</color>
     <color name="primary_light">#30245c75</color>
+    <color name="primary_black">#000000</color>
     <color name="accent">#e12475</color>
+    <color name="accent_black">#ffffff</color>
     <color name="analog_clock_bg_color">#21282b</color>
     <color name="analog_clock_hour_hand_color">#ffffff</color>
     <color name="analog_clock_minute_hand_color">#28abe3</color>

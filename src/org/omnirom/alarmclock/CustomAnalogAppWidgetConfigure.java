@@ -41,14 +41,8 @@ public class CustomAnalogAppWidgetConfigure extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        boolean light = Utils.isLightTheme(this);
-        if (light) {
-            setTheme(org.omnirom.deskclock.R.style.SettingsTheme);
-            getListView().setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background));
-        } else {
-            setTheme(org.omnirom.deskclock.R.style.SettingsThemeDark);
-            getListView().setBackgroundColor(getResources().getColor(org.omnirom.deskclock.R.color.window_background_dark));
-        }
+        setTheme(Utils.getThemeResourceId(this));
+        getListView().setBackgroundColor(Utils.getViewBackgroundColor(this));
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();

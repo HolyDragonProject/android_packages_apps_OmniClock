@@ -537,9 +537,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
             // standard view holder optimization
             final ItemHolder holder = new ItemHolder();
             holder.alarmItemCard = (CardView) view.findViewById(R.id.alarm_item_card);
-            holder.alarmItemCard.setCardBackgroundColor(Utils.isLightTheme(mContext) ?
-                    getResources().getColor(R.color.view_background) :
-                    getResources().getColor(R.color.view_background_dark));
+            holder.alarmItemCard.setCardBackgroundColor(Utils.getViewBackgroundColor(mContext));
             holder.tomorrowLabel = (TextView) view.findViewById(R.id.tomorrowLabel);
             holder.clock = (TextTime) view.findViewById(R.id.digital_clock);
             holder.daysOfWeek = (TextView) view.findViewById(R.id.daysOfWeek);

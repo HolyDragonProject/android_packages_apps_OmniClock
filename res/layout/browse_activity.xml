@@ -20,7 +20,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
     android:orientation="vertical"
     android:paddingTop="10dp">
 
@@ -40,7 +39,7 @@
             android:id="@+id/query_types"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/primary"
+            android:background="?android:attr/colorPrimary"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -261,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="10dp"
                 android:text="@string/choose_folder"
-                android:textColor="@color/primary"
+                android:textColor="?android:attr/textColorPrimary"
                 android:visibility="gone"
                 android:gravity="center_vertical|end"
                 android:background="?android:attr/selectableItemBackground"/>
