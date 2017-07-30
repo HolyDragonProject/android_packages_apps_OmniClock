@@ -762,6 +762,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                                 QueryItem item = new QueryItem();
                                 String name = Utils.getStreamM3UName(fileUri);
                                 item.mName = name == null ? file.getName() : name;
+                                item.mSubText = getStreamURLSub(fileUri);
                                 item.mUri = fileUri;
                                 item.mQueryType = QUERY_TYPE_STREAM;
                                 item.mIconId = R.drawable.ic_earth;
@@ -989,6 +990,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         if (f.isFile() && f.exists()) {
             String name = Utils.getStreamM3UName(uri);
             item.mName = name == null ? f.getName() : name;
+            item.mSubText = getStreamURLSub(uri);
             item.mQueryType = QUERY_TYPE_STREAM;
             item.mIconId = R.drawable.ic_earth;
             return true;
@@ -1121,7 +1123,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 iconId = queryItem.mIconId;
                 icon.setImageResource(iconId);
                 title.setText(queryItem.mName);
-                subTitle.setVisibility(View.GONE);
+                subTitle.setText(queryItem.mSubText);
                 playIcon.setVisibility(View.VISIBLE);
                 unknownTone = false;
             }
@@ -1641,6 +1643,14 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         if (prev != null) {
             ((DialogFragment) prev).dismiss();
         }
+    }
+
+    private String getStreamURLSub(String m3UFileUri) {
+        List<Uri> files = Utils.parseM3UPlaylist(m3UFileUri);
+        if (files.size() != 0) {
+            return files.get(0).toString();
+        }
+        return null;
     }
 }
 
