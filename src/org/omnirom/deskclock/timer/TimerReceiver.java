@@ -203,6 +203,7 @@ public class TimerReceiver extends BroadcastReceiver {
             }
             if (t.mState == TimerObj.STATE_RUNNING) {
                 t.mState = TimerObj.STATE_STOPPED;
+                t.updateTimeLeft(true);
             } else {
                 t.mState = TimerObj.STATE_RUNNING;
                 t.mStartTime = Utils.getTimeNow() - (t.mOriginalLength - t.mTimeLeft);
@@ -409,10 +410,6 @@ public class TimerReceiver extends BroadcastReceiver {
 
         // only for a single timer show notifiction buttons
         if (timer != null) {
-            long now = Utils.getTimeNow();
-            timer.updateTimeLeft(true);
-            long baseTime = now + timer.mTimeLeft;
-
             // Set up remoteviews for the notification.
             RemoteViews remoteViewsCollapsed = new RemoteViews(context.getPackageName(),
                     org.omnirom.deskclock.R.layout.custom_notif_collapsed);
@@ -533,7 +530,6 @@ public class TimerReceiver extends BroadcastReceiver {
             // only for a single timer show notifiction buttons
             if (timer != null) {
                 long now = Utils.getTimeNow();
-                timer.updateTimeLeft(true);
                 long baseTime = now + timer.mTimeLeft;
 
                 // Set up remoteviews for the notification.
