@@ -31,12 +31,11 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Criteria;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -73,10 +72,13 @@ public class AddCityDialog implements OnClickListener,
         OnItemSelectedListener, TextWatcher, LocationListener {
 
     private static final int HOURS_1 = 60 * 60000;
-    private static final long GPS_TIMEOUT = 30000L;
 
     private static final String STATE_CITY_NAME = "city_name";
     private static final String STATE_CITY_TIMEZONE = "city_tz";
+
+    private static final float LOCATION_ACCURACY_THRESHOLD_METERS = 50000;
+    private static final long LOCATION_REQUEST_TIMEOUT = 1L * 60L * 1000L; // request for at most 1 minutes
+    private static final long OUTDATED_LOCATION_THRESHOLD_MILLIS = 10L * 60L * 1000L; // 10 minutes
 
     public interface OnCitySelected {
         public void onCitySelected(String city, String tz);
@@ -109,17 +111,17 @@ public class AddCityDialog implements OnClickListener,
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            checkGpsAvailability();
+            checkLocationAvailability();
         }
     };
     private boolean mReceiverRegistered;
 
-    private final Runnable mGpsTimeout = new Runnable() {
+    private final Runnable mLocationTimeout = new Runnable() {
         @Override
         public void run() {
             Toast.makeText(mContext, org.omnirom.deskclock.R.string.cities_add_gps_not_available,
                     Toast.LENGTH_SHORT).show();
-            mGpsRequesting = false;
+            mLocationRequesting = false;
             mCityName.setEnabled(true);
             mCityName.setText("");
             mTimeZones.setEnabled(true);
@@ -189,12 +191,21 @@ public class AddCityDialog implements OnClickListener,
     private LocationManager mLocationMgr;
     private ConnectivityManager mConnectivityMgr;
     private CityAndTimeZoneLocator mLocator;
-    private boolean mGpsRequesting;
+    private boolean mLocationRequesting;
     private boolean mLoadingTz;
 
     private int mDefaultTimeZonePos;
     private int mSavedTimeZonePos;
     private CityTimeZone mDefaultTimeZone;
+
+
+    private static final Criteria sLocationCriteria;
+    static {
+        sLocationCriteria = new Criteria();
+        sLocationCriteria.setPowerRequirement(Criteria.POWER_LOW);
+        sLocationCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        sLocationCriteria.setCostAllowed(false);
+    }
 
     public AddCityDialog(Context context, LayoutInflater inflater, OnCitySelected listener) {
         mContext = context;
@@ -204,16 +215,8 @@ public class AddCityDialog implements OnClickListener,
         mDefaultTimeZone = null;
         mSavedTimeZonePos = -1;
         mLocationMgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationMgr.addGpsStatusListener(new GpsStatus.Listener() {
-                @Override
-                public void onGpsStatusChanged(int event) {
-                }
-            });
-        }
         mConnectivityMgr = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        mGpsRequesting = false;
+        mLocationRequesting = false;
         mLoadingTz = true;
 
         // Initialize dialog
@@ -235,10 +238,10 @@ public class AddCityDialog implements OnClickListener,
             public void onClick(View v) {
                 mHandler.post(new Runnable() {
                     public void run() {
-                        if (!mGpsRequesting) {
-                            requestGpsLocation();
+                        if (!mLocationRequesting) {
+                            requestLocation();
                         } else {
-                            cancelRequestGpsLocation();
+                            cancelRequestLocation();
                         }
                     }
                 });
@@ -252,7 +255,7 @@ public class AddCityDialog implements OnClickListener,
                 return true;
             }
         });
-        checkGpsAvailability();
+        checkLocationAvailability();
 
         // Create the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context,
@@ -268,7 +271,7 @@ public class AddCityDialog implements OnClickListener,
                     mContext.unregisterReceiver(mReceiver);
                     mReceiverRegistered = false;
                 }
-                cancelRequestGpsLocation();
+                cancelRequestLocation();
                 if (mListener != null) {
                     mListener.onCancelCitySelection();
                 }
@@ -281,7 +284,7 @@ public class AddCityDialog implements OnClickListener,
                     mContext.unregisterReceiver(mReceiver);
                     mReceiverRegistered = false;
                 }
-                cancelRequestGpsLocation();
+                cancelRequestLocation();
                 if (mListener != null) {
                     mListener.onCancelCitySelection();
                 }
@@ -372,27 +375,17 @@ public class AddCityDialog implements OnClickListener,
         mButton.setEnabled(enabled);
     }
 
-    private void checkGpsAvailability() {
+    private void checkLocationAvailability() {
         boolean gpsEnabled = mLocationMgr.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean networkEnabled = mLocationMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        mGps.setEnabled(gpsEnabled || (networkEnabled && isNetworkStatusAvailable()));
+        mGps.setEnabled(gpsEnabled || networkEnabled);
     }
 
-    private boolean isNetworkStatusAvailable() {
-        NetworkInfo activeNetworkInfo = mConnectivityMgr.getActiveNetworkInfo();
-        if (activeNetworkInfo != null) {
-            return activeNetworkInfo.isAvailable();
-        }
-        return false;
-    }
-
-    private void requestGpsLocation() {
-        Criteria criteria = new Criteria();
-        criteria.setHorizontalAccuracy(Criteria.ACCURACY_LOW);
+    private void requestLocation() {
         Looper looper = mContext.getMainLooper();
 
-        mHandler.postDelayed(mGpsTimeout, GPS_TIMEOUT);
-        mGpsRequesting = true;
+        mHandler.postDelayed(mLocationTimeout, LOCATION_REQUEST_TIMEOUT);
+        mLocationRequesting = true;
         mCityName.setEnabled(false);
         mCityName.setText(org.omnirom.deskclock.R.string.cities_add_searching);
         mTimeZones.setEnabled(false);
@@ -405,26 +398,41 @@ public class AddCityDialog implements OnClickListener,
 
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            // We have to use the network to locate the city and tz, so user also the network to detect
-            // location (we not need to much accuracy and this method is faster). Otherwise, use
-            // the GPS to locate the coordinates
-            if (mLocationMgr.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                mLocationMgr.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER, 5000, 0, this, looper);
+
+            Location location = mLocationMgr.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            if (location != null && location.getAccuracy() > LOCATION_ACCURACY_THRESHOLD_METERS) {
+                location = null;
+            }
+
+            // If lastKnownLocation is not present (because none of the apps in the
+            // device has requested the current location to the system yet) or outdated,
+            // then try to get the current location use the provider that best matches the criteria.
+            boolean needsUpdate = location == null;
+            if (location != null) {
+                long delta = System.currentTimeMillis() - location.getTime();
+                needsUpdate = delta > OUTDATED_LOCATION_THRESHOLD_MILLIS;
+            }
+            if (needsUpdate) {
+                String locationProvider = mLocationMgr.getBestProvider(sLocationCriteria, true);
+                if (locationProvider != null) {
+                    LocationProvider lp = mLocationMgr.getProvider(locationProvider);
+                    if (lp != null) {
+                        mLocationMgr.requestSingleUpdate(locationProvider, this, looper);
+                    }
+                }
             } else {
-                mLocationMgr.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 5000, 0, this, looper);
+                onLocationChanged(location);
             }
         }
     }
 
-    private void cancelRequestGpsLocation() {
-        mHandler.removeCallbacks(mGpsTimeout);
+    private void cancelRequestLocation() {
+        mHandler.removeCallbacks(mLocationTimeout);
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationMgr.removeUpdates(this);
         }
-        mGpsRequesting = false;
+        mLocationRequesting = false;
         mCityName.setText("");
         mCityName.setEnabled(true);
         mTimeZones.setEnabled(true);
@@ -508,14 +516,14 @@ public class AddCityDialog implements OnClickListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        if (!mGpsRequesting) return;
-        mGpsRequesting = false;
-        mHandler.removeCallbacks(mGpsTimeout);
+        if (!mLocationRequesting) return;
+        mLocationRequesting = false;
+        mHandler.removeCallbacks(mLocationTimeout);
         if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationMgr.removeUpdates(this);
         }
-        CityAndTimeZoneLocator mLocator = new CityAndTimeZoneLocator(
+        mLocator = new CityAndTimeZoneLocator(
                 mContext, location, mConnectivityMgr, new OnCityAndTimeZoneLocatedCallback() {
             @Override
             @SuppressWarnings("unchecked")
@@ -569,11 +577,11 @@ public class AddCityDialog implements OnClickListener,
 
     @Override
     public void onProviderEnabled(String provider) {
-        checkGpsAvailability();
+        checkLocationAvailability();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        checkGpsAvailability();
+        checkLocationAvailability();
     }
 }
