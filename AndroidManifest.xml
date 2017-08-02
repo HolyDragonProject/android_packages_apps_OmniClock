@@ -21,7 +21,7 @@
         android:targetSdkVersion="25" />
 
     <application
-        android:icon="@mipmap/ic_launcher_alarmclock_omni"
+        android:icon="@mipmap/ic_launcher_alarmclock"
         android:label="@string/app_label_new"
         android:requiredForAllUsers="true"
         android:supportsRtl="true"
@@ -48,7 +48,6 @@
 
         <activity
             android:name="org.omnirom.deskclock.DeskClock"
-            android:icon="@mipmap/ic_launcher_alarmclock_omni"
             android:label="@string/app_label_new"
             android:launchMode="singleTask">
 
@@ -64,7 +63,6 @@
 
         <activity-alias
             android:name="DockClock"
-            android:icon="@mipmap/ic_launcher_alarmclock_omni"
             android:label="@string/app_label_new"
             android:launchMode="singleTask"
             android:targetActivity="org.omnirom.deskclock.DeskClock">
@@ -160,7 +158,6 @@
 
         <receiver
             android:name="org.omnirom.alarmclock.CustomAnalogAppWidgetProvider"
-            android:icon="@mipmap/ic_launcher_alarmclock_omni"
             android:label="@string/analog_gadget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -177,7 +174,6 @@
 
         <receiver
             android:name="org.omnirom.alarmclock.CustomAppWidgetProvider"
-            android:icon="@mipmap/ic_launcher_alarmclock_omni"
             android:label="@string/custom_gadget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

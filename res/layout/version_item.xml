@@ -14,7 +14,7 @@
         android:scaleType="fitXY"
         android:layout_marginEnd="16dip"
         android:contentDescription="@null"
-        android:src="@mipmap/ic_launcher_alarmclock_omni"
+        android:src="@mipmap/ic_launcher_alarmclock"
         android:layout_rowSpan="2"
         android:layout_gravity="center_vertical"/>
 
