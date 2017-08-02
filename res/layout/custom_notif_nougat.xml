@@ -16,11 +16,9 @@
 -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:internal="http://schemas.android.com/apk/prv/res/android"
     android:id="@+id/notif_hitspace"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/notification_background" >
+    android:layout_height="wrap_content"  >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,8 +38,7 @@
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContentTitle" />
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
         </LinearLayout>
 
         <TextView
@@ -51,8 +48,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:visibility="gone"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.StatusBar.EventContentTitle" />
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
 
         <TextView
             android:id="@+id/notif_text"
@@ -61,8 +57,7 @@
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:visibility="gone"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.StatusBar.EventContent" />
+            android:textAppearance="@android:style/TextAppearance.Material.Notification" />
     </LinearLayout>
 
 </FrameLayout>

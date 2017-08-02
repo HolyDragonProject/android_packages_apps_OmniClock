@@ -21,8 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="64dp"
     internal:maxHeight="64dp"
-    internal:minHeight="64dp"
-    android:background="@drawable/notification_background" >
+    internal:minHeight="64dp" >
 
     <include layout="@layout/custom_notification_icon"/>
 
@@ -50,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.StatusBar.EventContentTitle" />
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
         </LinearLayout>
 
         <TextView
@@ -61,7 +60,7 @@
             android:fadingEdge="horizontal"
             android:visibility="gone"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.StatusBar.EventContentTitle" />
+            android:textAppearance="@android:style/TextAppearance.Material.Notification.Title" />
 
         <TextView
             android:id="@+id/collapsed_text"
@@ -71,7 +70,7 @@
             android:fadingEdge="horizontal"
             android:visibility="gone"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.StatusBar.EventContent" />
+            android:textAppearance="@android:style/TextAppearance.Material.Notification" />
     </LinearLayout>
 
 </FrameLayout>

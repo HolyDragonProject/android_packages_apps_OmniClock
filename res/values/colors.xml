@@ -25,12 +25,9 @@
     <color name="dialog_gray">#28ffffff</color>
     <color name="pressed_state_color">#33999999</color>
     <color name="black">#ff000000</color>
-    <color name="black_87p">#de000000</color>
-    <color name="black_54p">#8a000000</color>
     <color name="black_30p">#45000000</color>
     <color name="black_16p">#28000000</color>
     <color name="white">#ffffffff</color>
-    <color name="white_69p">#B1FFFFFF</color>
     <color name="white_54p">#8aFFFFFF</color>
     <color name="white_30p">#45FFFFFF</color>
     <color name="blackish_selected">#0cffffff</color>

@@ -539,8 +539,6 @@ public class TimerReceiver extends BroadcastReceiver {
                 remoteViewsCollapsed.setChronometer(
                         org.omnirom.deskclock.R.id.notif_chronometer, baseTime, null, timer.isTicking());
                 remoteViewsCollapsed.setChronometerCountDown(org.omnirom.deskclock.R.id.notif_chronometer, true);
-                remoteViewsCollapsed.setTextColor(org.omnirom.deskclock.R.id.notif_chronometer,
-                        context.getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
 
                 RemoteViews remoteViewsExpanded = new RemoteViews(context.getPackageName(),
                         org.omnirom.deskclock.R.layout.custom_notif_nougat);
@@ -548,8 +546,6 @@ public class TimerReceiver extends BroadcastReceiver {
                 remoteViewsExpanded.setChronometer(
                         org.omnirom.deskclock.R.id.notif_chronometer, baseTime, null, timer.isTicking());
                 remoteViewsExpanded.setChronometerCountDown(org.omnirom.deskclock.R.id.notif_chronometer, true);
-                remoteViewsExpanded.setTextColor(org.omnirom.deskclock.R.id.notif_chronometer,
-                        context.getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
 
                 // delete notification button will delete timer
                 PendingIntent deleteNotificationIntent = PendingIntent.getBroadcast(context, timer.mTimerId,

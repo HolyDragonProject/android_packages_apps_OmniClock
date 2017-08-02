@@ -168,14 +168,12 @@ public class StopwatchService extends Service {
                 org.omnirom.deskclock.R.id.collapsed_chronometer, clockBaseTime, null, clockRunning);
         remoteViewsCollapsed.
                 setImageViewResource(org.omnirom.deskclock.R.id.notification_icon, org.omnirom.deskclock.R.drawable.ic_notify_stopwatch);
-        remoteViewsCollapsed.setTextColor(org.omnirom.deskclock.R.id.expanded_chronometer, getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
         RemoteViews remoteViewsExpanded = new RemoteViews(getPackageName(),
                 org.omnirom.deskclock.R.layout.custom_notif_expanded);
         remoteViewsExpanded.setChronometer(
                 org.omnirom.deskclock.R.id.expanded_chronometer, clockBaseTime, null, clockRunning);
         remoteViewsExpanded.
                 setImageViewResource(org.omnirom.deskclock.R.id.notification_icon, org.omnirom.deskclock.R.drawable.ic_notify_stopwatch);
-        remoteViewsExpanded.setTextColor(org.omnirom.deskclock.R.id.expanded_chronometer, getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
 
         Notification.Builder builder = new Notification.Builder(context);
 
@@ -279,12 +277,10 @@ public class StopwatchService extends Service {
                 org.omnirom.deskclock.R.layout.custom_notif_nougat);
         remoteViewsCollapsed.setChronometer(
                 org.omnirom.deskclock.R.id.notif_chronometer, clockBaseTime, null, clockRunning);
-        remoteViewsCollapsed.setTextColor(org.omnirom.deskclock.R.id.notif_chronometer, getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
         RemoteViews remoteViewsExpanded = new RemoteViews(getPackageName(),
                 org.omnirom.deskclock.R.layout.custom_notif_nougat);
         remoteViewsExpanded.setChronometer(
                 org.omnirom.deskclock.R.id.notif_chronometer, clockBaseTime, null, clockRunning);
-        remoteViewsExpanded.setTextColor(org.omnirom.deskclock.R.id.notif_chronometer, getResources().getColor(org.omnirom.deskclock.R.color.black_87p));
 
         Notification.Builder builder = new Notification.Builder(context);
         Resources resources = context.getResources();
