@@ -47,6 +47,7 @@ public class RadialSelectorView extends View {
 
     private final Paint mPaint = new Paint();
     private final Paint mDotPaint = new Paint();
+    private final Paint mLinePaint = new Paint();
 
     private boolean mIsInitialized;
     private boolean mDrawValuesReady;
@@ -101,11 +102,13 @@ public class RadialSelectorView extends View {
         }
 
         Resources res = context.getResources();
-
-        mPaint.setColor(ContextCompat.getColor(context, R.color.mdtp_accent_color_dark));
+        mPaint.setColor(controller.getSelectorBackgroundColor());
         mPaint.setAntiAlias(true);
 
-        mDotPaint.setColor(getResources().getColor(R.color.mdtp_white));
+        mLinePaint.setColor(controller.getSelectorBackgroundColor());
+        mLinePaint.setAntiAlias(true);
+
+        mDotPaint.setColor(res.getColor(R.color.mdtp_white));
         mDotPaint.setAntiAlias(true);
 
         mSelectionAlpha = controller.isThemeDark() ? SELECTED_ALPHA_THEME_DARK : SELECTED_ALPHA;
@@ -304,9 +307,9 @@ public class RadialSelectorView extends View {
         pointY = mYCenter - (int) (lineLength * Math.cos(mSelectionRadians));
 
         // Draw the line from the center of the circle.
-        mPaint.setAlpha(255);
-        mPaint.setStrokeWidth(5);
-        canvas.drawLine(mXCenter, mYCenter, pointX, pointY, mPaint);
+        mLinePaint.setAlpha(255);
+        mLinePaint.setStrokeWidth(5);
+        canvas.drawLine(mXCenter, mYCenter, pointX, pointY, mLinePaint);
     }
 
     public ObjectAnimator getDisappearAnimator() {

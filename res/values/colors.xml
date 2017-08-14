@@ -69,4 +69,6 @@
     <color name="stopwatch_max_lap_line">#d72929</color>
     <color name="stopwatch_min_lap_line">#43bf43</color>
     <color name="undo_color">#ffc107</color>
+    <color name="secondary_primary">@color/primary</color>
+    <color name="secondary_primary_black">@color/primary_black</color>
 </resources>

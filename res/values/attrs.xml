@@ -29,4 +29,5 @@
         <attr name="format24Hour" format="string"/>
    </declare-styleable>
 
+   <attr name="secondaryPrimary" format="reference" />
 </resources>

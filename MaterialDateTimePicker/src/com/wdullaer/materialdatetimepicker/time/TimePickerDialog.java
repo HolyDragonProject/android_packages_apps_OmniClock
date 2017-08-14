@@ -278,6 +278,18 @@ public class TimePickerDialog extends DialogFragment implements
         return getResources().getColor(R.color.view_background);
     }
 
+    @Override
+    public int getSelectorBackgroundColor() {
+        switch (mThemeId) {
+            case 0:
+            case 1:
+                return mAccentColor;
+            case 2:
+                return getResources().getColor(R.color.mdtp_date_picker_month_day);
+        }
+        return mAccentColor;
+    }
+
     /**
      * Set whether the device should vibrate when touching fields
      * @param vibrate true if the device should vibrate when touching a field

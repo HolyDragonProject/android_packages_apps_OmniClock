@@ -20,11 +20,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.wdullaer.materialdatetimepicker.R;
+import com.wdullaer.materialdatetimepicker.Utils;
 
 /**
  * Draws a simple white circle on which the numbers will be drawn.
@@ -60,7 +60,7 @@ public class CircleView extends View {
         Resources res = context.getResources();
 
         mCircleColor = controller.getViewBackgroundColor();
-        mDotColor = ContextCompat.getColor(context, R.color.mdtp_accent_color_dark);
+        mDotColor = Utils.getAccentColorFromThemeIfAvailable(context);
         mPaint.setAntiAlias(true);
 
         mIs24HourMode = controller.is24HourMode();

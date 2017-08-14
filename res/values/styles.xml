@@ -26,6 +26,7 @@
         <item name="android:colorControlActivated">@color/primary</item>
         <item name="android:windowBackground">@color/window_background</item>
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="secondaryPrimary">@color/secondary_primary</item>
     </style>
 
     <style name="DeskClockDark" parent="@android:style/Theme.Material">
@@ -39,6 +40,7 @@
         <item name="android:colorControlActivated">@color/primary</item>
         <item name="android:windowBackground">@color/window_background_dark</item>
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="secondaryPrimary">@color/secondary_primary</item>
     </style>
 
     <style name="DeskClockBlack" parent="@android:style/Theme.Material">
@@ -52,6 +54,7 @@
         <item name="android:colorControlActivated">@color/accent_black</item>
         <item name="android:windowBackground">@color/window_background_black</item>
         <item name="android:actionBarStyle">@style/ActionBarStyleBlack</item>
+        <item name="secondaryPrimary">@color/secondary_primary_black</item>
     </style>
 
     <style name="ActionBarStyle" parent="@android:style/Widget.Material.Light.ActionBar">
