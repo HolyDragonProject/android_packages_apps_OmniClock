@@ -265,7 +265,6 @@ public class TestAlarmKlaxon {
             if (!sRandomMusicMode && !sLocalMediaMode) {
                 sMediaPlayer.setLooping(true);
             }
-            sMediaPlayer.prepareAsync();
             sAudioManager.requestAudioFocus(null, getAudioStream(context),
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
             sMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -274,6 +273,7 @@ public class TestAlarmKlaxon {
                     sMediaPlayer.start();
                 }
             });
+            sMediaPlayer.prepareAsync();
         } catch (Exception ex) {
             sError = true;
             sErrorHandler.onError("Error playing alarm sound");

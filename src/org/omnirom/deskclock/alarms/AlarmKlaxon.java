@@ -80,6 +80,7 @@ public class AlarmKlaxon {
     private static boolean sLocalMediaMode;
     private static boolean sPlayFallbackAlarm;
     private static boolean sStreamMediaMode;
+    private static boolean sPlayerStarted;
 
     // Internal messages
     private static final int INCREASING_VOLUME = 1001;
@@ -107,12 +108,13 @@ public class AlarmKlaxon {
     private static BroadcastReceiver sNetworkListener = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            if (sStarted && sStreamMediaMode) {
+            if (sStarted && sStreamMediaMode && sPlayerStarted) {
                 if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-                    if (!isNetworkConnectivity(context)) {
+                    if (!isNetworkConnectivity(sContext)) {
+                        LogUtils.v("Network listener " + isNetworkConnectivity(sContext));
                         createOfflineNotification(sContext);
-                        sPlayFallbackAlarm = true;
-                        playAlarm(sContext, null);
+                        LogUtils.e("playFallbackAlarm 0");
+                        playFallbackAlarm(sContext);
                     }
                 }
             }
@@ -195,6 +197,7 @@ public class AlarmKlaxon {
         sLocalMediaMode = false;
         sPlayFallbackAlarm = false;
         sStreamMediaMode = false;
+        sPlayerStarted = false;
 
         sCurrentIndex = 0;
         if (sPreAlarmMode) {
@@ -230,7 +233,6 @@ public class AlarmKlaxon {
                     }
                     if (Utils.isStorageUri(alarmNoise.toString())) {
                         if (Utils.isStreamM3UFile(alarmNoise.toString())) {
-                            sStreamMediaMode = true;
                             // dont check for network right away cause device might need
                             // a little bit after waking up - so rely on tiemout of media player
                             collectM3UFiles(alarmNoise);
@@ -248,12 +250,14 @@ public class AlarmKlaxon {
                         // fallback
                         alarmNoise = null;
                         sLocalMediaMode = false;
+                        sStreamMediaMode = false;
                     }
                 } catch (Exception ex) {
                     LogUtils.e("Error accessing media contents", ex);
                     // fallback
                     alarmNoise = null;
                     sLocalMediaMode = false;
+                    sStreamMediaMode = false;
                 }
             }
         }
@@ -264,7 +268,9 @@ public class AlarmKlaxon {
             // silent
             alarmNoise = null;
         }
-        boolean playSound = alarmNoise != null || sPlayFallbackAlarm;
+        // do not play alarms if alarm volume is 0
+        // this can only happen if "use system alarm volume" is used
+        boolean playSound = (alarmNoise != null || sPlayFallbackAlarm) && sMaxVolume != 0;
         boolean vibrate = instance.mVibrate;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             NotificationManager noMan = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -274,6 +280,7 @@ public class AlarmKlaxon {
                 vibrate = false;
             }
         }
+
         if (playSound) {
             playAlarm(context, alarmNoise);
         }
@@ -291,6 +298,7 @@ public class AlarmKlaxon {
     }
 
     private static void playAlarm(final Context context, final Uri alarmNoise) {
+        LogUtils.v("playAlarm");
         if (sMediaPlayer != null) {
             sMediaPlayer.reset();
         }
@@ -304,8 +312,8 @@ public class AlarmKlaxon {
                     mSongs.remove(alarmNoise);
                     nextSong(context);
                 } else {
-                    sPlayFallbackAlarm = true;
-                    playAlarm(context, null);
+                    LogUtils.e("playFallbackAlarm 1");
+                    playFallbackAlarm(sContext);
                 }
                 return true;
             }
@@ -322,12 +330,12 @@ public class AlarmKlaxon {
 
         try {
             if (sPlayFallbackAlarm || alarmNoise == null) {
-                LogUtils.e("Using the fallback ringtone");
+                LogUtils.e("Using the fallback ringtone 1");
                 setDataSourceFromResource(context, sMediaPlayer, org.omnirom.deskclock.R.raw.fallbackring);
             } else {
+                LogUtils.v("startAlarm for :" + alarmNoise);
                 sMediaPlayer.setDataSource(context, alarmNoise);
                 mCurrentTone = alarmNoise;
-                LogUtils.v("next song:" + mCurrentTone);
             }
             startAlarm(context, sMediaPlayer);
         } catch (Exception ex) {
@@ -337,7 +345,7 @@ public class AlarmKlaxon {
                 mSongs.remove(alarmNoise);
                 nextSong(context);
             } else {
-                LogUtils.e("Using the fallback ringtone");
+                LogUtils.e("Using the fallback ringtone 2");
                 // The alarmNoise may be on the sd card which could be busy right
                 // now. Use the fallback ringtone.
                 try {
@@ -354,47 +362,39 @@ public class AlarmKlaxon {
     }
 
     // Do the common stuff when starting the alarm.
-    private static void startAlarm(Context context, MediaPlayer player) throws IOException {
-        // do not play alarms if alarm volume is 0
-        // this can only happen if "use system alarm volume" is used
-        if (sMaxVolume != 0) {
-            // only start volume handling on the first invocation
-            if (sFirstFile) {
-                if (sIncreasingVolume) {
-                    sCurrentVolume = INCREASING_VOLUME_START;
-                    sAudioManager.setStreamVolume(getAudioStream(context),
-                            sCurrentVolume, 0);
-                    LogUtils.v("Starting alarm volume " + sCurrentVolume
-                            + " max volume " + sMaxVolume);
+    private static void startAlarm(final Context context, MediaPlayer player) throws IOException {
+        LogUtils.v("startAlarm");
 
-                    if (sCurrentVolume < sMaxVolume) {
-                        sHandler.sendEmptyMessageDelayed(INCREASING_VOLUME,
-                                sVolumeIncreaseSpeed);
-                    }
-                } else {
-                    sAudioManager.setStreamVolume(getAudioStream(context),
-                            sMaxVolume, 0);
-                    LogUtils.v("Alarm volume " + sMaxVolume);
-                }
-                sFirstFile = false;
-            }
+        LogUtils.v("Using audio stream " + (getAudioStream(context) == AudioManager.STREAM_MUSIC ? "Music" : "Alarm"));
+        player.setAudioStreamType(getAudioStream(context));
+        sAudioManager.requestAudioFocus(null, getAudioStream(context),
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
-            LogUtils.v("Using audio stream " + (getAudioStream(context) == AudioManager.STREAM_MUSIC ? "Music" : "Alarm"));
-
-            player.setAudioStreamType(getAudioStream(context));
-            if (!sRandomMusicMode && !sLocalMediaMode) {
-                player.setLooping(true);
-            }
-            player.prepareAsync();
-            sAudioManager.requestAudioFocus(null, getAudioStream(context),
-                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer player) {
-                    player.start();
-                }
-            });
+        if (!sRandomMusicMode && !sLocalMediaMode) {
+            player.setLooping(true);
         }
+
+        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer player) {
+                LogUtils.v("onPrepared");
+
+                sPlayerStarted = true;
+                // only start volume handling on the first invocation
+                if (sFirstFile) {
+                    if (sIncreasingVolume) {
+                        startVolumeIncrease(context);
+                    } else {
+                        sAudioManager.setStreamVolume(getAudioStream(context),
+                                sMaxVolume, 0);
+                        LogUtils.v("Alarm volume " + sMaxVolume);
+                    }
+                    sFirstFile = false;
+                }
+                player.start();
+            }
+        });
+        player.prepareAsync();
     }
 
     private static void setDataSourceFromResource(Context context,
@@ -453,13 +453,8 @@ public class AlarmKlaxon {
 
     private static void nextSong(final Context context) {
         if (mSongs.size() == 0) {
-            sRandomMusicMode = false;
-            sLocalMediaMode = false;
-            // something bad happend to our play list
-            // just fall back to the default
-            LogUtils.e("Using the fallback ringtone");
-            sPlayFallbackAlarm = true;
-            playAlarm(context, null);
+            LogUtils.v("playFallbackAlarm 2");
+            playFallbackAlarm(sContext);
             return;
         }
         sCurrentIndex++;
@@ -580,5 +575,28 @@ public class AlarmKlaxon {
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         nm.cancel(OFFLINE_NOTIFICATION_ID);
         nm.notify(OFFLINE_NOTIFICATION_ID, notification);
+    }
+
+    private static void playFallbackAlarm(final Context context) {
+        if (!sPlayFallbackAlarm) {
+            sRandomMusicMode = false;
+            sLocalMediaMode = false;
+            sStreamMediaMode = false;
+            sPlayFallbackAlarm = true;
+            playAlarm(context, null);
+        }
+    }
+
+    private static void startVolumeIncrease(final Context context) {
+        sCurrentVolume = INCREASING_VOLUME_START;
+        sAudioManager.setStreamVolume(getAudioStream(context),
+                sCurrentVolume, 0);
+        LogUtils.v("Starting alarm volume " + sCurrentVolume
+                + " max volume " + sMaxVolume);
+
+        if (sCurrentVolume < sMaxVolume) {
+            sHandler.sendEmptyMessageDelayed(INCREASING_VOLUME,
+                    sVolumeIncreaseSpeed);
+        }
     }
 }
