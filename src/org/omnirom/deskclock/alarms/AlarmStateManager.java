@@ -393,7 +393,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
         // Start the alarm if required and schedule timeout timer for it
         if (lastState == AlarmInstance.PRE_ALARM_STATE) {
             // if we are currently running a pre-alarm stop it
-            stopAlarm(context, instance, true);
+            stopAlarm(context, instance, true, false);
         }
         startAlarm(context, instance, false);
 
@@ -453,7 +453,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
         AlarmNotifications.showPreAlarmDismissNotification(context, instance);
 
         // Stop the alarm and schedule switch to FIRED_STATE
-        stopAlarm(context, instance, true);
+        stopAlarm(context, instance, true, true);
         scheduleInstanceStateChange(context, instance.getAlarmTime(),
                 instance, AlarmInstance.FIRED_STATE);
     }
@@ -474,7 +474,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
         int lastState = instance.mAlarmState;
         sSnoozeCount = sSnoozeCount + 1;
         // Stop alarm if this instance is firing it
-        stopAlarm(context, instance, lastState == AlarmInstance.PRE_ALARM_STATE);
+        stopAlarm(context, instance, lastState == AlarmInstance.PRE_ALARM_STATE, true);
 
         // Calculate the new snooze alarm time
         String snoozeMinutesStr = PreferenceManager.getDefaultSharedPreferences(context)
@@ -541,7 +541,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
     public static void setMissedState(Context context, AlarmInstance instance) {
         LogUtils.v("Setting missed state to instance " + instance.mId);
         // Stop alarm if this instance is firing it
-        stopAlarm(context, instance, false);
+        stopAlarm(context, instance, false, true);
 
         sSnoozeCount = 0;
 
@@ -610,7 +610,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
      */
     public static void unregisterInstance(Context context, AlarmInstance instance) {
         // Stop alarm if this instance is firing it
-        stopAlarm(context, instance, instance.mAlarmState == AlarmInstance.PRE_ALARM_STATE);
+        stopAlarm(context, instance, instance.mAlarmState == AlarmInstance.PRE_ALARM_STATE, true);
         AlarmNotifications.clearNotification(context, instance);
         cancelScheduledInstance(context, instance);
     }
@@ -730,8 +730,8 @@ public final class AlarmStateManager extends BroadcastReceiver {
         } else if (instance.mAlarmState == AlarmInstance.PRE_ALARM_DISMISS_STATE) {
             setPreFiredDismissState(context, instance);
         } else {
-          // Alarm is still active, so initialize as a silent alarm
-          setSilentState(context, instance);
+            // Alarm is still active, so initialize as a silent alarm
+            setSilentState(context, instance);
         }
 
         // The caller prefers to handle updateNextAlarm for optimization
@@ -923,7 +923,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
         context.startService(intent);
     }
 
-    private static void stopAlarm(Context context, AlarmInstance instance, boolean preAlarm) {
+    private static void stopAlarm(Context context, AlarmInstance instance, boolean preAlarm, boolean fromDismiss) {
         final Intent intent = AlarmPluginFactory.getAlarmServiceIntent(context, instance, preAlarm);
         if (intent == null) {
             LogUtils.v("AlarmStateManager startAlarm: failed to get stop intent " + instance);
@@ -931,6 +931,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
         }
 
         intent.setAction(AlarmConstants.STOP_ALARM_ACTION);
+        intent.putExtra(AlarmConstants.DATA_ALARM_EXTRA_DISMISSED, fromDismiss);
 
         // We don't need a wake lock here, since we are trying to kill an alarm
         context.startService(intent);

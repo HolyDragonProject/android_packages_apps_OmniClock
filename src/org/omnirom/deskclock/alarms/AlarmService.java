@@ -104,8 +104,13 @@ public class AlarmService extends Service {
                         " because current alarm is: " + mCurrentAlarm.mId);
                 return Service.START_NOT_STICKY;
             }
+            boolean fromDismiss = intent.getBooleanExtra(AlarmConstants.DATA_ALARM_EXTRA_DISMISSED, false);
             stopCurrentAlarm();
-            stopSelf();
+            // service no longer needed - else we are in transition from pre alarm to main alarm
+            // and must never stop service
+            if (fromDismiss) {
+                stopSelf();
+            }
         }
 
         return Service.START_NOT_STICKY;
