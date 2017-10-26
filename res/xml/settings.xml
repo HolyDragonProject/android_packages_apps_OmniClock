@@ -64,12 +64,10 @@
             android:entryValues="@array/auto_silence_values_new"
             android:key="auto_silence"
             android:title="@string/auto_silence_title" />
-        <ListPreference
+        <org.omnirom.deskclock.preference.NumberPickerPreference
             android:defaultValue="10"
             android:dialogTitle="@string/snooze_duration_title"
-            android:entries="@array/snooze_duration_entries"
-            android:entryValues="@array/snooze_duration_values"
-            android:key="snooze_duration_new"
+            android:key="snooze_duration_minutes"
             android:title="@string/snooze_duration_title" />
         <ListPreference
             android:defaultValue="0"

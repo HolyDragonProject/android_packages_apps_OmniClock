@@ -40,6 +40,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.MenuItem;
 
+import org.omnirom.deskclock.preference.NumberPickerPreference;
 import org.omnirom.deskclock.worldclock.Cities;
 
 import java.util.Arrays;
@@ -57,7 +58,9 @@ public class SettingsActivity extends PreferenceActivity
 
     public static final String KEY_ALARM_IN_SILENT_MODE =
             "alarm_in_silent_mode";
-    public static final String KEY_ALARM_SNOOZE =
+    public static final String KEY_ALARM_SNOOZE_MINUTES =
+            "snooze_duration_minutes";
+    private static final String KEY_ALARM_SNOOZE_OLD =
             "snooze_duration_new";
     public static final String KEY_VOLUME_BEHAVIOR =
             "volume_button_setting";
@@ -125,6 +128,7 @@ public class SettingsActivity extends PreferenceActivity
     private RingtonePreference mTimerAlarmPref;
     private final Handler mHandler = new Handler();
     private CheckBoxPreference mCustomTimerAlarm;
+    private NumberPickerPreference mSnoozeMinutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +157,19 @@ public class SettingsActivity extends PreferenceActivity
 
         mTimerAlarmPref = (RingtonePreference) findPreference(KEY_TIMER_ALARM);
         mTimerAlarmPref.setOnPreferenceChangeListener(this);
+
+        mSnoozeMinutes = (NumberPickerPreference) findPreference(KEY_ALARM_SNOOZE_MINUTES);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.contains(KEY_ALARM_SNOOZE_OLD)) {
+            mSnoozeMinutes.setValue(Integer.valueOf(prefs.getString(KEY_ALARM_SNOOZE_OLD, "10")));
+            prefs.edit().remove(KEY_ALARM_SNOOZE_OLD).commit();
+        }
+        mSnoozeMinutes.setMinValue(1);
+        mSnoozeMinutes.setMaxValue(30);
+
+        mSnoozeMinutes.setSummary(getSnoozedMinutes(mSnoozeMinutes.getValue()));
+        mSnoozeMinutes.setOnPreferenceChangeListener(this);
+
         addSettings();
 
         if (!getResources().getBoolean(R.bool.config_disableSensorOnWirelessCharging)) {
@@ -204,10 +221,8 @@ public class SettingsActivity extends PreferenceActivity
             final ListPreference listPref = (ListPreference) pref;
             final int idx = listPref.findIndexOfValue((String) newValue);
             listPref.setSummary(listPref.getEntries()[idx]);
-        } else if (KEY_ALARM_SNOOZE.equals(pref.getKey())) {
-            final ListPreference listPref = (ListPreference) pref;
-            final int idx = listPref.findIndexOfValue((String) newValue);
-            listPref.setSummary(listPref.getEntries()[idx]);
+        } else if (KEY_ALARM_SNOOZE_MINUTES.equals(pref.getKey())) {
+            mSnoozeMinutes.setSummary(getSnoozedMinutes((Integer) newValue));
         } else if (KEY_ALARM_SNOOZE_COUNT.equals(pref.getKey())) {
             final ListPreference listPref = (ListPreference) pref;
             final int idx = listPref.findIndexOfValue((String) newValue);
@@ -323,10 +338,6 @@ public class SettingsActivity extends PreferenceActivity
         } else {
             alarmCategory.removePreference(listPref);
         }
-
-        listPref = (ListPreference) findPreference(KEY_ALARM_SNOOZE);
-        listPref.setSummary(listPref.getEntry());
-        listPref.setOnPreferenceChangeListener(this);
 
         listPref = (ListPreference) findPreference(KEY_ALARM_SNOOZE_COUNT);
         listPref.setSummary(listPref.getEntry());
@@ -491,5 +502,10 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     protected boolean isValidFragment(String fragmentName) {
         return false;
+    }
+
+    private String getSnoozedMinutes(int snoozeMinutes) {
+        return getResources().getQuantityString(R.plurals.snooze_duration,
+                snoozeMinutes, snoozeMinutes);
     }
 }

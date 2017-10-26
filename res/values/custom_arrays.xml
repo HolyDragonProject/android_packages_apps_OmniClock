@@ -46,22 +46,6 @@
         <item>15</item>
         <item>30</item>
     </string-array>
-    <string-array name="snooze_duration_entries" translatable="false">
-        <item>@string/entry_one_minute</item>
-        <item>@string/entry_three_minute</item>
-        <item>@string/entry_five_minute</item>
-        <item>@string/entry_ten_minute</item>
-        <item>@string/entry_fifteen_minute</item>
-        <item>@string/entry_thirty_minute</item>
-    </string-array>
-    <string-array name="snooze_duration_values" translatable="false">
-        <item>1</item>
-        <item>3</item>
-        <item>5</item>
-        <item>10</item>
-        <item>15</item>
-        <item>30</item>
-    </string-array>
     <string-array name="pre_alarm_times_entries" translatable="false">
         <item>@string/entry_one_minute</item>
         <item>@string/entry_three_minute</item>
@@ -126,7 +110,7 @@
         <item>@string/entry_ten_minute</item>
         <item>@string/entry_fifteen_minute</item>
         <item>@string/entry_thirty_minute</item>
-        <item>@string/entry_never</item>
+        <item>@string/auto_silence_never</item>
     </string-array>
     <string-array name="auto_silence_values_new" translatable="false">
         <item>1</item>

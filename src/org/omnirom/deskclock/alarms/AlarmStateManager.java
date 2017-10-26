@@ -104,7 +104,7 @@ import java.util.List;
  */
 public final class AlarmStateManager extends BroadcastReceiver {
     // These defaults must match the values in res/xml/settings.xml
-    private static final String DEFAULT_SNOOZE_MINUTES = "10";
+    private static final int DEFAULT_SNOOZE_MINUTES = 10;
 
     // Intent action to trigger an instance state change.
     public static final String CHANGE_STATE_ACTION = "change_state";
@@ -477,9 +477,8 @@ public final class AlarmStateManager extends BroadcastReceiver {
         stopAlarm(context, instance, lastState == AlarmInstance.PRE_ALARM_STATE, true);
 
         // Calculate the new snooze alarm time
-        String snoozeMinutesStr = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(SettingsActivity.KEY_ALARM_SNOOZE, DEFAULT_SNOOZE_MINUTES);
-        int snoozeMinutes = Integer.parseInt(snoozeMinutesStr);
+        int snoozeMinutes = PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(SettingsActivity.KEY_ALARM_SNOOZE_MINUTES, DEFAULT_SNOOZE_MINUTES);
         Calendar newAlarmTime = Calendar.getInstance();
         newAlarmTime.add(Calendar.MINUTE, snoozeMinutes);
 
@@ -523,9 +522,8 @@ public final class AlarmStateManager extends BroadcastReceiver {
     }
 
     public static String getSnoozedMinutes(Context context) {
-        final String snoozeMinutesStr = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(SettingsActivity.KEY_ALARM_SNOOZE, DEFAULT_SNOOZE_MINUTES);
-        final int snoozeMinutes = Integer.parseInt(snoozeMinutesStr);
+        final int snoozeMinutes = PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(SettingsActivity.KEY_ALARM_SNOOZE_MINUTES, DEFAULT_SNOOZE_MINUTES);
         return context.getResources().getQuantityString(org.omnirom.deskclock.R.plurals.alarm_alert_snooze_duration,
                 snoozeMinutes, snoozeMinutes);
     }
