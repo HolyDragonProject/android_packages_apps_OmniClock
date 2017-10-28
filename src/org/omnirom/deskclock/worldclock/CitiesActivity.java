@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -278,9 +279,7 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
 
             Resources res = context.getResources();
 
-            TypedValue outValue = new TypedValue();
-            context.getTheme().resolveAttribute(android.R.attr.textColorPrimary, outValue, true);
-            mNormalCityFgColor = res.getColor(outValue.resourceId);
+            mNormalCityFgColor = getNormalTextColor(context);
 
             mUserDefinedCityFgColor = res.getColor(org.omnirom.deskclock.R.color.primary);
 
@@ -296,6 +295,13 @@ public class CitiesActivity extends Activity implements OnCheckedChangeListener,
             mPattern12 = pattern12;
 
             loadCitiesDatabase(context, null);
+        }
+
+        private int getNormalTextColor(Context context) {
+            TypedArray array = context.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary});
+            int color = array.getColor(0, 0);
+            array.recycle();
+            return color;
         }
 
         protected void loadCitiesDatabase(Context context, final CityObj selected) {
