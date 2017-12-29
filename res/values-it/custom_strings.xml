@@ -134,8 +134,7 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Musica casuale</string>
   <string name="browse_activity_title">Naviga</string>
-  <string name="local_query_alarm">Allarmi</string>
-  <string name="local_query_ringtone">Suonerie</string>
+  <string name="local_query_alarm_ringtones">Allarmi e suonerie</string>
   <string name="local_query_recent">Recenti</string>
   <string name="local_query_hint">Ricerca</string>
   <string name="local_query_artist">Artisti</string>
@@ -158,4 +157,11 @@
   <string name="entry_never">Mai</string>
   <string name="default_page_title">Pagina iniziale predefinita</string>
   <string name="global_settings">Generale</string>
+  <string name="local_query_playlist">Playlists</string>
+  <string name="url_paste_hint">Incolla URL</string>
+  <string name="playlist_file_name">Nome</string>
+  <string name="local_query_stream">Flussi</string>
+  <string name="offline_notif_title">Dispositivo offline</string>
+  <string name="offline_notif_message">Per favore, cambia le impostazioni di sistema</string>
+  <string name="color_theme_black">Nero</string>
 </resources>

@@ -134,8 +134,7 @@
   <string name="color_theme_title">Thème</string>
   <string name="randomMusicType">Musique aléatoire</string>
   <string name="browse_activity_title">Parcourir</string>
-  <string name="local_query_alarm">Alarmes</string>
-  <string name="local_query_ringtone">Sonneries</string>
+  <string name="local_query_alarm_ringtones">Alarmes et sonneries</string>
   <string name="local_query_recent">Récents</string>
   <string name="local_query_hint">Recherche</string>
   <string name="local_query_artist">Artistes</string>
@@ -158,4 +157,11 @@
   <string name="entry_never">Jamais</string>
   <string name="default_page_title">Onglet d’accueil par défaut</string>
   <string name="global_settings">Général</string>
+  <string name="local_query_playlist">Listes de lecture</string>
+  <string name="url_paste_hint">Coller URL</string>
+  <string name="playlist_file_name">Nom</string>
+  <string name="local_query_stream">Stream</string>
+  <string name="offline_notif_title">Appareil hors connexion</string>
+  <string name="offline_notif_message">Veuillez modifier vos paramètres système</string>
+  <string name="color_theme_black">Noir</string>
 </resources>

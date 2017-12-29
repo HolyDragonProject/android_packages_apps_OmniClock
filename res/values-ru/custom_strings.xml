@@ -135,8 +135,7 @@
   <string name="color_theme_title">Тема</string>
   <string name="randomMusicType">Случайная музыка</string>
   <string name="browse_activity_title">Обзор</string>
-  <string name="local_query_alarm">Будильники</string>
-  <string name="local_query_ringtone">Мелодии звонка</string>
+  <string name="local_query_alarm_ringtones">Будильники и рингтоны</string>
   <string name="local_query_recent">Недавние</string>
   <string name="local_query_hint">Поиск</string>
   <string name="local_query_artist">Исполнители</string>
@@ -159,4 +158,11 @@
   <string name="entry_never">Никогда</string>
   <string name="default_page_title">Стартовая вкладка по умолчанию</string>
   <string name="global_settings">Общие</string>
+  <string name="local_query_playlist">Плейлисты</string>
+  <string name="url_paste_hint">Вставьте URL-адрес</string>
+  <string name="playlist_file_name">Имя</string>
+  <string name="local_query_stream">Потоки</string>
+  <string name="offline_notif_title">Устройство офлайн</string>
+  <string name="offline_notif_message">Пожалуйста, измените системные настройки</string>
+  <string name="color_theme_black">Черный</string>
 </resources>

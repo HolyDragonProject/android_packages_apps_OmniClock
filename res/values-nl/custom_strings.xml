@@ -134,8 +134,6 @@
   <string name="color_theme_title">Thema</string>
   <string name="randomMusicType">Willekeurige muziek</string>
   <string name="browse_activity_title">Bladeren</string>
-  <string name="local_query_alarm">Wekkers</string>
-  <string name="local_query_ringtone">Beltonen</string>
   <string name="local_query_recent">Recent</string>
   <string name="local_query_hint">Zoeken</string>
   <string name="local_query_artist">Artiesten</string>

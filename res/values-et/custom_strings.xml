@@ -22,5 +22,22 @@
   <!-- Setting title for the flip action setting. -->
   <!-- Setting title for the shake action setting. -->
   <!-- Setting labels on Set alarm screen: Increasing volume on or off -->
+  <string name="entry_three_count">3 korda</string>
+  <string name="entry_five_count">5 korda</string>
+  <string name="entry_ten_count">10 korda</string>
+  <string name="ringtone_disabled">Keelatud</string>
+  <string name="entry_five_secs">5 sekundit</string>
+  <string name="fallback_ringtone">Vaikimisi</string>
+  <string name="entry_three_minute">3 minutit</string>
+  <string name="entry_five_minute">5 minutit</string>
+  <string name="entry_ten_minute">10 minutit</string>
+  <string name="entry_fifteen_minute">15 minutit</string>
+  <string name="entry_thirty_minute">30 minutit</string>
+  <string name="prealarm_default_label">Eel-alarm</string>
   <!-- User-defined cities -->
+  <string name="menu_item_add">Lisa</string>
+  <string name="font_sample_text">11:57</string>
+  <string name="audio_stream_title">Helikanal kohalike alarmihelide jaoks</string>
+  <string name="alarm_uri_unkown"> (kustutatud)</string>
+  <string name="all_cities_label">Lisa</string>
 </resources>

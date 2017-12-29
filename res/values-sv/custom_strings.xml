@@ -109,7 +109,6 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Slumpmässig musik</string>
   <string name="browse_activity_title">Bläddra</string>
-  <string name="local_query_alarm">Alarm</string>
   <string name="local_query_recent">Senaste</string>
   <string name="local_query_hint">Sök</string>
   <string name="local_query_artist">Artister</string>

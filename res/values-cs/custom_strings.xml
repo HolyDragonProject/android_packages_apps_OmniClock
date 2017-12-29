@@ -134,8 +134,7 @@
   <string name="color_theme_title">Motiv</string>
   <string name="randomMusicType">Náhodná hudba</string>
   <string name="browse_activity_title">Prohlížet</string>
-  <string name="local_query_alarm">Budíky</string>
-  <string name="local_query_ringtone">Vyzváněcí tóny</string>
+  <string name="local_query_alarm_ringtones">Budíky a vyzvánění</string>
   <string name="local_query_recent">Nedávné</string>
   <string name="local_query_hint">Hledat</string>
   <string name="local_query_artist">Interpreti</string>
@@ -158,4 +157,11 @@
   <string name="entry_never">Nikdy</string>
   <string name="default_page_title">Výchozí úvodní stránka</string>
   <string name="global_settings">Globální</string>
+  <string name="local_query_playlist">Seznamy stop</string>
+  <string name="url_paste_hint">Vložit adresu URL</string>
+  <string name="playlist_file_name">Název</string>
+  <string name="local_query_stream">Datové proudy</string>
+  <string name="offline_notif_title">Zařízení není připojeno</string>
+  <string name="offline_notif_message">Prosím, změňte nastavení systému</string>
+  <string name="color_theme_black">Černé</string>
 </resources>

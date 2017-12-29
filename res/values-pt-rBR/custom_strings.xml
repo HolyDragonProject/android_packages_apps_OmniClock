@@ -134,8 +134,6 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Músicas aleatórias</string>
   <string name="browse_activity_title">Procurar</string>
-  <string name="local_query_alarm">Alarmes</string>
-  <string name="local_query_ringtone">Toques</string>
   <string name="local_query_recent">Recente</string>
   <string name="local_query_hint">Pesquisar</string>
   <string name="local_query_artist">Artistas</string>

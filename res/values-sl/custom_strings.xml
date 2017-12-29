@@ -134,8 +134,6 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Naključna glasba</string>
   <string name="browse_activity_title">Brskaj</string>
-  <string name="local_query_alarm">Budilke</string>
-  <string name="local_query_ringtone">Melodije zvonjenja</string>
   <string name="local_query_recent">Nedavno</string>
   <string name="local_query_hint">Poišči</string>
   <string name="local_query_artist">Izvajalci</string>

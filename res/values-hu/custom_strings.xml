@@ -134,8 +134,6 @@
   <string name="color_theme_title">Téma</string>
   <string name="randomMusicType">Véletlen zene</string>
   <string name="browse_activity_title">Tallózás</string>
-  <string name="local_query_alarm">Ébresztők</string>
-  <string name="local_query_ringtone">Csengőhangok</string>
   <string name="local_query_recent">Legutóbbi</string>
   <string name="local_query_hint">Keresés</string>
   <string name="local_query_artist">Előadók</string>

@@ -134,8 +134,6 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Tilfeldig musikk</string>
   <string name="browse_activity_title">Bla gjennom</string>
-  <string name="local_query_alarm">Alarmer</string>
-  <string name="local_query_ringtone">Ringetoner</string>
   <string name="local_query_recent">Siste</string>
   <string name="local_query_hint">Søk</string>
   <string name="local_query_artist">Artister</string>

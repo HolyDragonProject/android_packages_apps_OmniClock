@@ -134,8 +134,6 @@
   <string name="color_theme_title">Mövzu</string>
   <string name="randomMusicType">Təsadüfi mahnı</string>
   <string name="browse_activity_title">Gözdən keçir</string>
-  <string name="local_query_alarm">Alarmlar</string>
-  <string name="local_query_ringtone">Zəng səsləri</string>
   <string name="local_query_recent">Ən Son</string>
   <string name="local_query_hint">Axtar</string>
   <string name="local_query_artist">Sənətçilər</string>

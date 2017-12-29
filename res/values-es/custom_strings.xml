@@ -134,8 +134,6 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Música al azar</string>
   <string name="browse_activity_title">Ver</string>
-  <string name="local_query_alarm">Alarmas</string>
-  <string name="local_query_ringtone">Tonos de llamada</string>
   <string name="local_query_recent">Reciente</string>
   <string name="local_query_hint">Buscar</string>
   <string name="local_query_artist">Artistas</string>
@@ -158,4 +156,8 @@
   <string name="entry_never">Nunca</string>
   <string name="default_page_title">Página de inicio predeterminada</string>
   <string name="global_settings">Global</string>
+  <string name="local_query_playlist">Listas de reproducción</string>
+  <string name="url_paste_hint">Pegar URL</string>
+  <string name="playlist_file_name">Nombre</string>
+  <string name="color_theme_black">Negro</string>
 </resources>
