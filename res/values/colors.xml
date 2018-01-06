@@ -71,4 +71,5 @@
     <color name="undo_color">#ffc107</color>
     <color name="secondary_primary">@color/primary</color>
     <color name="secondary_primary_black">@color/primary_black</color>
+    <color name="ic_launcher_background">#ffffff</color>
 </resources>
