@@ -134,6 +134,7 @@
   <string name="color_theme_title">Téma</string>
   <string name="randomMusicType">Véletlen zene</string>
   <string name="browse_activity_title">Tallózás</string>
+  <string name="local_query_alarm_ringtones">Ébresztők és csengőhangok</string>
   <string name="local_query_recent">Legutóbbi</string>
   <string name="local_query_hint">Keresés</string>
   <string name="local_query_artist">Előadók</string>
@@ -156,4 +157,11 @@
   <string name="entry_never">Soha</string>
   <string name="default_page_title">Alapértelmezett kezdőlap</string>
   <string name="global_settings">Globális</string>
+  <string name="local_query_playlist">Lejátszási listák</string>
+  <string name="url_paste_hint">URL beillesztése</string>
+  <string name="playlist_file_name">Név</string>
+  <string name="local_query_stream">Streamek</string>
+  <string name="offline_notif_title">Készülék offline</string>
+  <string name="offline_notif_message">Kérjük módosítsa a rendszer beállításait</string>
+  <string name="color_theme_black">Sötét</string>
 </resources>

@@ -134,6 +134,7 @@
   <string name="color_theme_title">Téma</string>
   <string name="randomMusicType">Náhodná hudba</string>
   <string name="browse_activity_title">Prehliadať</string>
+  <string name="local_query_alarm_ringtones">Budíky a zvonenia</string>
   <string name="local_query_recent">Nedávne</string>
   <string name="local_query_hint">Vyhľadajte</string>
   <string name="local_query_artist">Interpreti</string>
@@ -156,4 +157,11 @@
   <string name="entry_never">Nikdy</string>
   <string name="default_page_title">Predvolená stránka po spustení</string>
   <string name="global_settings">Globálne</string>
+  <string name="local_query_playlist">Zoznamy skladieb</string>
+  <string name="url_paste_hint">Vložiť adresu URL</string>
+  <string name="playlist_file_name">Názov</string>
+  <string name="local_query_stream">Dátové prúdy</string>
+  <string name="offline_notif_title">Zariadenie nie je pripojené</string>
+  <string name="offline_notif_message">Prosím, zmeňte nastavenia systému</string>
+  <string name="color_theme_black">Čierna</string>
 </resources>
