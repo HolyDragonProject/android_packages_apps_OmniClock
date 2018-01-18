@@ -115,6 +115,8 @@
   <string name="editor_save">Salvesta muudatused</string>
   <string name="menu_item_spotify">Spotify</string>
   <string name="wear_notification_title">Luba kantavate teated</string>
+  <string name="pre_alarm_notification_show_title">Tulevate äratuste teated</string>
+  <string name="pre_alarm_notification_show_summary">Kuva teateid tulevatele äratustele</string>
   <string name="color_theme_light">Hele</string>
   <string name="color_theme_dark">Tume</string>
   <string name="color_theme_title">Teema</string>
