@@ -76,6 +76,7 @@
   <string name="prealarm_default_label">Eel-äratus</string>
   <string name="fullscreen_alarm_settings">Täisekraanil äratused</string>
   <string name="fullscreen_alarm_title">Täisekraanil äratused</string>
+  <string name="fullscreen_alarm_summary">Kasuta alati täisekraanis äratusi piiluva teate asemel</string>
   <string name="notification_settings">Teated</string>
   <!-- User-defined cities -->
   <string name="menu_item_add">Lisa</string>

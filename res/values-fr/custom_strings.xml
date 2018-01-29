@@ -160,8 +160,8 @@
   <string name="local_query_playlist">Listes de lecture</string>
   <string name="url_paste_hint">Coller URL</string>
   <string name="playlist_file_name">Nom</string>
-  <string name="local_query_stream">Stream</string>
-  <string name="offline_notif_title">Appareil hors connexion</string>
+  <string name="local_query_stream">Flux de données</string>
+  <string name="offline_notif_title">Appareil hors ligne</string>
   <string name="offline_notif_message">Veuillez modifier vos paramètres système</string>
   <string name="color_theme_black">Noir</string>
 </resources>
