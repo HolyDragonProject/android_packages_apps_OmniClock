@@ -159,6 +159,7 @@ public class AlarmKlaxon {
 
     public static void start(final Context context, AlarmInstance instance) {
         sContext = context;
+        sStarted = true;
 
         // Make sure we are stop before starting
         stop(context);
@@ -181,7 +182,6 @@ public class AlarmKlaxon {
         sIncreasingVolume = instance.getIncreasingVolume(sPreAlarmMode);
         sRandomPlayback = instance.getRandomMode(sPreAlarmMode);
         sFirstFile = true;
-        sStarted = true;
 
         if (sPreAlarmMode) {
             sMaxVolume = calcNormalizedVolume(context, instance.mPreAlarmVolume);
