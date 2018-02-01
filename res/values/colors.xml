@@ -72,4 +72,6 @@
     <color name="secondary_primary">@color/primary</color>
     <color name="secondary_primary_black">@color/primary_black</color>
     <color name="ic_launcher_background">#ffffff</color>
+    <color name="snooze_circle_bg">@android:color/holo_green_light</color>
+    <color name="dismiss_circle_bg">@android:color/holo_red_light</color>
 </resources>

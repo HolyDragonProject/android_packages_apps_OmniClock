@@ -117,23 +117,23 @@
 
         <ImageButton
             android:id="@+id/snooze"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_column="0"
             android:layout_gravity="center"
             android:layout_row="3"
-            android:background="@drawable/bg_circle_white"
+            android:background="@drawable/bg_circle_green"
             android:contentDescription="@string/alarm_alert_snooze_text"
             android:src="@drawable/ic_snooze" />
 
         <ImageButton
             android:id="@+id/dismiss"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_column="2"
             android:layout_gravity="center"
             android:layout_row="3"
-            android:background="@drawable/bg_circle_white"
+            android:background="@drawable/bg_circle_red"
             android:contentDescription="@string/alarm_alert_dismiss_text"
             android:src="@drawable/ic_alarm_off" />
 
@@ -151,7 +151,7 @@
             android:paddingLeft="@dimen/alarm_lockscreen_alarm_horizontal_padding"
             android:paddingRight="@dimen/alarm_lockscreen_alarm_horizontal_padding"
             android:paddingTop="@dimen/alarm_lockscreen_alarm_vertical_padding"
-            android:src="@drawable/ic_fab_alarm" />
+            android:src="@drawable/ic_circle" />
 
         <TextView
             android:id="@+id/hint"

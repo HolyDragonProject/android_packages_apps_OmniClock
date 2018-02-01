@@ -962,7 +962,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     holder.clock.setTextColor(getResources().getColor(R.color.white_30p));
                     holder.alarmInidicator.setColorFilter(getResources().getColor(R.color.white_30p), PorterDuff.Mode.SRC_IN);
                 }
-                holder.alarmInidicator.setImageResource(R.drawable.ic_alarm_off_new);
+                holder.alarmInidicator.setImageResource(R.drawable.ic_alarm_off);
             }
         }
 

@@ -51,6 +51,7 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import org.omnirom.deskclock.R;
 import org.omnirom.deskclock.AnimatorUtils;
 import org.omnirom.deskclock.LogUtils;
 import org.omnirom.deskclock.SettingsActivity;
@@ -250,8 +251,8 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
         mDismissButton.setOnClickListener(this);
 
         mAlarmAnimator = AnimatorUtils.getScaleAnimator(mAlarmButton, 1.0f, 0.0f);
-        mSnoozeAnimator = getButtonAnimator(mSnoozeButton, mCurrentHourColor);
-        mDismissAnimator = getButtonAnimator(mDismissButton, mCurrentHourColor);
+        mSnoozeAnimator = getButtonAnimator(mSnoozeButton, getResources().getColor(R.color.snooze_circle_bg));
+        mDismissAnimator = getButtonAnimator(mDismissButton, getResources().getColor(R.color.dismiss_circle_bg));
         mPulseAnimator = ObjectAnimator.ofPropertyValuesHolder(pulseView,
                 PropertyValuesHolder.ofFloat(View.SCALE_X, 0.0f, 1.0f),
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.0f, 1.0f),
@@ -441,10 +442,10 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
         mAlarmHandled = true;
         LogUtils.v(LOGTAG, "Snoozed: " + mAlarmInstance);
 
-        final int alertColor = getResources().getColor(org.omnirom.deskclock.R.color.primary);
+        final int revealColor = getResources().getColor(org.omnirom.deskclock.R.color.snooze_circle_bg);
         setAnimatedFractions(1.0f /* snoozeFraction */, 0.0f /* dismissFraction */);
         getAlertAnimator(mSnoozeButton, org.omnirom.deskclock.R.string.alarm_alert_snoozed_text,
-                AlarmStateManager.getSnoozedMinutes(this), alertColor, alertColor).start();
+                AlarmStateManager.getSnoozedMinutes(this), revealColor, mCurrentHourColor).start();
         AlarmStateManager.setSnoozeState(this, mAlarmInstance, false /* showToast */);
     }
 
@@ -453,7 +454,7 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
         LogUtils.v(LOGTAG, "Dismissed: " + mAlarmInstance);
 
         setAnimatedFractions(0.0f /* snoozeFraction */, 1.0f /* dismissFraction */);
-        final int revealColor = getResources().getColor(org.omnirom.deskclock.R.color.white);
+        final int revealColor = getResources().getColor(org.omnirom.deskclock.R.color.dismiss_circle_bg);
         getAlertAnimator(mDismissButton, org.omnirom.deskclock.R.string.alarm_alert_off_text, null /* infoText */,
                 revealColor, mCurrentHourColor).start();
         AlarmStateManager.setDismissState(this, mAlarmInstance);
@@ -477,10 +478,10 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
                 PropertyValuesHolder.ofFloat(View.SCALE_X, BUTTON_SCALE_DEFAULT, 1.0f),
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, BUTTON_SCALE_DEFAULT, 1.0f),
                 PropertyValuesHolder.ofInt(AnimatorUtils.BACKGROUND_ALPHA, 0, 255),
-                PropertyValuesHolder.ofInt(AnimatorUtils.DRAWABLE_ALPHA,
-                        BUTTON_DRAWABLE_ALPHA_DEFAULT, 255),
+                /*PropertyValuesHolder.ofInt(AnimatorUtils.DRAWABLE_ALPHA,
+                        BUTTON_DRAWABLE_ALPHA_DEFAULT, 255),*/
                 PropertyValuesHolder.ofObject(AnimatorUtils.DRAWABLE_TINT,
-                        AnimatorUtils.ARGB_EVALUATOR, Color.WHITE, tintColor));
+                        AnimatorUtils.ARGB_EVALUATOR, tintColor, Color.WHITE));
     }
 
     private ValueAnimator getAlarmBounceAnimator(float translationX, final int hintResId) {
