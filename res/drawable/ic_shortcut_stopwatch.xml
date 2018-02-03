@@ -10,7 +10,7 @@
         android:scaleX="0.100000"
         android:scaleY="-0.100000">
         <path
-            android:fillColor="@*android:color/chooser_service_row_background_color"
+            android:fillColor="#f5f5f5"
             android:strokeWidth="1"
             android:pathData="M2235 5024 c-864 -117 -1594 -656 -1948 -1439 -148 -327 -217 -656 -217 -1030 0
 -295 34 -514 120 -775 253 -768 841 -1352 1611 -1598 248 -79 469 -112 754 -112
