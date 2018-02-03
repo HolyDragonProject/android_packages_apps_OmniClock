@@ -452,8 +452,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
 
             updateDayOrder();
 
-            Resources res = mContext.getResources();
-
             mHasVibrator = ((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE))
                     .hasVibrator();
         }
@@ -599,33 +597,11 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     asyncUpdateAlarm(alarm, alarm.enabled);
                 }
             });
-            if (itemHolder.alarm.daysOfWeek.isRepeating()) {
-                itemHolder.tomorrowLabel.setVisibility(View.GONE);
-            } else {
-                itemHolder.tomorrowLabel.setVisibility(View.VISIBLE);
-                final Resources resources = getResources();
-                final String labelText = isTomorrow(alarm) ?
-                        resources.getString(R.string.alarm_tomorrow) :
-                        resources.getString(R.string.alarm_today);
-                itemHolder.tomorrowLabel.setText(labelText);
-            }
 
             boolean expanded = isAlarmExpanded(alarm);
 
             itemHolder.expandArea.setVisibility(expanded ? View.VISIBLE : View.GONE);
             itemHolder.arrow.setRotation(expanded ? ROTATE_180_DEGREE : 0);
-
-            // Set the repeat text or leave it blank if it does not repeat.
-            final String daysOfWeekStr =
-                    alarm.daysOfWeek.toString(AlarmClockFragment.this.getActivity(), false, DAY_ORDER);
-            if (daysOfWeekStr != null && daysOfWeekStr.length() != 0) {
-                itemHolder.daysOfWeek.setText(daysOfWeekStr);
-                itemHolder.daysOfWeek.setContentDescription(alarm.daysOfWeek.toAccessibilityString(
-                        AlarmClockFragment.this.getActivity(), DAY_ORDER));
-                itemHolder.daysOfWeek.setVisibility(View.VISIBLE);
-            } else {
-                itemHolder.daysOfWeek.setVisibility(View.GONE);
-            }
 
             itemHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -660,6 +636,8 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 expandAlarm(itemHolder, false);
             }
 
+            updateAlarmLabel(itemHolder);
+
             itemHolder.arrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -677,7 +655,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
             final int alarmHour = alarm.hour;
             final int currHour = now.get(Calendar.HOUR_OF_DAY);
             return alarmHour < currHour ||
-                    (alarmHour == currHour && alarm.minutes < now.get(Calendar.MINUTE));
+                    (alarmHour == currHour && alarm.minutes <= now.get(Calendar.MINUTE));
         }
 
         private void bindExpandArea(final ItemHolder itemHolder, final Alarm alarm) {
@@ -716,6 +694,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                     }
 
                     asyncUpdateAlarm(alarm, false);
+                    updateAlarmLabel(itemHolder);
                 }
             });
 
@@ -745,6 +724,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                             }
                         }
                         asyncUpdateAlarm(alarm, false);
+                        updateAlarmLabel(itemHolder);
                     }
                 });
             }
@@ -1111,6 +1091,31 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 }
             }
             return alarmPosition;
+        }
+
+        private void updateAlarmLabel(ItemHolder itemHolder) {
+            if (itemHolder.alarm.daysOfWeek.isRepeating()) {
+                itemHolder.tomorrowLabel.setVisibility(View.GONE);
+            } else {
+                itemHolder.tomorrowLabel.setVisibility(View.VISIBLE);
+                final Resources resources = getResources();
+                final String labelText = isTomorrow(itemHolder.alarm) ?
+                        resources.getString(R.string.alarm_tomorrow) :
+                        resources.getString(R.string.alarm_today);
+                itemHolder.tomorrowLabel.setText(labelText);
+            }
+
+            // Set the repeat text or leave it blank if it does not repeat.
+            final String daysOfWeekStr =
+                    itemHolder.alarm.daysOfWeek.toString(AlarmClockFragment.this.getActivity(), false, DAY_ORDER);
+            if (daysOfWeekStr != null && daysOfWeekStr.length() != 0) {
+                itemHolder.daysOfWeek.setText(daysOfWeekStr);
+                itemHolder.daysOfWeek.setContentDescription(itemHolder.alarm.daysOfWeek.toAccessibilityString(
+                        AlarmClockFragment.this.getActivity(), DAY_ORDER));
+                itemHolder.daysOfWeek.setVisibility(View.VISIBLE);
+            } else {
+                itemHolder.daysOfWeek.setVisibility(View.GONE);
+            }
         }
     }
 
