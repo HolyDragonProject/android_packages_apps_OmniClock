@@ -21,15 +21,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 class SlidingTabStrip extends LinearLayout {
 
-    private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 2;
+    private static final int SELECTED_INDICATOR_THICKNESS_DIPS = 0;
     private static final int DEFAULT_SELECTED_INDICATOR_COLOR = 0xFF33B5E5;
 
     private static final int DEFAULT_DIVIDER_THICKNESS_DIPS = 0;
@@ -51,6 +53,9 @@ class SlidingTabStrip extends LinearLayout {
 
     private int mTextPrimaryColor;
     private int mTextPrimaryColorDisabled;
+    private int mTabViewTextViewId;
+    private int mTabViewLayoutId;
+    private int mTabViewImageId;
 
     SlidingTabStrip(Context context) {
         this(context, null);
@@ -194,10 +199,28 @@ class SlidingTabStrip extends LinearLayout {
 
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
+            TextView textView;
             if (child instanceof TextView) {
-                ((TextView) child).setTextColor(i == mSelectedPosition ? mTextPrimaryColor: mTextPrimaryColorDisabled);
+                textView = (TextView) child;
+            } else {
+                textView = (TextView) child.findViewById(mTabViewTextViewId);
+            }
+            if (textView != null) {
+                textView.setTextColor(i == mSelectedPosition ? mTextPrimaryColor: mTextPrimaryColorDisabled);
+            }
+            if (mTabViewImageId != 0) {
+                ImageView imageView = (ImageView) child.findViewById(mTabViewImageId);
+                if (imageView != null) {
+                    imageView.setColorFilter(i == mSelectedPosition ? mTextPrimaryColor: mTextPrimaryColorDisabled, PorterDuff.Mode.SRC_IN);
+                }
             }
         }
+    }
+
+    public void setCustomTabView(int layoutResId, int textViewId, int imageViewId) {
+        mTabViewLayoutId = layoutResId;
+        mTabViewTextViewId = textViewId;
+        mTabViewImageId = imageViewId;
     }
 
     private static class SimpleTabColorizer implements SlidingTabLayout.TabColorizer {

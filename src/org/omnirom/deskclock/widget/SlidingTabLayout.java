@@ -28,7 +28,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.omnirom.deskclock.DeskClock;
 
 /**
  * To be used with ViewPager to provide a tab indicator component which give constant feedback as to
@@ -74,11 +77,13 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private int mTabViewLayoutId;
     private int mTabViewTextViewId;
+    private int mTabViewImageId;
 
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
     private final SlidingTabStrip mTabStrip;
+    private DeskClock mDeskClock;
 
     private static final ViewOutlineProvider TAB_OUTLINE_PROVIDER = new ViewOutlineProvider() {
         @Override
@@ -110,6 +115,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
         setOutlineProvider(TAB_OUTLINE_PROVIDER);
     }
 
+    public void setDeskClock(DeskClock deskClock) {
+        mDeskClock = deskClock;
+    }
     /**
      * Set the custom {@link TabColorizer} to be used.
      *
@@ -154,9 +162,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
      * @param layoutResId Layout id to be inflated
      * @param textViewId id of the {@link TextView} in the inflated view
      */
-    public void setCustomTabView(int layoutResId, int textViewId) {
+    public void setCustomTabView(int layoutResId, int textViewId, int tabViewImageId) {
         mTabViewLayoutId = layoutResId;
         mTabViewTextViewId = textViewId;
+        mTabViewImageId = tabViewImageId;
+
+        mTabStrip.setCustomTabView(mTabViewLayoutId, mTabViewTextViewId, mTabViewImageId);
     }
 
     /**
@@ -228,6 +239,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
             }
 
             tabTitleView.setText(adapter.getPageTitle(i));
+            tabTitleView.setTextColor(mTabStrip.getTextColor());
+            if (mTabViewImageId != 0 && mDeskClock != null) {
+                ImageView tabImageView = (ImageView) tabView.findViewById(mTabViewImageId);
+                tabImageView.setImageDrawable(mDeskClock.getPageImage(i));
+            }
             tabView.setOnClickListener(tabClickListener);
 
             mTabStrip.addView(tabView);

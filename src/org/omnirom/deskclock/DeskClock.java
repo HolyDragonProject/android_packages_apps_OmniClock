@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Outline;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -163,6 +164,8 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
 
             // Assiging the Sliding Tab Layout View
             mSlidingTabs = (SlidingTabLayout) findViewById(R.id.desk_clock_tabs);
+            mSlidingTabs.setDeskClock(this);
+            mSlidingTabs.setCustomTabView(R.layout.tab_strip_item, R.id.tab_strip_title, R.id.tab_strip_image);
 
             // Setting the ViewPager For the SlidingTabsLayout
             mSlidingTabs.setViewPager(mViewPager);
@@ -581,11 +584,28 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
     public ActionableToastBar getUndoBar() {
         return mUndoBar;
     }
+
     public View getUndoFrame() {
         return mUndoFrame;
     }
 
     public LinearLayout getFabButtons() {
         return mFabButtons;
+    }
+
+    public Drawable getPageImage(int i) {
+        if (i == 0) {
+            return getResources().getDrawable(R.drawable.ic_notify_alarm);
+        }
+        if (i == 1) {
+            return getResources().getDrawable(R.drawable.ic_fab_earth);
+        }
+        if (i == 2) {
+            return getResources().getDrawable(R.drawable.ic_notify_timer);
+        }
+        if (i == 3) {
+            return getResources().getDrawable(R.drawable.ic_notify_stopwatch);
+        }
+        return getResources().getDrawable(R.drawable.ic_notify_alarm);
     }
 }

@@ -210,14 +210,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
         return v;
     }
 
-    private void setUndoBarRightMargin(int margin) {
-        FrameLayout.LayoutParams params =
-                (FrameLayout.LayoutParams) mUndoBar.getLayoutParams();
-        ((FrameLayout.LayoutParams) mUndoBar.getLayoutParams())
-                .setMargins(params.leftMargin, params.topMargin, margin, params.bottomMargin);
-        mUndoBar.requestLayout();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -255,34 +247,23 @@ public class AlarmClockFragment extends DeskClockFragment implements
         }
     }
 
-    private void hideUndoBar(boolean animate, MotionEvent event) {
-        if (mUndoBar != null) {
-            mUndoFrame.setVisibility(View.GONE);
-            if (event != null && mUndoBar.isEventInToastBar(event)) {
-                // Avoid touches inside the undo bar.
-                return;
-            }
-            mUndoBar.hide(animate);
-        }
-        mFabButtons.setPadding(0, 0, 0, 0);
+    private void hideUndoBar(boolean animate) {
+        mUndoBar.hide(animate);
+        mUndoFrame.setVisibility(View.GONE);
         mDeletedAlarm = null;
         mUndoShowing = false;
     }
 
     private void showUndoBar() {
         final Alarm deletedAlarm = mDeletedAlarm;
-        mFabButtons.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.alarm_undo_bar_height));
         mUndoFrame.setVisibility(View.VISIBLE);
         mUndoFrame.setOnTouchListener(this);
         mUndoBar.show(new ActionableToastBar.ActionClickedListener() {
             @Override
             public void onActionClicked() {
                 mAddedAlarm = deletedAlarm;
-                mDeletedAlarm = null;
-                mUndoShowing = false;
-                mFabButtons.setPadding(0, 0, 0, 0);
-
-                asyncAddAlarm(deletedAlarm);
+                hideUndoBar(true);
+                asyncAddAlarm(deletedAlarm, false);
             }
         }, 0, getResources().getString(R.string.alarm_deleted), false, R.string.alarm_undo, true);
     }
@@ -311,7 +292,9 @@ public class AlarmClockFragment extends DeskClockFragment implements
         // dismiss the toast bar. However, since there is no way to determine if
         // home was pressed, just dismiss any existing toast bar when restarting
         // the app.
-        hideUndoBar(false, null);
+        if (mUndoShowing) {
+            hideUndoBar(false);
+        }
     }
 
     // Callback used by TimePickerDialog
@@ -331,7 +314,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 a.setRingtoneName(getRingToneTitle(a.alert), BrowseActivity.QUERY_TYPE_ALARM);
                 a.deleteAfterUse = false;
                 mAddedAlarm = a;
-                asyncAddAlarm(a);
+                asyncAddAlarm(a, true);
             } else {
                 // only change time but nothing else
                 if (mSelectedAlarm.hour != hourOfDay || mSelectedAlarm.minutes != minute) {
@@ -1164,7 +1147,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
         deleteTask.execute();
     }
 
-    private void asyncAddAlarm(final Alarm alarm) {
+    private void asyncAddAlarm(final Alarm alarm, final boolean expand) {
         final Context context = getActivity().getApplicationContext();
         final AsyncTask<Void, Void, AlarmInstance> updateTask =
                 new AsyncTask<Void, Void, AlarmInstance>() {
@@ -1176,7 +1159,9 @@ public class AlarmClockFragment extends DeskClockFragment implements
                             // Add alarm to db
                             Alarm newAlarm = Alarm.addAlarm(cr, alarm);
                             mScrollToAlarmId = newAlarm.id;
-                            mExpandedId = newAlarm.id;
+                            if (expand) {
+                                mExpandedId = newAlarm.id;
+                            }
 
                             // Create and add instance to db
                             if (newAlarm.enabled) {
@@ -1249,14 +1234,20 @@ public class AlarmClockFragment extends DeskClockFragment implements
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        hideUndoBar(true, event);
+        if (mUndoShowing) {
+            hideUndoBar(true);
+            return true;
+        }
         return false;
     }
 
     @Override
     public void onFabClick(View view) {
-        hideUndoBar(true, null);
-        startCreatingAlarm();
+        if (mUndoShowing) {
+            hideUndoBar(true);
+        } else {
+            startCreatingAlarm();
+        }
     }
 
     @Override
@@ -1313,7 +1304,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
         a.hour = hourOfDay;
         a.minutes = minute;
         mAddedAlarm = a;
-        asyncAddAlarm(a);
+        asyncAddAlarm(a, false);
     }
 
     private void checkStoragePermissions(Runnable runAfter) {

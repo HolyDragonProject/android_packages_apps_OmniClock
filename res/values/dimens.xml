@@ -114,10 +114,6 @@
 
     <dimen name="toast_bar_bottom_margin_in_conversation">24dip</dimen>
 
-    <!-- Height of the button footers. 56 height and 16 on top and bottom. -->
-    <dimen name="button_footer_height">88dip</dimen>
-    <!-- Negative value of the height of the button footers, for use with lightsout. -->
-    <dimen name="button_footer_height_neg">-48dip</dimen>
     <!-- Height of space between timers. -->
     <dimen name="timer_divider_height">24dip</dimen>
 
@@ -184,4 +180,9 @@
     <dimen name="browse_item_height">48dip</dimen>
     <dimen name="browse_item_icon_size">36dip</dimen>
 
+    <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="bottom_nav_image_size">24dp</dimen>
+
+    <!-- Height of the button footers. fab + bottom nav bar -->
+    <dimen name="button_footer_height">120dip</dimen>
 </resources>
