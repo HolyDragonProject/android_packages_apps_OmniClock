@@ -437,6 +437,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
             TextView prealarmRingtone;
             ImageButton clone;
             ImageView alarmInidicator;
+            View alarmContainer;
             // Other states
             Alarm alarm;
         }
@@ -488,24 +489,6 @@ public class AlarmClockFragment extends DeskClockFragment implements
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (!getCursor().moveToPosition(position)) {
-                // May happen if the last alarm was deleted and the cursor refreshed while the
-                // list is updated.
-                LogUtils.v("couldn't move cursor to position " + position);
-                return null;
-            }
-            View v;
-            //if (convertView == null) {
-            v = newView(mContext, getCursor(), parent);
-            //} else {
-            //    v = convertView;
-            //}
-            bindView(v, mContext, getCursor());
-            return v;
-        }
-
-        @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final View view = mFactory.inflate(R.layout.alarm_time, parent, false);
             setNewHolder(view);
@@ -553,6 +536,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
             holder.prealarmRingtone = (TextView) view.findViewById(R.id.prealarm_choose_ringtone);
             holder.clone = (ImageButton) view.findViewById(R.id.clone);
             holder.alarmInidicator = (ImageView) view.findViewById(R.id.alarm_inidicator);
+            holder.alarmContainer = view.findViewById(R.id.alarm_container);
             view.setTag(holder);
         }
 
@@ -1003,9 +987,12 @@ public class AlarmClockFragment extends DeskClockFragment implements
             if (mExpandedId != Alarm.INVALID_ID
                     && mExpandedId != itemHolder.alarm.id) {
                 View v = getViewById(mExpandedId);
-                if (v != null && v.getTag() != null) {
-                    // Only allow one alarm to expand at a time.
-                    collapseAlarm((ItemHolder) v.getTag(), animate);
+                if (v != null) {
+                    ItemHolder holder = (ItemHolder) v.getTag();
+                    if (holder != null && holder.alarm.id != itemHolder.alarm.id) {
+                        // Only allow one alarm to expand at a time.
+                        collapseAlarm((ItemHolder) v.getTag(), animate);
+                    }
                 }
             }
 
@@ -1018,6 +1005,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 expandAni.setAnimationListener(new AnimationListener() {
                     @Override
                     public void onAnimationEnd(Animation animation) {
+                        itemHolder.alarmContainer.requestLayout();
                     }
 
                     @Override
@@ -1037,6 +1025,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 itemHolder.expandArea.setVisibility(View.VISIBLE);
                 itemHolder.arrow.setRotation(ROTATE_180_DEGREE);
                 itemHolder.summary.setEnabled(true);
+                itemHolder.alarmContainer.requestLayout();
             }
         }
 
@@ -1049,6 +1038,20 @@ public class AlarmClockFragment extends DeskClockFragment implements
 
             if (animate) {
                 ExpandAnimation expandAni = new ExpandAnimation(itemHolder.expandArea, COLLAPSE_DURATION);
+                expandAni.setAnimationListener(new AnimationListener() {
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        itemHolder.alarmContainer.requestLayout();
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+                });
                 itemHolder.expandArea.startAnimation(expandAni);
 
                 itemHolder.summary.setEnabled(false);
@@ -1060,6 +1063,7 @@ public class AlarmClockFragment extends DeskClockFragment implements
                 itemHolder.expandArea.setVisibility(View.GONE);
                 itemHolder.arrow.setRotation(ROTATE_0_DEGREE);
                 itemHolder.summary.setEnabled(false);
+                itemHolder.alarmContainer.requestLayout();
             }
         }
 

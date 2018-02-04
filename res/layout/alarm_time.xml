@@ -33,7 +33,8 @@
         card_view:contentPadding="5dp"
         card_view:cardBackgroundColor="@color/view_background">
 
-    <LinearLayout
+        <LinearLayout
+            android:id="@+id/alarm_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
