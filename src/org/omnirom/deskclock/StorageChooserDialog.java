@@ -26,7 +26,6 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,9 +188,7 @@ public class StorageChooserDialog extends DialogFragment
         final View view = inflater
                 .inflate(R.layout.folder_dialog, null);
 
-        TypedValue outValue = new TypedValue();
-        getActivity().getTheme().resolveAttribute(android.R.attr.textColorPrimary, outValue, true);
-        mTextColor = getActivity().getResources().getColor(outValue.resourceId);
+        mTextColor = Utils.getColorAttr(getActivity(), android.R.attr.textColorPrimary);
         boolean light = Utils.isLightTheme(getActivity());
         if (light) {
             mTextColorDisabled = getActivity().getResources().getColor(R.color.folder_dialog_file_color);

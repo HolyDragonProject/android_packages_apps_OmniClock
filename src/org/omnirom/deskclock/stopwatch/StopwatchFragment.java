@@ -28,7 +28,6 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,10 +128,7 @@ public class StopwatchFragment extends DeskClockFragment
             mLapMinColor = context.getResources().getColor(org.omnirom.deskclock.R.color.stopwatch_min_lap_line);
             mLapMaxColor = context.getResources().getColor(org.omnirom.deskclock.R.color.stopwatch_max_lap_line);
             mLapDefaultColor = context.getResources().getColor(org.omnirom.deskclock.R.color.transparent);
-            TypedValue outValue = new TypedValue();
-            context.getTheme().resolveAttribute(android.R.attr.textColorPrimary, outValue, true);
-            mLapDefaultTextColor = context.getResources().getColor(outValue.resourceId);
-
+            mLapDefaultTextColor = Utils.getColorAttr(context, android.R.attr.textColorPrimary);
             updateLapFormat();
         }
 
