@@ -23,7 +23,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,7 +36,6 @@ class SlidingTabStrip extends LinearLayout {
     private static final int DEFAULT_DIVIDER_THICKNESS_DIPS = 0;
     private static final int DEFAULT_DIVIDER_COLOR_ALPHA = 0x20;
     private static final float DEFAULT_DIVIDER_HEIGHT = 0.5f;
-    private static final int DISABLED_TAB_TEXT_COLOR_ALPHA = 0x6F;
 
     private final int mSelectedIndicatorThickness;
     private final Paint mSelectedIndicatorPaint;
@@ -67,16 +65,10 @@ class SlidingTabStrip extends LinearLayout {
 
         final float density = getResources().getDisplayMetrics().density;
 
-        TypedValue outValue = new TypedValue();
-
-        context.getTheme().resolveAttribute(R.attr.colorPrimary, outValue, true);
-        final int themeBackgroundColor =  outValue.data;
-        setBackgroundColor(themeBackgroundColor);
-
         mTextPrimaryColor = getResources().getColor(R.color.white);
 
         mTextPrimaryColorDisabled = setColorAlpha(mTextPrimaryColor,
-                DISABLED_TAB_TEXT_COLOR_ALPHA);
+                getResources().getInteger(org.omnirom.deskclock.R.integer.disabled_text_alpha));
 
         mDefaultTabColorizer = new SimpleTabColorizer();
         mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR);

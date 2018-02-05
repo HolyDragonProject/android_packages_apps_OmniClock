@@ -30,7 +30,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         card_view:cardCornerRadius="2dp"
-        card_view:contentPadding="5dp"
         card_view:cardBackgroundColor="@color/view_background">
 
         <LinearLayout
@@ -202,7 +201,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/secondaryPrimary"
+                    android:background="@color/bottom_line_bg"
                     android:orientation="horizontal"
                     android:paddingEnd="@dimen/alarm_side_padding"
                     android:paddingStart="@dimen/alarm_side_padding" >
@@ -218,7 +217,7 @@
 
                         <TextView
                             android:id="@+id/edit_label"
-                            style="@style/TextAppearanceWhite"
+                            style="@style/TextAppearanceBottomLine"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:ellipsize="end"
@@ -231,7 +230,7 @@
 
                         <TextView
                             android:id="@+id/daysOfWeek"
-                            style="@style/TextAppearanceWhite"
+                            style="@style/TextAppearanceBottomLine"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:ellipsize="end"
@@ -240,7 +239,7 @@
 
                         <TextView
                             android:id="@+id/tomorrowLabel"
-                            style="@style/TextAppearanceWhite"
+                            style="@style/TextAppearanceBottomLine"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:ellipsize="end"

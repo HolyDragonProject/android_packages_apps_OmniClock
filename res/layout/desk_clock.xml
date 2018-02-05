@@ -111,7 +111,8 @@
             android:id="@+id/desk_clock_tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_nav_height"
-            android:elevation="@dimen/header_elevation"/>
+            android:elevation="@dimen/header_elevation"
+            android:background="@color/bottom_nav_bg"/>
     </LinearLayout>
 
     <Space

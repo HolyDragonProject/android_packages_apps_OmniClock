@@ -30,7 +30,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="2dp"
         card_view:cardCornerRadius="2dp"
-        card_view:contentPadding="5dp"
         card_view:cardBackgroundColor="@color/view_background">
 
         <LinearLayout
@@ -67,24 +66,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="?attr/secondaryPrimary"
+                android:background="@color/bottom_line_bg"
                 android:gravity="center"
                 android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/date"
-                    style="@style/TextAppearanceWhiteBigger"
+                    style="@style/TextAppearanceBottomLineBigger"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center" />
 
                 <TextView
                     android:id="@+id/nextAlarm"
-                    style="@style/TextAppearanceGray"
+                    style="@style/TextAppearanceBottomLineBigger"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dip"
-                    android:drawablePadding="2dip"
+                    android:drawablePadding="4dip"
                     android:drawableStart="@drawable/ic_alarm_small"
                     android:gravity="center" />
             </LinearLayout>

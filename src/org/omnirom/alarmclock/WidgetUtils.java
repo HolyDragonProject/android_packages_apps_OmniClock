@@ -22,7 +22,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -32,6 +31,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -412,14 +412,14 @@ public class WidgetUtils {
         if (letterSpacing != -1) {
             textPaint.setLetterSpacing(letterSpacing);
         }
-        Bitmap b = BitmapFactory.decodeResource(context.getResources(), org.omnirom.deskclock.R.drawable.ic_alarm_small);
+        Drawable d = context.getResources().getDrawable(org.omnirom.deskclock.R.drawable.ic_alarm);
 
         float separatorWidth = textPaint.measureText(" ");
 
         float dateWidth = showDate ? textPaint.measureText(currDate) + 2 * separatorWidth  : 0;
-        float alarmWidth = (showAlarm && hasAlarm) ? textPaint.measureText(nextAlarm) + 3 * separatorWidth + b.getWidth() : 0;
+        float alarmWidth = (showAlarm && hasAlarm) ? textPaint.measureText(nextAlarm) + 3 * separatorWidth + d.getIntrinsicWidth() : 0;
         float totalWidth = dateWidth + alarmWidth;
-        float totalHeight = Math.max(b.getHeight(), textSizePixels);
+        float totalHeight = Math.max(d.getIntrinsicHeight(), textSizePixels);
 
         if (totalWidth != 0 && totalHeight != 0) {
             Bitmap myBitmap = Bitmap.createBitmap((int) totalWidth, (int) totalHeight, Bitmap.Config.ARGB_8888);
@@ -429,10 +429,11 @@ public class WidgetUtils {
             }
 
             if (hasAlarm && showAlarm) {
-                Paint bitmapPaint = new Paint();
                 ColorFilter filter = new PorterDuffColorFilter(textColor, PorterDuff.Mode.SRC_IN);
-                bitmapPaint.setColorFilter(filter);
-                myCanvas.drawBitmap(b, dateWidth + separatorWidth, 0, bitmapPaint);
+                d.mutate().setColorFilter(filter);
+                d.setBounds((int) (dateWidth + separatorWidth), 0,
+                        (int) (dateWidth + separatorWidth + d.getIntrinsicWidth() - 10), d.getIntrinsicHeight() - 10);
+                d.draw(myCanvas);
                 drawTextOnCanvas(myCanvas, dateWidth + 2 * separatorWidth + alarmWidth / 2,
                         myBitmap.getHeight() / 2, nextAlarm, typeface, textSizePixels, textColor, shadow,
                         letterSpacing);

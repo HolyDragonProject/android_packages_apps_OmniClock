@@ -39,8 +39,7 @@
     <color name="notify_action_color">#ff5a595b</color> <!-- button_material_dark" -->
     <color name="folder_dialog_file_color">@color/black_30p</color>
     <color name="folder_dialog_file_color_dark">@color/white_30p</color>
-    <color name="material_blue_grey_900">#ff263238</color>
-    <color name="undo_background">@color/material_blue_grey_900</color>
+    <color name="undo_background">@color/material_grey_900</color>
     <color name="material_grey_50">#fffafafa</color>
     <color name="material_grey_100">#fff5f5f5</color>
     <color name="material_grey_200">#ffeeeeee</color>
@@ -51,16 +50,15 @@
     <color name="material_grey_900">#ff212121</color>
     <color name="view_background">@color/material_grey_100</color>
     <color name="window_background">@color/material_grey_300</color>
-    <color name="view_background_dark">@color/material_grey_800</color>
-    <color name="window_background_dark">@color/material_grey_900</color>
+    <color name="view_background_dark">@color/material_grey_900</color>
+    <color name="window_background_dark">#101010</color>
     <color name="view_background_black">#000000</color>
-    <color name="window_background_black">#ff151515</color>
-    <color name="primary">#245c75</color>
-    <color name="primary_dark">#183d4d</color>
-    <color name="primary_light">#30245c75</color>
+    <color name="window_background_black">#101010</color>
+    <color name="primary">#607D8B</color>
+    <color name="primary_dark">#455A64</color>
     <color name="primary_black">#000000</color>
-    <color name="accent">#e12475</color>
-    <color name="accent_black">#ffffff</color>
+    <color name="accent">#FF3D00</color>
+    <color name="accent_black">#FF3D00</color>
     <color name="analog_clock_bg_color">#21282b</color>
     <color name="analog_clock_hour_hand_color">#ffffff</color>
     <color name="analog_clock_minute_hand_color">#28abe3</color>
@@ -68,10 +66,10 @@
     <color name="analog_clock_alarm_color">#d72929</color>
     <color name="stopwatch_max_lap_line">#d72929</color>
     <color name="stopwatch_min_lap_line">#43bf43</color>
-    <color name="undo_color">#ffc107</color>
-    <color name="secondary_primary">@color/primary</color>
-    <color name="secondary_primary_black">@color/primary_black</color>
+    <color name="undo_color">@color/accent</color>
     <color name="ic_launcher_background">#ffffff</color>
     <color name="snooze_circle_bg">@android:color/holo_green_light</color>
     <color name="dismiss_circle_bg">@android:color/holo_red_light</color>
+    <color name="bottom_nav_bg">@color/material_grey_900</color>
+    <color name="bottom_line_bg">#00000000</color>
 </resources>

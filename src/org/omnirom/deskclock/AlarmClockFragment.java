@@ -141,6 +141,9 @@ public class AlarmClockFragment extends DeskClockFragment implements
     private List<Uri> mRingtones;
     private Runnable mRunAfter;
 
+    private int mTextColorWhite;
+    private int mTextColorDisabled;
+
     public AlarmClockFragment() {
         // Basic provider required by Fragment.java
     }
@@ -203,6 +206,10 @@ public class AlarmClockFragment extends DeskClockFragment implements
         mAlarmsList.addFooterView(footerView, null, false);
         View headerView = inflater.inflate(R.layout.empty_header_view, mAlarmsList, false);
         mAlarmsList.addHeaderView(headerView, null, false);
+
+        mTextColorWhite = getResources().getColor(android.R.color.white);
+        mTextColorDisabled = Utils.setColorAlpha(mTextColorWhite,
+                getResources().getInteger(R.integer.disabled_text_alpha));
 
         if (mUndoShowing) {
             showUndoBar();

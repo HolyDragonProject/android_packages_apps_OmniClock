@@ -1623,6 +1623,10 @@ public class Utils {
         ta.recycle();
         return colorAccent;
     }
+
+    public static int setColorAlpha(int color, int alpha) {
+        return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
+    }
 }
 
 
