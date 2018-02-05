@@ -63,7 +63,7 @@
   <string name="entry_ten_secs">10 saniye</string>
   <string name="entry_fifteen_secs">15 saniye</string>
   <string name="entry_thirty_secs">30 saniye</string>
-  <string name="pre_alarm_dismiss_all_summary">Fa’âl ön alarmı ihrâc etmek esas alarmı da iptal edecektir</string>
+  <string name="pre_alarm_dismiss_all_summary">Fa’âl ön alarmı ihrâc etmek esas alarmı da ihrâc edecektir</string>
   <string name="pre_alarm_dismiss_all_title">Hepsini ihrâc et</string>
   <string name="fallback_ringtone">Varsayılan</string>
   <string name="ringtone_unknown">Bilinmeyen zil sesi</string>
@@ -77,18 +77,18 @@
   <string name="prealarm_default_label">Ön alarm</string>
   <string name="fullscreen_alarm_settings">Tam ekran alarmlar</string>
   <string name="fullscreen_alarm_title">Tam ekran alarmlar</string>
-  <string name="fullscreen_alarm_summary">Ekran üstü bildirim yerine daimâ tam ekran alarmları kullan</string>
-  <string name="take_persistent_grant_uri_permission_failed_msg">Zil sesi için kalıcı izin alınamadı</string>
+  <string name="fullscreen_alarm_summary">Ekran üstü bildirim yerine dâimâ tam ekran alarmları kullan</string>
+  <string name="take_persistent_grant_uri_permission_failed_msg">Zil sesi için dâimî izin alınamadı</string>
   <string name="notification_settings">Bildirimler</string>
   <!-- User-defined cities -->
-  <string name="menu_item_add">Ekle</string>
-  <string name="cities_add_city_title">Şehir ekle</string>
+  <string name="menu_item_add">İlâve et</string>
+  <string name="cities_add_city_title">Şehir ilâve et</string>
   <string name="cities_add_city_city">Şehir:</string>
   <string name="cities_add_city_timezone">Saat dilimi:</string>
-  <string name="cities_add_city_gps_cd">Mevcûd şehrinizin yerini belirlemek için dokunun</string>
+  <string name="cities_add_city_gps_cd">Mevcûd şehrinizin yerini ta\'yîn etmek için dokunun</string>
   <string name="cities_add_loading">Yükleniyor\u2026</string>
   <string name="cities_add_searching">Aranıyor\u2026</string>
-  <string name="cities_add_gps_no_results">GPS sorgusu konum yok cevabıyla geri döndü</string>
+  <string name="cities_add_gps_no_results">GPS sorgusu mevki bulunamadı cevabını aldı</string>
   <string name="cities_add_gps_not_available">GPS mevcûd değil</string>
   <string name="cities_add_already_exists">Şehir veri tabanında zâten mevcûd</string>
   <string name="cities_add_city_failed">Şehir oluşturulamıyor</string>
@@ -97,7 +97,7 @@
   <string name="cities_delete_city_failed">Şehir silinemiyor</string>
   <string name="timer_settings">Zamanlayıcı</string>
   <string name="timer_alarm_title">Zil sesi</string>
-  <string name="timer_alarm_custom_title">Hususî zamanlayıcı zil sesi</string>
+  <string name="timer_alarm_custom_title">Husûsî zamanlayıcı zil sesi</string>
   <string name="week_start_title">Haftanın ilk günü</string>
   <string name="default_week_start">Varsayılan yerel ayar</string>
   <string name="clone_alarm">Alarmı kopyala</string>
@@ -105,7 +105,7 @@
   <string name="folders_scanning">Taranıyor\u2026</string>
   <string name="alarm_action_category">Tam ekran alarmlar için eylemler</string>
   <string name="alarm_action_header"><b>Not:</b> Bu tercihler sadece tam ekran alarm bildirimleri için geçerlidir</string>
-  <string name="show_world_clock_title">Dünya saati öğelerini göster</string>
+  <string name="show_world_clock_title">Dünya saati unsurlarını göster</string>
   <string name="show_alarm_title">Bir sonraki alarmı göster</string>
   <string name="show_date_title">Târihi göster</string>
   <string name="font_sample_text">11:57</string>
@@ -118,7 +118,7 @@
   <string name="audio_stream_title">Yerel alarm sesleri için ses akışı</string>
   <string name="audio_stream_music">Müzik akışı</string>
   <string name="audio_stream_alam">Alarm akışı</string>
-  <string name="first_alarm_created_hint">Açıp kapatmak için alarm saatine dokunun. Alarm saatini düzenlemek için uzun basın.</string>
+  <string name="first_alarm_created_hint">Açıp kapatmak için alarm saatine dokunun. Alarm saatini düzenlemek için uzun müddet dokunun.</string>
   <string name="menu_item_version">Sürüm bilgisi</string>
   <string name="editor_contentshint">Metni buraya girin</string>
   <string name="editor_save">Değişiklikleri kaydet</string>
@@ -153,7 +153,7 @@
   <string name="show_background_image_title">Arka plan resmini göster</string>
   <string name="vibrate_notification_summary">Fa\'âl alarm ve zamanlayıcı bildirimleri için titreşimi etkinleştirin</string>
   <string name="vibrate_notification_title">Bildirim titreşimi</string>
-  <string name="all_cities_label">Ekle</string>
+  <string name="all_cities_label">İlâve et</string>
   <string name="entry_never">Aslâ</string>
   <string name="default_page_title">Varsayılan başlangıç sayfası</string>
   <string name="global_settings">Umûmî</string>
