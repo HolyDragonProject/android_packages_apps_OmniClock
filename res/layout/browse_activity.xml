@@ -20,222 +20,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingTop="10dp">
-
-    <include
-        android:id="@+id/current_uri"
-        layout="@layout/browse_item" />
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/query_area"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingTop="10dp">
-
-        <LinearLayout
-            android:id="@+id/query_types"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/colorPrimary"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_recent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_star_gray" />
-
-                <View
-                    android:id="@+id/query_recent_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_alarm"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_alarm_gray" />
-
-                <View
-                    android:id="@+id/query_alarm_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_artist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_artist_gray" />
-
-                <View
-                    android:id="@+id/query_artist_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_album"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_album_gray" />
-
-                <View
-                    android:id="@+id/query_album_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_track"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_album_gray" />
-
-                <View
-                    android:id="@+id/query_track_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/playlist_tab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_playlist"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_playlist_gray" />
-
-                <View
-                    android:id="@+id/query_playlist_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/stream_tab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_stream"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_earth_gray" />
-
-                <View
-                    android:id="@+id/query_stream_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/folder_tab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/query_folder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_folder_gray" />
-
-                <View
-                    android:id="@+id/query_folder_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/transparent" />
-            </LinearLayout>
-        </LinearLayout>
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/bottom_nav_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="10dp">
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp">
 
             <TextView
                 android:id="@+id/query_type_string"
@@ -283,7 +83,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:hint="@string/url_paste_hint"
-                    android:singleLine="true"
+                    android:lines="1"
                     android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
                 <ImageView
@@ -300,12 +100,60 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/black_16p" />
+            android:background="@drawable/list_divider_material"
+            android:paddingTop="10dp"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/current_uri"
+            layout="@layout/browse_item"
+            android:visibility="gone"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/list_divider_material"
+            android:paddingTop="10dp" />
 
         <ListView
             android:id="@+id/query_result"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
+        <LinearLayout
+            android:id="@+id/query_types"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_nav_height"
+            android:background="@color/bottom_nav_bg"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+
+            <include
+                android:id="@+id/tab_recent"
+                layout="@layout/tab_strip_item"/>
+            <include
+                android:id="@+id/tab_alarms"
+                layout="@layout/tab_strip_item"/>
+            <include
+                android:id="@+id/tab_artist"
+                layout="@layout/tab_strip_item"/>
+            <include
+                android:id="@+id/tab_album"
+                layout="@layout/tab_strip_item"/>
+            <include
+                android:id="@+id/tab_track"
+                layout="@layout/tab_strip_item"/>
+            <include
+                android:id="@+id/tab_playlist"
+                layout="@layout/tab_strip_item"/>
+            <include
+                android:id="@+id/tab_stream"
+                layout="@layout/tab_strip_item"/>
+            <include
+                android:id="@+id/tab_folder"
+                layout="@layout/tab_strip_item"/>
+
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

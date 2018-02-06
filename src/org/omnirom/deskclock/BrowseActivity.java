@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -89,22 +90,14 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     private View mFooterView;
     private TextView mQueryTypeText;
     private List<QueryItem> mQueryResultListCopy = new ArrayList<QueryItem>();
-    private ImageView mAlarmHeader;
-    private ImageView mRecentHeader;
-    private ImageView mArtistHeader;
-    private ImageView mAlbumHeader;
-    private ImageView mTrackHeader;
-    private ImageView mFolderHeader;
-    private ImageView mPlaylistHeader;
-    private ImageView mStreamHeader;
-    private View mAlarmHeaderBar;
-    private View mRecentHeaderBar;
-    private View mArtistHeaderBar;
-    private View mAlbumHeaderBar;
-    private View mTrackHeaderBar;
-    private View mFolderHeaderBar;
-    private View mPlaylistHeaderBar;
-    private View mStreamHeaderBar;
+    private View mPlaylistTab;
+    private View mArtistTab;
+    private View mAlbumTab;
+    private View mTrackTab;
+    private View mRecentTab;
+    private View mStreamTab;
+    private View mFolderTab;
+    private View mAlarmsTab;
     private boolean mPreAlarm;
     private List<QueryItem> mAlarms;
     private List<QueryItem> mRingtones;
@@ -113,6 +106,8 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     private View mPasteUrl;
     private EditText mPasteUrlText;
     private boolean mLimitedMode;
+    private int mPrimaryColor;
+    private int mPrimaryColorDisabled;
 
     private class QueryItem implements Comparable<QueryItem> {
         String mName;
@@ -141,6 +136,10 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
 
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mPrimaryColor = getResources().getColor(android.R.color.white);
+        mPrimaryColorDisabled = Utils.setColorAlpha(mPrimaryColor,
+                getResources().getInteger(org.omnirom.deskclock.R.integer.disabled_text_alpha));
 
         if (getIntent().hasExtra(AlarmConstants.DATA_ALARM_EXTRA)) {
             mAlarm = getIntent().getParcelableExtra(AlarmConstants.DATA_ALARM_EXTRA);
@@ -198,8 +197,10 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         mAdapter = createListAdapter();
         mQueryList.setAdapter(mAdapter);
 
-        mAlarmHeader = (ImageView) findViewById(R.id.query_alarm);
-        mAlarmHeader.setOnClickListener(new View.OnClickListener() {
+        mAlarmsTab = findViewById(R.id.tab_alarms);
+        ((ImageView) mAlarmsTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_alarm_white);
+        ((TextView) mAlarmsTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_alarm);
+        mAlarmsTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.INVISIBLE);
@@ -212,10 +213,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mAlarmHeaderBar = findViewById(R.id.query_alarm_bar);
 
-        mRecentHeader = (ImageView) findViewById(R.id.query_recent);
-        mRecentHeader.setOnClickListener(new View.OnClickListener() {
+        mRecentTab = findViewById(R.id.tab_recent);
+        ((ImageView) mRecentTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_star_white);
+        ((TextView) mRecentTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_recent);
+        mRecentTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.INVISIBLE);
@@ -228,10 +230,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mRecentHeaderBar = findViewById(R.id.query_recent_bar);
 
-        mArtistHeader = (ImageView) findViewById(R.id.query_artist);
-        mArtistHeader.setOnClickListener(new View.OnClickListener() {
+        mArtistTab = findViewById(R.id.tab_artist);
+        ((ImageView) mArtistTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_artist_white);
+        ((TextView) mArtistTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_artist);
+        mArtistTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.VISIBLE);
@@ -244,10 +247,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mArtistHeaderBar = findViewById(R.id.query_artist_bar);
 
-        mAlbumHeader = (ImageView) findViewById(R.id.query_album);
-        mAlbumHeader.setOnClickListener(new View.OnClickListener() {
+        mAlbumTab = findViewById(R.id.tab_album);
+        ((ImageView) mAlbumTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_album_white);
+        ((TextView) mAlbumTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_album);
+        mAlbumTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.VISIBLE);
@@ -260,10 +264,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mAlbumHeaderBar = findViewById(R.id.query_album_bar);
 
-        mTrackHeader = (ImageView) findViewById(R.id.query_track);
-        mTrackHeader.setOnClickListener(new View.OnClickListener() {
+        mTrackTab = findViewById(R.id.tab_track);
+        ((ImageView) mTrackTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_track_white);
+        ((TextView) mTrackTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_track);
+        mTrackTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.VISIBLE);
@@ -276,10 +281,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mTrackHeaderBar = findViewById(R.id.query_track_bar);
 
-        mFolderHeader = (ImageView) findViewById(R.id.query_folder);
-        mFolderHeader.setOnClickListener(new View.OnClickListener() {
+        mFolderTab = findViewById(R.id.tab_folder);
+        ((ImageView) mFolderTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_folder_white);
+        ((TextView) mFolderTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_folder);
+        mFolderTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.INVISIBLE);
@@ -292,10 +298,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mFolderHeaderBar = findViewById(R.id.query_folder_bar);
 
-        mPlaylistHeader = (ImageView) findViewById(R.id.query_playlist);
-        mPlaylistHeader.setOnClickListener(new View.OnClickListener() {
+        mPlaylistTab = findViewById(R.id.tab_playlist);
+        ((ImageView) mPlaylistTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_playlist_white);
+        ((TextView) mPlaylistTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_playlist);
+        mPlaylistTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.VISIBLE);
@@ -308,10 +315,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mPlaylistHeaderBar = findViewById(R.id.query_playlist_bar);
 
-        mStreamHeader = (ImageView) findViewById(R.id.query_stream);
-        mStreamHeader.setOnClickListener(new View.OnClickListener() {
+        mStreamTab = findViewById(R.id.tab_stream);
+        ((ImageView) mStreamTab.findViewById(R.id.tab_strip_image)).setImageResource(R.drawable.ic_earth_white);
+        ((TextView) mStreamTab.findViewById(R.id.tab_strip_title)).setText(R.string.local_query_stream);
+        mStreamTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mSearchView.setVisibility(View.GONE);
@@ -324,16 +332,11 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 doQuery(mCurrentQueryText, 0);
             }
         });
-        mStreamHeaderBar = findViewById(R.id.query_stream_bar);
-
-        View streamTab = findViewById(R.id.stream_tab);
-        View folderTab = findViewById(R.id.folder_tab);
-        View playlistTab = findViewById(R.id.playlist_tab);
 
         if (mLimitedMode) {
-            streamTab.setVisibility(View.GONE);
-            folderTab.setVisibility(View.GONE);
-            playlistTab.setVisibility(View.GONE);
+            mStreamTab.setVisibility(View.GONE);
+            mFolderTab.setVisibility(View.GONE);
+            mPlaylistTab.setVisibility(View.GONE);
         }
         updateTabs();
 
@@ -1309,148 +1312,84 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     private void updateTabs() {
         switch (mQueryType) {
             case QUERY_TYPE_ALARM:
-                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_white);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
-                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_gray);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                setTabImageEnabled(mRecentTab, false);
+                setTabImageEnabled(mArtistTab, false);
+                setTabImageEnabled(mAlbumTab, false);
+                setTabImageEnabled(mTrackTab, false);
+                setTabImageEnabled(mPlaylistTab, false);
+                setTabImageEnabled(mStreamTab, false);
+                setTabImageEnabled(mFolderTab, false);
+                setTabImageEnabled(mAlarmsTab, true);
                 break;
             case QUERY_TYPE_RECENT:
-                mRecentHeader.setImageResource(R.drawable.ic_star_white);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
-                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_gray);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                setTabImageEnabled(mRecentTab, true);
+                setTabImageEnabled(mArtistTab, false);
+                setTabImageEnabled(mAlbumTab, false);
+                setTabImageEnabled(mTrackTab, false);
+                setTabImageEnabled(mPlaylistTab, false);
+                setTabImageEnabled(mStreamTab, false);
+                setTabImageEnabled(mFolderTab, false);
+                setTabImageEnabled(mAlarmsTab, false);
                 break;
             case QUERY_TYPE_ARTIST:
-                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_white);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
-                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_gray);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                setTabImageEnabled(mRecentTab, false);
+                setTabImageEnabled(mArtistTab, true);
+                setTabImageEnabled(mAlbumTab, false);
+                setTabImageEnabled(mTrackTab, false);
+                setTabImageEnabled(mPlaylistTab, false);
+                setTabImageEnabled(mStreamTab, false);
+                setTabImageEnabled(mFolderTab, false);
+                setTabImageEnabled(mAlarmsTab, false);
                 break;
             case QUERY_TYPE_ALBUM:
-                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_white);
-                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_gray);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                setTabImageEnabled(mRecentTab, false);
+                setTabImageEnabled(mArtistTab, false);
+                setTabImageEnabled(mAlbumTab, true);
+                setTabImageEnabled(mTrackTab, false);
+                setTabImageEnabled(mPlaylistTab, false);
+                setTabImageEnabled(mStreamTab, false);
+                setTabImageEnabled(mFolderTab, false);
+                setTabImageEnabled(mAlarmsTab, false);
                 break;
             case QUERY_TYPE_TRACK:
-                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
-                mTrackHeader.setImageResource(R.drawable.ic_track_white);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_gray);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                setTabImageEnabled(mRecentTab, false);
+                setTabImageEnabled(mArtistTab, false);
+                setTabImageEnabled(mAlbumTab, false);
+                setTabImageEnabled(mTrackTab, true);
+                setTabImageEnabled(mPlaylistTab, false);
+                setTabImageEnabled(mStreamTab, false);
+                setTabImageEnabled(mFolderTab, false);
+                setTabImageEnabled(mAlarmsTab, false);
                 break;
             case QUERY_TYPE_FOLDER:
-                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
-                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_white);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_gray);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                setTabImageEnabled(mRecentTab, false);
+                setTabImageEnabled(mArtistTab, false);
+                setTabImageEnabled(mAlbumTab, false);
+                setTabImageEnabled(mTrackTab, false);
+                setTabImageEnabled(mPlaylistTab, false);
+                setTabImageEnabled(mStreamTab, false);
+                setTabImageEnabled(mFolderTab, true);
+                setTabImageEnabled(mAlarmsTab, false);
                 break;
             case QUERY_TYPE_PLAYLIST:
-                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
-                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_white);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_gray);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+                setTabImageEnabled(mRecentTab, false);
+                setTabImageEnabled(mArtistTab, false);
+                setTabImageEnabled(mAlbumTab, false);
+                setTabImageEnabled(mTrackTab, false);
+                setTabImageEnabled(mPlaylistTab, true);
+                setTabImageEnabled(mStreamTab, false);
+                setTabImageEnabled(mFolderTab, false);
+                setTabImageEnabled(mAlarmsTab, false);
                 break;
             case QUERY_TYPE_STREAM:
-                mRecentHeader.setImageResource(R.drawable.ic_star_gray);
-                mAlarmHeader.setImageResource(R.drawable.ic_alarm_gray);
-                mArtistHeader.setImageResource(R.drawable.ic_artist_gray);
-                mAlbumHeader.setImageResource(R.drawable.ic_album_gray);
-                mTrackHeader.setImageResource(R.drawable.ic_track_gray);
-                mFolderHeader.setImageResource(R.drawable.ic_folder_gray);
-                mPlaylistHeader.setImageResource(R.drawable.ic_playlist_gray);
-                mStreamHeader.setImageResource(R.drawable.ic_earth_white);
-                mRecentHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlarmHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mArtistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mAlbumHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mTrackHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mFolderHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mPlaylistHeaderBar.setBackgroundColor(getResources().getColor(R.color.transparent));
-                mStreamHeaderBar.setBackgroundColor(getResources().getColor(R.color.white));
+                setTabImageEnabled(mRecentTab, false);
+                setTabImageEnabled(mArtistTab, false);
+                setTabImageEnabled(mAlbumTab, false);
+                setTabImageEnabled(mTrackTab, false);
+                setTabImageEnabled(mPlaylistTab, false);
+                setTabImageEnabled(mStreamTab, true);
+                setTabImageEnabled(mFolderTab, false);
+                setTabImageEnabled(mAlarmsTab, false);
                 break;
         }
     }
@@ -1636,31 +1575,37 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
             @Override
             protected void onPostExecute(final Void result) {
                 stopProgress();
+                String urlString = pasteString;
                 if (pasteStringWrapper.size() != 0) {
-                    doResolvePaste(pasteStringWrapper.get(0), name);
+                    urlString = pasteStringWrapper.get(0);
                 }
+                doResolvePaste(urlString, name);
             }
         }.execute();
     }
     private void resolvePaste(String pasteString, String name) {
-        if (pasteString.endsWith("pls") || pasteString.endsWith("m3u")) {
-            // looks like a playlist pasted try to get it and extract url
-            resolvePasteContents(pasteString, name);
-        } else {
-            doResolvePaste(pasteString, name);
+        if (!TextUtils.isEmpty(pasteString) && !TextUtils.isEmpty(name)) {
+            if (pasteString.endsWith("pls") || pasteString.endsWith("m3u")) {
+                // looks like a playlist pasted try to get it and extract url
+                resolvePasteContents(pasteString, name);
+            } else {
+                doResolvePaste(pasteString, name);
+            }
         }
     }
 
     private void doResolvePaste(String pasteString, String name) {
-        // create on the fly m3u and add that
-        File playlistDir = Utils.getStreamM3UDirectory(this);
-        if (!playlistDir.exists()) {
-            playlistDir.mkdir();
-        }
-        File m3uFile = Utils.writeStreamM3UFile(playlistDir, name, pasteString);
-        if (m3uFile != null) {
-            clearList();
-            loadStreams();
+        if (!TextUtils.isEmpty(pasteString)) {
+            // create on the fly m3u and add that
+            File playlistDir = Utils.getStreamM3UDirectory(this);
+            if (!playlistDir.exists()) {
+                playlistDir.mkdir();
+            }
+            File m3uFile = Utils.writeStreamM3UFile(playlistDir, name, pasteString);
+            if (m3uFile != null) {
+                clearList();
+                loadStreams();
+            }
         }
     }
 
@@ -1691,6 +1636,16 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
             return files.get(0).toString();
         }
         return null;
+    }
+
+    private void setTabImageEnabled(View tab, boolean enabled) {
+        if (enabled) {
+            ((ImageView) tab.findViewById(R.id.tab_strip_image)).setColorFilter(null);
+            ((TextView) tab.findViewById(R.id.tab_strip_title)).setTextColor(mPrimaryColor);
+        } else {
+            ((ImageView) tab.findViewById(R.id.tab_strip_image)).setColorFilter(mPrimaryColorDisabled, PorterDuff.Mode.SRC_IN);
+            ((TextView) tab.findViewById(R.id.tab_strip_title)).setTextColor(mPrimaryColorDisabled);
+        }
     }
 }
 

@@ -137,6 +137,7 @@
     <string name="randomMusicType">Random music</string>
     <string name="browse_activity_title">Browse</string>
     <string name="local_query_alarm_ringtones">Alarms and ringtones</string>
+    <string name="local_query_alarm">Alarms</string>
     <string name="local_query_recent">Recent</string>
     <string name="local_query_hint">Search</string>
     <string name="local_query_artist">Artists</string>
@@ -157,7 +158,6 @@
     <string name="vibrate_notification_summary">Enable vibration for active alarm and timer notifications</string>
     <string name="vibrate_notification_title">Notification vibrate</string>
     <string name="all_cities_label">Add</string>
-    <string name="entry_never">Never</string>
     <string name="default_page_title">Default start page</string>
     <string name="global_settings">Global</string>
     <string name="local_query_playlist">Playlists</string>
