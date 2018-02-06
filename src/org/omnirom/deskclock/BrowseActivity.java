@@ -335,9 +335,10 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
 
         if (mLimitedMode) {
             mStreamTab.setVisibility(View.GONE);
-            mFolderTab.setVisibility(View.GONE);
             mPlaylistTab.setVisibility(View.GONE);
         }
+        mFolderTab.setVisibility(View.GONE);
+
         updateTabs();
 
         mQueryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

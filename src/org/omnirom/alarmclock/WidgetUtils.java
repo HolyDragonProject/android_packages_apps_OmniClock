@@ -412,7 +412,7 @@ public class WidgetUtils {
         if (letterSpacing != -1) {
             textPaint.setLetterSpacing(letterSpacing);
         }
-        Drawable d = context.getResources().getDrawable(org.omnirom.deskclock.R.drawable.ic_alarm);
+        Drawable d = context.getDrawable(org.omnirom.deskclock.R.drawable.ic_alarm);
 
         float separatorWidth = textPaint.measureText(" ");
 

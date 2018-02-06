@@ -1270,6 +1270,13 @@ public class Utils {
         return isLocalMediaUri(alarm.alert.toString());
     }
 
+    public static boolean isLocalFolderAlarm(Alarm alarm, boolean preAlarm) {
+        if (preAlarm) {
+            return isStorageUri(alarm.preAlarmAlert.toString()) && !isStreamM3UFile(alarm.preAlarmAlert.toString());
+        }
+        return isStorageUri(alarm.alert.toString()) && !isStreamM3UFile(alarm.alert.toString());
+    }
+
     public static boolean isLocalPlaylistType(final String uri) {
         if (isLocalAlbumUri(uri)) {
             return true;

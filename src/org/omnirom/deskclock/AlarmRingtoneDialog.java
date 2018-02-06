@@ -57,15 +57,16 @@ import org.omnirom.deskclock.provider.Alarm;
 
 public class AlarmRingtoneDialog extends DialogFragment implements
         DialogInterface.OnClickListener,
-        SeekBar.OnSeekBarChangeListener {
+        SeekBar.OnSeekBarChangeListener,
+        StorageChooserDialog.ChosenStorageListener {
 
-    private static final int REQUEST_CODE_MEDIA = 1;
-    private static final int REQUEST_CODE_SPOTIFY = 2;
-    private static final int REQUEST_CODE_BROWSE = 3;
+    private static final int REQUEST_CODE_SPOTIFY = 1;
+    private static final int REQUEST_CODE_BROWSE = 2;
 
     private static final int ALARM_TYPE_BROWSE = 0;
-    private static final int ALARM_TYPE_RANDOM = 1;
-    private static final int ALARM_TYPE_SPOTIFY = 2;
+    private static final int ALARM_TYPE_FOLDER = 1;
+    private static final int ALARM_TYPE_RANDOM = 2;
+    private static final int ALARM_TYPE_SPOTIFY = 3;
 
     private static final String KEY_MEDIA_TYPE = "mediaType";
     private static final String KEY_VOLUME = "volume";
@@ -214,6 +215,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
     public void onPause() {
         super.onPause();
         closeAlarmTestDialog();
+        closeStoragePicker();
     }
 
     @Override
@@ -429,10 +431,6 @@ public class AlarmRingtoneDialog extends DialogFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_MEDIA:
-                    saveMediaUri(data);
-                    updateRingtoneName();
-                    break;
                 case REQUEST_CODE_SPOTIFY: {
                     String uri = data.getStringExtra(AlarmConstants.DATA_ALARM_EXTRA_URI);
                     String name = data.getStringExtra(AlarmConstants.DATA_ALARM_EXTRA_NAME);
@@ -531,6 +529,7 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         boolean spotifyAlarm = false;
         boolean randomMusicAlarm = false;
         boolean localMediaAlarm = false;
+        boolean localFolderAlarm = false;
         mCurrentMediaType = ALARM_TYPE_BROWSE;
 
         if (ringtoneUri != null) {
@@ -539,6 +538,8 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                     spotifyAlarm = true;
                 } else if (Utils.isRandomAlarm(mAlarm, mPreAlarm)) {
                     randomMusicAlarm = true;
+                } else if (Utils.isLocalFolderAlarm(mAlarm, mPreAlarm)) {
+                    localFolderAlarm = true;
                 } else if (Utils.isLocalMediaAlarm(mAlarm, mPreAlarm)) {
                     localMediaAlarm = true;
                 } else {
@@ -557,6 +558,8 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             mCurrentMediaType = ALARM_TYPE_RANDOM;
         } else if (localMediaAlarm) {
             mCurrentMediaType = ALARM_TYPE_BROWSE;
+        } else if (localFolderAlarm) {
+            mCurrentMediaType = ALARM_TYPE_FOLDER;
         }
         updateRingtoneName();
     }
@@ -603,6 +606,9 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                 ringtoneTitle = getResources().getString(R.string.randomMusicType);
                 mRingtoneImageId = R.drawable.ic_track;
                 mRingtoneView.setVisibility(View.INVISIBLE);
+            } else if (mCurrentMediaType == ALARM_TYPE_FOLDER) {
+                ringtoneTitle = ringtoneUri.getLastPathSegment();
+                mRingtoneImageId = R.drawable.ic_folder;
             }
         }
 
@@ -707,6 +713,8 @@ public class AlarmRingtoneDialog extends DialogFragment implements
             }
         } else if (mediaType == ALARM_TYPE_BROWSE) {
             launchBrowseActivity();
+        } else if (mediaType == ALARM_TYPE_FOLDER) {
+            launchStoragePicker();
         }
     }
 
@@ -800,7 +808,8 @@ public class AlarmRingtoneDialog extends DialogFragment implements
                 return true;
             }
         }
-        if (mCurrentMediaType == ALARM_TYPE_BROWSE) {
+        if (mCurrentMediaType == ALARM_TYPE_BROWSE ||
+                mCurrentMediaType == ALARM_TYPE_FOLDER) {
             return Utils.isLocalPlaylistType(mRingtone.toString());
         }
         return false;
@@ -825,5 +834,33 @@ public class AlarmRingtoneDialog extends DialogFragment implements
         ringtone.setCompoundDrawablesWithIntrinsicBounds(getActivity().getDrawable(mRingtoneImageId), null, null, null);
         mRingtoneView.setVisibility(View.INVISIBLE);
     }
+
+    @Override
+    public void onChooseDirOk(Uri chosenDir) {
+        mRingtone = chosenDir;
+        mRingtoneName = chosenDir.getLastPathSegment();
+        mRingtoneType = BrowseActivity.QUERY_TYPE_FOLDER;
+        updateRingtoneName();
+        updateRandomModeVisibility();
+    }
+
+    @Override
+    public void onChooseDirCancel() {
+    }
+
+    private void launchStoragePicker() {
+        closeStoragePicker();
+
+        final StorageChooserDialog fragment = StorageChooserDialog.newInstance(this);
+        fragment.show(getFragmentManager(), "choose_dialog");
+    }
+
+    private void closeStoragePicker() {
+        final Fragment prev = getFragmentManager().findFragmentByTag("choose_dialog");
+        if (prev != null) {
+            ((DialogFragment) prev).dismiss();
+        }
+    }
+
 }
 

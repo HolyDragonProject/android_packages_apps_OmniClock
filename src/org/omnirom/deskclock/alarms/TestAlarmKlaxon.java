@@ -62,6 +62,7 @@ public class TestAlarmKlaxon {
     private static boolean sRandomMusicMode;
     private static boolean sLocalMediaMode;
     private static boolean sStreamMediaMode;
+    private static Context sContext;
 
     public interface ErrorHandler {
         public void onError(String msg);
@@ -104,8 +105,8 @@ public class TestAlarmKlaxon {
         sError = false;
         sErrorHandler = errorHandler;
 
-        final Context appContext = context.getApplicationContext();
-        sAudioManager = (AudioManager) appContext
+        sContext = context;
+        sAudioManager = (AudioManager) sContext
                 .getSystemService(Context.AUDIO_SERVICE);
 
         // save current value
@@ -210,13 +211,13 @@ public class TestAlarmKlaxon {
         }
     }
 
-    public static void stopTest(Context context, Alarm instance) {
+    public static void stopTest(Alarm instance) {
         if (!sTestStarted) {
             return;
         }
 
         // reset to default from before
-        sAudioManager.setStreamVolume(getAudioStream(context),
+        sAudioManager.setStreamVolume(getAudioStream(sContext),
                 sSavedVolume, 0);
 
         if (sMediaPlayer != null) {
@@ -228,7 +229,7 @@ public class TestAlarmKlaxon {
             sAudioManager = null;
         }
         try {
-            context.unregisterReceiver(sNetworkListener);
+            sContext.unregisterReceiver(sNetworkListener);
         } catch (Exception e) {
         }
         sTestStarted = false;
@@ -371,9 +372,6 @@ public class TestAlarmKlaxon {
     }
 
     private static void collectSub(Context context, File folder) {
-        if (!sTestStarted) {
-            return;
-        }
         if (folder.exists() && folder.isDirectory()) {
             for (final File fileEntry : folder.listFiles()) {
                 if (!fileEntry.isDirectory()) {

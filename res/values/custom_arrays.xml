@@ -32,6 +32,7 @@
     </string-array>
     <string-array name="alarm_type_entries" translatable="false">
         <item>@string/musicType</item>
+        <item>@string/folderType</item>
         <item>@string/randomMusicType</item>
     </string-array>
     <string-array name="volume_increase_speed_entries" translatable="false">
