@@ -67,7 +67,7 @@
     <color name="stopwatch_max_lap_line">#d72929</color>
     <color name="stopwatch_min_lap_line">#43bf43</color>
     <color name="undo_color">@color/accent</color>
-    <color name="ic_launcher_background">#ffffff</color>
+    <color name="ic_launcher_background">@color/analog_clock_bg_color</color>
     <color name="snooze_circle_bg">@android:color/holo_green_light</color>
     <color name="dismiss_circle_bg">@android:color/holo_red_light</color>
     <color name="bottom_nav_bg">@color/material_grey_900</color>
