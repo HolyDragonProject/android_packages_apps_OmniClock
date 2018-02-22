@@ -134,6 +134,7 @@
   <string name="color_theme_title">主题</string>
   <string name="randomMusicType">随机播放音乐</string>
   <string name="browse_activity_title">浏览</string>
+  <string name="local_query_alarm_ringtones">闹钟铃声</string>
   <string name="local_query_recent">最近播放</string>
   <string name="local_query_hint">搜索</string>
   <string name="local_query_artist">艺术家</string>
@@ -156,4 +157,11 @@
   <string name="entry_never">从不</string>
   <string name="default_page_title">默认起始页</string>
   <string name="global_settings">全局</string>
+  <string name="local_query_playlist">播放列表</string>
+  <string name="url_paste_hint">粘贴 URL</string>
+  <string name="playlist_file_name">名称</string>
+  <string name="local_query_stream">流</string>
+  <string name="offline_notif_title">离线设备</string>
+  <string name="offline_notif_message">请修改你的系统设置</string>
+  <string name="color_theme_black">黑色</string>
 </resources>

@@ -53,7 +53,7 @@
   <string name="alarm_type_select_title">Allikas:</string>
   <string name="alarm_ringtone_title">Heli:</string>
   <string name="alarm_test_button">Proovi</string>
-  <string name="keep_screen_on_title">Hoia ekraan sisselülitatud</string>
+  <string name="keep_screen_on_title">Hoia ekraan sees</string>
   <string name="keep_screen_on_summary">Ekraani ei lülitata välja, kuni äratus on aktiivne</string>
   <string name="folder_dialog_title">Vali kaust</string>
   <string name="play_error_title">Viga äratuse esitamisel</string>
@@ -63,6 +63,7 @@
   <string name="entry_ten_secs">10 sekundit</string>
   <string name="entry_fifteen_secs">15 sekundit</string>
   <string name="entry_thirty_secs">30 sekundit</string>
+  <string name="pre_alarm_dismiss_all_summary">Aktiivse eel-äratuse tühistamine tühistab ka põhiäratuse</string>
   <string name="pre_alarm_dismiss_all_title">Tühista kõik</string>
   <string name="fallback_ringtone">Vaikimisi</string>
   <string name="ringtone_unknown">Tundmatu helin</string>
@@ -77,15 +78,19 @@
   <string name="fullscreen_alarm_settings">Täisekraanil äratused</string>
   <string name="fullscreen_alarm_title">Täisekraanil äratused</string>
   <string name="fullscreen_alarm_summary">Kasuta alati täisekraanis äratusi piiluva teate asemel</string>
+  <string name="take_persistent_grant_uri_permission_failed_msg">Helina püsiva hankimise loa saamine ebaõnnestus</string>
   <string name="notification_settings">Teated</string>
   <!-- User-defined cities -->
   <string name="menu_item_add">Lisa</string>
   <string name="cities_add_city_title">Lisa linn</string>
   <string name="cities_add_city_city">Linn:</string>
   <string name="cities_add_city_timezone">Ajatsoon:</string>
+  <string name="cities_add_city_gps_cd">Koputa praeguse linna lokaliseerimiseks</string>
   <string name="cities_add_loading">Laadimine\u2026</string>
   <string name="cities_add_searching">Otsimine\u2026</string>
+  <string name="cities_add_gps_no_results">GPS-päring ei tagasta asukohatulemusi</string>
   <string name="cities_add_gps_not_available">GPS pole saadaval</string>
+  <string name="cities_add_already_exists">Linn on juba andmebaasis olemas</string>
   <string name="cities_add_city_failed">Linna ei saa luua</string>
   <string name="cities_delete_city_title">Kustuta linn</string>
   <string name="cities_delete_city_msg">Kas soovid kustutada <xliff:g id="city">%s</xliff:g>?</string>
@@ -99,6 +104,7 @@
   <string name="storage_title">Mäluruum:</string>
   <string name="folders_scanning">Skannimine\u2026</string>
   <string name="alarm_action_category">Täisekraani äratuste tegevused</string>
+  <string name="alarm_action_header"><b>Märkus:</b> Need valikud kehtivad ainult täisekraanis äratuse teadete puhul</string>
   <string name="show_world_clock_title">Kuva maailmakella üksusi</string>
   <string name="show_alarm_title">Kuva järgmine äratus</string>
   <string name="show_date_title">Näita kuupäeva</string>
@@ -108,16 +114,21 @@
   <string name="clock_color_title">Värv</string>
   <string name="clock_shadow_title">Vari</string>
   <string name="world_clocks_title">Kuva maailmakellasid</string>
+  <string name="alarm_action_wireless_header_title">Märkus: Sellel seadmel keelatakse pöörde ja raputuse tegevused, kui kasutatakse juhtmevaba laadimist</string>
   <string name="audio_stream_title">Helikanal kohalike äratushelide jaoks</string>
   <string name="audio_stream_music">Muusikakanal</string>
   <string name="audio_stream_alam">Äratuskanal</string>
+  <string name="first_alarm_created_hint">Koputa äratuse ajal selle sisse/välja lülitamiseks. Hoia pikalt all, et muuta äratuse aega.</string>
   <string name="menu_item_version">Versiooni info</string>
   <string name="editor_contentshint">Sisesta tekst siia</string>
   <string name="editor_save">Salvesta muudatused</string>
   <string name="menu_item_spotify">Spotify</string>
+  <string name="wear_notification_summary">Kuva äratuse ja taimeri teadet ühendatud kantavatel seadmetel</string>
   <string name="wear_notification_title">Luba kantavate teated</string>
+  <string name="no_spotify_message">Spotify tugi pole saadaval.\nPalun vali teine äratuse tüüp.</string>
   <string name="pre_alarm_notification_show_title">Tulevate äratuste teated</string>
-  <string name="pre_alarm_notification_show_summary">Kuva teateid tulevatele äratustele</string>
+  <string name="pre_alarm_notification_show_summary">Kuva teateid tulevate äratuste kohta</string>
+  <string name="pre_alarm_notification_time_title">Tulevate äratuste teate ajanihe</string>
   <string name="color_theme_light">Hele</string>
   <string name="color_theme_dark">Tume</string>
   <string name="color_theme_title">Teema</string>
@@ -133,11 +144,14 @@
   <string name="alarm_uri_unkown"> (kustutatud)</string>
   <string name="choose_folder">Vali</string>
   <string name="musicType">Muusika</string>
+  <string name="no_alarm_sound_hint">Süsteemiseadetes pole vaikimisi äratuste helinat määratud.</string>
   <string name="tile_create_alarm">Äratus</string>
+  <string name="make_screen_dark_summary">Kui ekraan jääb sisse, tumenda see aktiivse äratuse korral</string>
   <string name="make_screen_dark_title">Tumenda ekraan</string>
   <string name="shortcut_start_timer">Taimer</string>
   <string name="shortcut_stopwatch">Stopper</string>
   <string name="show_background_image_title">Kuva taustapilt</string>
+  <string name="vibrate_notification_summary">Luba vibratsioon aktiivse äratuse ja taimeri teadete jaoks</string>
   <string name="vibrate_notification_title">Teate vibratsioon</string>
   <string name="all_cities_label">Lisa</string>
   <string name="entry_never">Mitte kunagi</string>

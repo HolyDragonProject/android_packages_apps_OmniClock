@@ -54,8 +54,8 @@
   <string name="alarm_ringtone_title">Sonnerie :</string>
   <string name="alarm_test_button">Tester</string>
   <string name="keep_screen_on_title">Garder l\'écran allumé</string>
-  <string name="keep_screen_on_summary">L\'écran ne s\'éteindra pas lorsque l\'alarme sonnera</string>
-  <string name="folder_dialog_title">Choisir un dossier</string>
+  <string name="keep_screen_on_summary">L\'écran ne s\'éteindra pas tant que l\'alarme restera actif</string>
+  <string name="folder_dialog_title">Choisir le dossier</string>
   <string name="play_error_title">Erreur lors de la lecture de l\'alarme</string>
   <string name="random_mode_enable_title">Aléatoire</string>
   <string name="volume_increase_speed_title">Délai avant augmentation du volume</string>
