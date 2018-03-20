@@ -52,7 +52,7 @@
   <string name="playlistType">Плейлист</string>
   <string name="alarm_type_select_title">Источник:</string>
   <string name="alarm_ringtone_title">Звук:</string>
-  <string name="alarm_test_button">Тест</string>
+  <string name="alarm_test_button">Проверить</string>
   <string name="keep_screen_on_title">Не выключать экран</string>
   <string name="keep_screen_on_summary">Экран не будет выключаться когда будильник активен</string>
   <string name="folder_dialog_title">Выбрать папку</string>

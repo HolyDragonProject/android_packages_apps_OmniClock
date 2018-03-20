@@ -134,6 +134,7 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Música al azar</string>
   <string name="browse_activity_title">Ver</string>
+  <string name="local_query_alarm_ringtones">Alarmas y tonos de llamada</string>
   <string name="local_query_recent">Reciente</string>
   <string name="local_query_hint">Buscar</string>
   <string name="local_query_artist">Artistas</string>
@@ -159,5 +160,7 @@
   <string name="local_query_playlist">Listas de reproducción</string>
   <string name="url_paste_hint">Pegar URL</string>
   <string name="playlist_file_name">Nombre</string>
+  <string name="offline_notif_title">Dispositivo fuera de línea</string>
+  <string name="offline_notif_message">Por favor cambia los ajustes de tu sistema</string>
   <string name="color_theme_black">Negro</string>
 </resources>

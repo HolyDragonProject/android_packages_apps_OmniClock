@@ -56,7 +56,7 @@
   <string name="keep_screen_on_title">Mantieni schermo acceso</string>
   <string name="keep_screen_on_summary">Lo schermo non si spegnerà quando la sveglia è attiva</string>
   <string name="folder_dialog_title">Seleziona cartella</string>
-  <string name="play_error_title">Errore durante riproduzione suono sveglia</string>
+  <string name="play_error_title">Errore durante la riproduzione del suono della sveglia</string>
   <string name="random_mode_enable_title">Riproduzione casuale</string>
   <string name="volume_increase_speed_title">Intervallo aumento volume</string>
   <string name="entry_five_secs">5 secondi</string>
