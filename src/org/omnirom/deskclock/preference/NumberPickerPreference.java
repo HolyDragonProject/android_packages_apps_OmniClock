@@ -21,14 +21,14 @@ import org.omnirom.deskclock.R;
 */
 public class NumberPickerPreference extends DialogPreference
 {
-    private static final int DEFAULT_MIN_VALUE = 0;
-    private static final int DEFAULT_MAX_VALUE = 100;
-    private static final int DEFAULT_VALUE = 0;
+    protected static final int DEFAULT_MIN_VALUE = 0;
+    protected static final int DEFAULT_MAX_VALUE = 100;
+    protected static final int DEFAULT_VALUE = 0;
 
-    private int mMinValue;
-    private int mMaxValue;
-    private int mValue;
-    private NumberPicker mNumberPicker;
+    protected int mMinValue;
+    protected int mMaxValue;
+    protected int mValue;
+    protected NumberPicker mNumberPicker;
 
     public NumberPickerPreference(Context context) {
         this(context, null);
@@ -99,15 +99,19 @@ public class NumberPickerPreference extends DialogPreference
         }
     }
 
+    protected int getSelectedValue() {
+        return mNumberPicker.getValue();
+    }
+
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
 
         // when the user selects "OK", persist the new value
         if (positiveResult) {
-            int numberPickerValue = mNumberPicker.getValue();
-            if (callChangeListener(numberPickerValue)) {
-                setValue(numberPickerValue);
+            int value = getSelectedValue();
+            if (callChangeListener(value)) {
+                setValue(value);
             }
         }
     }

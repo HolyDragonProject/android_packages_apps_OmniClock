@@ -40,6 +40,7 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.MenuItem;
 
+import org.omnirom.deskclock.preference.AutoSilencePickerPreference;
 import org.omnirom.deskclock.preference.NumberPickerPreference;
 import org.omnirom.deskclock.worldclock.Cities;
 
@@ -64,7 +65,9 @@ public class SettingsActivity extends PreferenceActivity
             "snooze_duration_new";
     public static final String KEY_VOLUME_BEHAVIOR =
             "volume_button_setting";
-    public static final String KEY_AUTO_SILENCE =
+    public static final String KEY_ALARM_SILENCE_AFTER =
+            "silence_after_minutes";
+    public static final String KEY_AUTO_SILENCE_OLD =
             "auto_silence";
     public static final String KEY_CLOCK_STYLE =
             "clock_style";
@@ -113,7 +116,8 @@ public class SettingsActivity extends PreferenceActivity
     public static final String KEY_MAKE_SCREEN_DARK = "make_screen_dark";
     public static final String KEY_SHOW_BACKGROUND_IMAGE = "show_background_image";
     public static final String KEY_VIBRATE_NOTIFICATION = "vibrate_notification";
-    public static final String KEY_DEFAULT_PAGE= "default_page";
+    public static final String KEY_DEFAULT_PAGE = "default_page";
+    public static final String KEY_SNOOZE_ON_SILENCE = "snooze_on_silence";
 
     // default action for alarm action
     public static final String DEFAULT_ALARM_ACTION = "0";
@@ -129,6 +133,7 @@ public class SettingsActivity extends PreferenceActivity
     private final Handler mHandler = new Handler();
     private CheckBoxPreference mCustomTimerAlarm;
     private NumberPickerPreference mSnoozeMinutes;
+    private AutoSilencePickerPreference mSilenceMinutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +175,18 @@ public class SettingsActivity extends PreferenceActivity
         mSnoozeMinutes.setSummary(getSnoozedMinutes(mSnoozeMinutes.getValue()));
         mSnoozeMinutes.setOnPreferenceChangeListener(this);
 
+        mSilenceMinutes = (AutoSilencePickerPreference) findPreference(KEY_ALARM_SILENCE_AFTER);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.contains(KEY_AUTO_SILENCE_OLD)) {
+            mSilenceMinutes.setValue(Integer.valueOf(prefs.getString(KEY_AUTO_SILENCE_OLD, "10")));
+            prefs.edit().remove(KEY_AUTO_SILENCE_OLD).commit();
+        }
+        mSilenceMinutes.setMinValue(1);
+        mSilenceMinutes.setMaxValue(30);
+
+        updateSilenceAfterSummary(mSilenceMinutes, mSilenceMinutes.getValue());
+        mSilenceMinutes.setOnPreferenceChangeListener(this);
+
         addSettings();
 
         if (!getResources().getBoolean(R.bool.config_disableSensorOnWirelessCharging)) {
@@ -199,11 +216,7 @@ public class SettingsActivity extends PreferenceActivity
 
     @Override
     public boolean onPreferenceChange(Preference pref, Object newValue) {
-        if (KEY_AUTO_SILENCE.equals(pref.getKey())) {
-            final ListPreference listPref = (ListPreference) pref;
-            String delay = (String) newValue;
-            updateAutoSnoozeSummary(listPref, delay);
-        } else if (KEY_CLOCK_STYLE.equals(pref.getKey())) {
+        if (KEY_CLOCK_STYLE.equals(pref.getKey())) {
             final ListPreference listPref = (ListPreference) pref;
             final int idx = listPref.findIndexOfValue((String) newValue);
             listPref.setSummary(listPref.getEntries()[idx]);
@@ -213,7 +226,7 @@ public class SettingsActivity extends PreferenceActivity
             listPref.setSummary(listPref.getEntries()[idx]);
             notifyHomeTimeZoneChanged();
         } else if (KEY_AUTO_HOME_CLOCK.equals(pref.getKey())) {
-            boolean state =((CheckBoxPreference) pref).isChecked();
+            boolean state = ((CheckBoxPreference) pref).isChecked();
             Preference homeTimeZone = findPreference(KEY_HOME_TZ);
             homeTimeZone.setEnabled(!state);
             notifyHomeTimeZoneChanged();
@@ -223,6 +236,8 @@ public class SettingsActivity extends PreferenceActivity
             listPref.setSummary(listPref.getEntries()[idx]);
         } else if (KEY_ALARM_SNOOZE_MINUTES.equals(pref.getKey())) {
             mSnoozeMinutes.setSummary(getSnoozedMinutes((Integer) newValue));
+        } else if (KEY_ALARM_SILENCE_AFTER.equals(pref.getKey())) {
+            updateSilenceAfterSummary(pref, (Integer) newValue);
         } else if (KEY_ALARM_SNOOZE_COUNT.equals(pref.getKey())) {
             final ListPreference listPref = (ListPreference) pref;
             final int idx = listPref.findIndexOfValue((String) newValue);
@@ -279,13 +294,13 @@ public class SettingsActivity extends PreferenceActivity
         return false;
     }
 
-    private void updateAutoSnoozeSummary(ListPreference listPref,
-            String delay) {
-        int i = Integer.parseInt(delay);
+    private void updateSilenceAfterSummary(Preference pref,
+                                           int delay) {
+        int i = delay;
         if (i == -1) {
-            listPref.setSummary(R.string.auto_silence_never);
+            pref.setSummary(R.string.auto_silence_never);
         } else {
-            listPref.setSummary(getString(R.string.auto_silence_summary, i));
+            pref.setSummary(getString(R.string.auto_silence_summary, i));
         }
     }
 
@@ -295,12 +310,7 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     private void addSettings() {
-        ListPreference listPref = (ListPreference) findPreference(KEY_AUTO_SILENCE);
-        String delay = listPref.getValue();
-        updateAutoSnoozeSummary(listPref, delay);
-        listPref.setOnPreferenceChangeListener(this);
-
-        listPref = (ListPreference) findPreference(KEY_CLOCK_STYLE);
+        ListPreference listPref = (ListPreference) findPreference(KEY_CLOCK_STYLE);
         listPref.setSummary(listPref.getEntry());
         listPref.setOnPreferenceChangeListener(this);
 

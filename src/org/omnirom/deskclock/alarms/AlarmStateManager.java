@@ -400,7 +400,10 @@ public final class AlarmStateManager extends BroadcastReceiver {
         // Schedule timeout timer for alarm
         Calendar timeout = instance.getTimeout(context);
         if (timeout != null) {
-            scheduleInstanceStateChange(context, timeout, instance, AlarmInstance.MISSED_STATE);
+            boolean autoSnooze = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean(SettingsActivity.KEY_SNOOZE_ON_SILENCE, false);
+            scheduleInstanceStateChange(context, timeout, instance, autoSnooze ?
+                    AlarmInstance.SNOOZE_STATE : AlarmInstance.MISSED_STATE);
         }
 
         // Instance not valid anymore, so find next alarm that will fire and notify system
@@ -426,7 +429,10 @@ public final class AlarmStateManager extends BroadcastReceiver {
         // Schedule timeout timer for pre-alarm dismiss if before alarm
         Calendar timeout = instance.getPreAlarmTimeout(context);
         if (timeout != null && timeout.before(instance.getAlarmTime())) {
-            scheduleInstanceStateChange(context, timeout, instance, AlarmInstance.PRE_ALARM_DISMISS_STATE);
+            boolean autoSnooze = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean(SettingsActivity.KEY_SNOOZE_ON_SILENCE, false);
+            scheduleInstanceStateChange(context, timeout, instance, autoSnooze ?
+                    AlarmInstance.SNOOZE_STATE : AlarmInstance.PRE_ALARM_DISMISS_STATE);
         }
 
         // Start the alarm

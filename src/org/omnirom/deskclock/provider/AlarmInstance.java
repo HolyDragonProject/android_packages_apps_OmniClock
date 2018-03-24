@@ -51,7 +51,7 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
     /**
      * Default timeout for alarms in minutes.
      */
-    private static final String DEFAULT_ALARM_TIMEOUT_SETTING = "10";
+    private static final int DEFAULT_ALARM_TIMEOUT_SETTING = 10;
 
     public static final int DEFAULT_PRE_ALARM_TIME = 5;
 
@@ -436,9 +436,8 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
      * @return the time when alarm should be silence, or null if never
      */
     public Calendar getTimeout(Context context) {
-        String timeoutSetting = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(SettingsActivity.KEY_AUTO_SILENCE, DEFAULT_ALARM_TIMEOUT_SETTING);
-        int timeoutMinutes = Integer.parseInt(timeoutSetting);
+        int timeoutMinutes = PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(SettingsActivity.KEY_ALARM_SILENCE_AFTER, DEFAULT_ALARM_TIMEOUT_SETTING);
 
         // Alarm silence has been set to "None"
         if (timeoutMinutes < 0) {
@@ -457,9 +456,8 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
      * @return the time when alarm should be silence, or null if never
      */
     public Calendar getPreAlarmTimeout(Context context) {
-        String timeoutSetting = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(SettingsActivity.KEY_AUTO_SILENCE, DEFAULT_ALARM_TIMEOUT_SETTING);
-        int timeoutMinutes = Integer.parseInt(timeoutSetting);
+        int timeoutMinutes = PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(SettingsActivity.KEY_ALARM_SILENCE_AFTER, DEFAULT_ALARM_TIMEOUT_SETTING);
 
         // Alarm silence has been set to "None"
         if (timeoutMinutes < 0) {

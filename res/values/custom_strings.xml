@@ -167,4 +167,6 @@
     <string name="offline_notif_title">Device offline</string>
     <string name="offline_notif_message">Please change your system settings</string>
     <string name="color_theme_black">Black</string>
+    <string name="snooze_on_silence_title">Auto snooze</string>
+    <string name="snooze_on_silence_summary">Snooze instead of dismiss after silence timeout</string>
 </resources>
