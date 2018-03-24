@@ -54,9 +54,7 @@ public class TimerAlertFullScreen extends Activity implements OnEmptyListListene
         win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS |
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
 
         if (keepScreenOn){
             win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -76,6 +74,9 @@ public class TimerAlertFullScreen extends Activity implements OnEmptyListListene
             getFragmentManager().beginTransaction()
                     .add(org.omnirom.deskclock.R.id.fragment_container, timerFragment, FRAGMENT).commit();
         }
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
     @Override

@@ -104,11 +104,7 @@
     </style>
 
     <style name="ScreensaverActivityTheme" parent="@android:style/Theme.Material.NoActionBar">
-        <!-- Hide navigation bar when Dream is started from within the Clock app -->
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
     </style>
-
-    <style name="ScreensaverSettingsActivityTheme" parent="@android:style/Theme.Material" />
 
     <style name="timer_setup_digit">
         <item name="android:textSize">@dimen/medium_font_size</item>

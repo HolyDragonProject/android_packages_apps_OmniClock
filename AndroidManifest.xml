@@ -239,7 +239,7 @@
             android:exported="true"
             android:label="@string/screensaver_settings"
             android:taskAffinity=""
-            android:theme="@style/ScreensaverSettingsActivityTheme">
+            android:theme="@android:style/Theme.DeviceDefault.Settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
