@@ -137,6 +137,8 @@ public final class AlarmStateManager extends BroadcastReceiver {
 
     private static int sSnoozeCount = 0;
 
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+
     public static int getGlobalIntentId(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(ALARM_GLOBAL_ID_EXTRA, -1);
@@ -200,7 +202,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
             }
             AlarmInstance nextRepeatedInstance = alarm.createInstanceAfter(alarmTime);
             LogUtils.i("Creating new instance for repeating alarm " + alarm.id + " at " +
-                    AlarmUtils.getFormattedTime(context, nextRepeatedInstance.getAlarmTime()));
+                    sdf.format(nextRepeatedInstance.getAlarmTime().getTime()));
             AlarmInstance.addInstance(cr, nextRepeatedInstance);
             registerInstance(context, nextRepeatedInstance, true);
         }
@@ -239,7 +241,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
             AlarmInstance instance, int newState) {
         long timeInMillis = time.getTimeInMillis();
         LogUtils.v("Scheduling state change " + newState + " to instance " + instance.mId +
-                " at " + AlarmUtils.getFormattedTime(context, time) + " (" + timeInMillis + ")");
+                " at " + sdf.format(timeInMillis));
         Intent stateChangeIntent = createStateChangeIntent(context, ALARM_MANAGER_TAG, instance,
                 newState);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, instance.hashCode(),
@@ -483,8 +485,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
         stopAlarm(context, instance, lastState == AlarmInstance.PRE_ALARM_STATE, true);
 
         // Calculate the new snooze alarm time
-        int snoozeMinutes = PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt(SettingsActivity.KEY_ALARM_SNOOZE_MINUTES, DEFAULT_SNOOZE_MINUTES);
+        int snoozeMinutes = Utils.getSnoozeTimeoutValue(context);
         Calendar newAlarmTime = Calendar.getInstance();
         newAlarmTime.add(Calendar.MINUTE, snoozeMinutes);
 
@@ -501,8 +502,8 @@ public final class AlarmStateManager extends BroadcastReceiver {
         }
 
         // Update alarm state and new alarm time in db.
-        LogUtils.v("Setting snoozed state to instance " + instance.mId + " for "
-                + AlarmUtils.getFormattedTime(context, newAlarmTime));
+        LogUtils.v("Setting snoozed state to instance " + instance.mId + " until "
+                + sdf.format(newAlarmTime.getTime()));
 
         instance.mAlarmState = AlarmInstance.SNOOZE_STATE;
         AlarmInstance.updateInstance(context.getContentResolver(), instance);
@@ -528,8 +529,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
     }
 
     public static String getSnoozedMinutes(Context context) {
-        final int snoozeMinutes = PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt(SettingsActivity.KEY_ALARM_SNOOZE_MINUTES, DEFAULT_SNOOZE_MINUTES);
+        final int snoozeMinutes = Utils.getSnoozeTimeoutValue(context);
         return context.getResources().getQuantityString(org.omnirom.deskclock.R.plurals.alarm_alert_snooze_duration,
                 snoozeMinutes, snoozeMinutes);
     }
@@ -644,7 +644,6 @@ public final class AlarmStateManager extends BroadcastReceiver {
      */
     public static void registerInstance(Context context, AlarmInstance instance,
             boolean updateNextAlarm) {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
         Calendar currentTime = Calendar.getInstance();
         LogUtils.v("current = " + sdf.format(currentTime.getTime()));
 
@@ -652,6 +651,8 @@ public final class AlarmStateManager extends BroadcastReceiver {
         LogUtils.v("alarm at = " + sdf.format(alarmTime.getTime()));
 
         Calendar timeoutTime = instance.getTimeout(context);
+        LogUtils.v("timeoutTime at = " + (timeoutTime != null ? sdf.format(timeoutTime.getTime()) : "never"));
+
         //Calendar lowNotificationTime = instance.getLowNotificationTime();
         int highNotificationOffset = Utils.getHighNotificationOffset(context);
         Calendar highNotificationTime = instance.getHighNotificationTime(highNotificationOffset);
@@ -868,7 +869,7 @@ public final class AlarmStateManager extends BroadcastReceiver {
                 }
             }
 
-            LogUtils.v("AlarmStateManager change from: " + instance);
+            LogUtils.v("AlarmStateManager change: " + instance + " to " + alarmState);
 
             if (alarmState >= 0) {
                 setAlarmState(context, instance, alarmState);

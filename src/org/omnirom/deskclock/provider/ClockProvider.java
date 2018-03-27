@@ -30,6 +30,7 @@ import org.omnirom.deskclock.LogUtils;
 
 public class ClockProvider extends ContentProvider {
     private ClockDatabaseHelper mOpenHelper;
+    private static final String LOGTAG = ClockProvider.class.getSimpleName();
 
     private static final int ALARMS = 1;
     private static final int ALARMS_ID = 2;
@@ -98,7 +99,7 @@ public class ClockProvider extends ContentProvider {
                               null, null, sort);
 
         if (ret == null) {
-            LogUtils.e("Alarms.query: failed");
+            LogUtils.e(LOGTAG, "Alarms.query: failed");
         } else {
             ret.setNotificationUri(getContext().getContentResolver(), uri);
         }
@@ -156,7 +157,7 @@ public class ClockProvider extends ContentProvider {
                         "Cannot update URL: " + uri);
             }
         }
-        LogUtils.v("*** notifyChange() id: " + alarmId + " url " + uri);
+        LogUtils.v(LOGTAG, "notifyChange() id: " + alarmId + " url " + uri);
         getContext().getContentResolver().notifyChange(uri, null);
         return count;
     }

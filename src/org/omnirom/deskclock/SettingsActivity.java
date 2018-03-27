@@ -61,7 +61,7 @@ public class SettingsActivity extends PreferenceActivity
             "alarm_in_silent_mode";
     public static final String KEY_ALARM_SNOOZE_MINUTES =
             "snooze_duration_minutes";
-    private static final String KEY_ALARM_SNOOZE_OLD =
+    public static final String KEY_ALARM_SNOOZE_OLD =
             "snooze_duration_new";
     public static final String KEY_VOLUME_BEHAVIOR =
             "volume_button_setting";
@@ -164,11 +164,7 @@ public class SettingsActivity extends PreferenceActivity
         mTimerAlarmPref.setOnPreferenceChangeListener(this);
 
         mSnoozeMinutes = (NumberPickerPreference) findPreference(KEY_ALARM_SNOOZE_MINUTES);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.contains(KEY_ALARM_SNOOZE_OLD)) {
-            mSnoozeMinutes.setValue(Integer.valueOf(prefs.getString(KEY_ALARM_SNOOZE_OLD, "10")));
-            prefs.edit().remove(KEY_ALARM_SNOOZE_OLD).commit();
-        }
+        mSnoozeMinutes.setValue(Utils.getSnoozeTimeoutValue(this));
         mSnoozeMinutes.setMinValue(1);
         mSnoozeMinutes.setMaxValue(30);
 
@@ -176,11 +172,7 @@ public class SettingsActivity extends PreferenceActivity
         mSnoozeMinutes.setOnPreferenceChangeListener(this);
 
         mSilenceMinutes = (AutoSilencePickerPreference) findPreference(KEY_ALARM_SILENCE_AFTER);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.contains(KEY_AUTO_SILENCE_OLD)) {
-            mSilenceMinutes.setValue(Integer.valueOf(prefs.getString(KEY_AUTO_SILENCE_OLD, "10")));
-            prefs.edit().remove(KEY_AUTO_SILENCE_OLD).commit();
-        }
+        mSilenceMinutes.setValue(Utils.getTimeoutValue(this));
         mSilenceMinutes.setMinValue(1);
         mSilenceMinutes.setMaxValue(30);
 

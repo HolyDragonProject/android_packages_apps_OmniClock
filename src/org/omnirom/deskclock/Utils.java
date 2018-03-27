@@ -1634,6 +1634,28 @@ public class Utils {
     public static int setColorAlpha(int color, int alpha) {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
     }
+
+    public static int getTimeoutValue(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if (pref.contains(SettingsActivity.KEY_AUTO_SILENCE_OLD)) {
+            String timeoutSetting = pref.getString(SettingsActivity.KEY_AUTO_SILENCE_OLD, "10");
+            int timeoutMinutes = Integer.parseInt(timeoutSetting);
+            pref.edit().putInt(SettingsActivity.KEY_ALARM_SILENCE_AFTER, timeoutMinutes).commit();
+            pref.edit().remove(SettingsActivity.KEY_AUTO_SILENCE_OLD).commit();
+        }
+        return pref.getInt(SettingsActivity.KEY_ALARM_SILENCE_AFTER, AlarmInstance.DEFAULT_ALARM_TIMEOUT_SETTING);
+    }
+
+    public static int getSnoozeTimeoutValue(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if (pref.contains(SettingsActivity.KEY_ALARM_SNOOZE_OLD)) {
+            String timeoutSetting = pref.getString(SettingsActivity.KEY_ALARM_SNOOZE_OLD, "10");
+            int timeoutMinutes = Integer.parseInt(timeoutSetting);
+            pref.edit().putInt(SettingsActivity.KEY_ALARM_SNOOZE_MINUTES, timeoutMinutes).commit();
+            pref.edit().remove(SettingsActivity.KEY_ALARM_SNOOZE_OLD).commit();
+        }
+        return pref.getInt(SettingsActivity.KEY_ALARM_SNOOZE_MINUTES, AlarmInstance.DEFAULT_ALARM_TIMEOUT_SETTING);
+    }
 }
 
 

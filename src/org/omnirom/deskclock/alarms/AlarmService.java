@@ -40,6 +40,7 @@ public class AlarmService extends Service {
     private void startAlarm(AlarmInstance instance) {
         LogUtils.v("AlarmService.start with instance: " + instance.mId);
         if (mCurrentAlarm != null) {
+            LogUtils.v("AlarmService.start set missed state to current alarm: " + mCurrentAlarm.mId);
             AlarmStateManager.setMissedState(this, mCurrentAlarm);
             stopCurrentAlarm();
         }

@@ -21,12 +21,14 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
 import org.omnirom.deskclock.LogUtils;
 import org.omnirom.deskclock.SettingsActivity;
+import org.omnirom.deskclock.Utils;
 
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -51,7 +53,7 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
     /**
      * Default timeout for alarms in minutes.
      */
-    private static final int DEFAULT_ALARM_TIMEOUT_SETTING = 10;
+    public static final int DEFAULT_ALARM_TIMEOUT_SETTING = 10;
 
     public static final int DEFAULT_PRE_ALARM_TIME = 5;
 
@@ -436,8 +438,7 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
      * @return the time when alarm should be silence, or null if never
      */
     public Calendar getTimeout(Context context) {
-        int timeoutMinutes = PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt(SettingsActivity.KEY_ALARM_SILENCE_AFTER, DEFAULT_ALARM_TIMEOUT_SETTING);
+        int timeoutMinutes = Utils.getTimeoutValue(context);
 
         // Alarm silence has been set to "None"
         if (timeoutMinutes < 0) {
@@ -456,8 +457,7 @@ public final class AlarmInstance implements ClockContract.InstancesColumns {
      * @return the time when alarm should be silence, or null if never
      */
     public Calendar getPreAlarmTimeout(Context context) {
-        int timeoutMinutes = PreferenceManager.getDefaultSharedPreferences(context)
-                .getInt(SettingsActivity.KEY_ALARM_SILENCE_AFTER, DEFAULT_ALARM_TIMEOUT_SETTING);
+        int timeoutMinutes = Utils.getTimeoutValue(context);
 
         // Alarm silence has been set to "None"
         if (timeoutMinutes < 0) {
