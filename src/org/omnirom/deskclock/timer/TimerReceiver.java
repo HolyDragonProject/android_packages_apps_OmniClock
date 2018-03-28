@@ -289,7 +289,7 @@ public class TimerReceiver extends BroadcastReceiver {
             long timeLeft = timerIsTicking ? timer.getTimesupTime() - now : timer.mTimeLeft;
             contentText = buildTimeRemaining(context, timeLeft);
             if (timerIsTicking && timeLeft > TimerObj.MINUTE_IN_MILLIS) {
-                nextBroadcastTime = getBroadcastTime(now, timeLeft);
+                nextBroadcastTime = getUpdateBroadcastTime(now);
             }
             showCollapsedNotificationWithNext(context, timer, title, contentText, nextBroadcastTime);
         } else {
@@ -312,10 +312,10 @@ public class TimerReceiver extends BroadcastReceiver {
                     if (timerWithUpdate != null) {
                         completionTime = timerWithUpdate.getTimesupTime();
                         timeLeft = completionTime - now;
-                        nextBroadcastTime = getBroadcastTime(now, timeLeft);
+                        nextBroadcastTime = getUpdateBroadcastTime(now);
                     }
                 } else {
-                    nextBroadcastTime = getBroadcastTime(now, timeLeft);
+                    nextBroadcastTime = getUpdateBroadcastTime(now);
                 }
             }
             showCollapsedNotificationWithNext(context, null, title, contentText, nextBroadcastTime);
@@ -340,7 +340,7 @@ public class TimerReceiver extends BroadcastReceiver {
         long timeLeft = timerIsTicking ? timer.getTimesupTime() - now : timer.mTimeLeft;
         contentText = buildTimeRemaining(context, timeLeft);
         if (timerIsTicking && timeLeft > TimerObj.MINUTE_IN_MILLIS) {
-            nextBroadcastTime = getBroadcastTime(now, timeLeft);
+            nextBroadcastTime = getUpdateBroadcastTime(now);
         }
         showCollapsedNotificationWithNext(context, timer, title, contentText, nextBroadcastTime);
     }
@@ -352,10 +352,9 @@ public class TimerReceiver extends BroadcastReceiver {
         notificationManager.cancel(IN_USE_NOTIFICATION_ID);
     }
 
-    private long getBroadcastTime(long now, long timeUntilBroadcast) {
-        long seconds = timeUntilBroadcast / 1000;
-        seconds = seconds - ((seconds / 60) * 60);
-        return now + (seconds * 1000);
+    // notification will be updated every minute
+    private long getUpdateBroadcastTime(long now) {
+        return now + TimerObj.MINUTE_IN_MILLIS;
     }
 
     private void showCollapsedNotificationWithNext(
@@ -382,7 +381,7 @@ public class TimerReceiver extends BroadcastReceiver {
                 PendingIntent.getBroadcast(context, 0, nextBroadcast, 0);
         AlarmManager alarmManager =
                 (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME, nextBroadcastTime, pendingNextBroadcast);
+        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextBroadcastTime, pendingNextBroadcast);
     }
 
     private static void showCollapsedNotificationOld(final Context context, TimerObj timer, String title, String text,
@@ -530,7 +529,7 @@ public class TimerReceiver extends BroadcastReceiver {
             // only for a single timer show notifiction buttons
             if (timer != null) {
                 long now = Utils.getTimeNow();
-                long baseTime = now + timer.mTimeLeft;
+                long baseTime = now + (timer.isTicking() ? timer.getTimesupTime() - now : timer.mTimeLeft);
 
                 // Set up remoteviews for the notification.
                 RemoteViews remoteViewsCollapsed = new RemoteViews(context.getPackageName(),
