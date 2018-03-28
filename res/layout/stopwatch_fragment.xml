@@ -58,14 +58,12 @@
 
     <ListView
         android:id="@+id/laps_list"
-        android:layout_weight="2"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_marginStart="@dimen/circle_margin"
-        android:layout_marginEnd="@dimen/circle_margin"/>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_footer_height"/>
+        android:layout_marginEnd="16dip"
+        android:layout_marginStart="16dip"
+        android:paddingBottom="4dp"
+        android:layout_weight="2"
+        android:scrollbars="none"/>
 
 </LinearLayout>

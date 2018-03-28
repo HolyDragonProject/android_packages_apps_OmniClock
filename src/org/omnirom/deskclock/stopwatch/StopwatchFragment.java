@@ -386,7 +386,8 @@ public class StopwatchFragment extends DeskClockFragment
         mLapsList.setDividerHeight(0);
         mLapsAdapter = new LapsListAdapter(getActivity());
         mLapsList.setAdapter(mLapsAdapter);
-
+        View footerView = inflater.inflate(org.omnirom.deskclock.R.layout.blank_footer_view, mLapsList, false);
+        mLapsList.addFooterView(footerView, null, false);
         mTimeText.registerVirtualButtonAction(new Runnable() {
             @Override
             public void run() {

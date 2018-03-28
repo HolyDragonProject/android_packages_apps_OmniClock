@@ -33,7 +33,8 @@
         android:layout_marginStart="@dimen/sw_item_space"
         android:gravity="start"
         android:textAllCaps="false"
-        android:textAppearance="@style/PrimaryLabelTextAppearance" />
+        android:textAppearance="@style/PrimaryLabelTextAppearance"
+        android:textStyle="bold" />
     <TextView
         android:id="@+id/lap_time"
         android:layout_width="0dp"

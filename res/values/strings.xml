@@ -249,30 +249,6 @@
     <!-- Auto silence summary when turned off -->
     <string name="auto_silence_never">Never</string>
 
-    <!-- Entries listed in the ListPreference when invoking the auto silence
-         preference. -->
-    <string-array name="auto_silence_entries">
-      <item>1 minute</item>
-      <item>5 minutes</item>
-      <item>10 minutes</item>
-      <item>15 minutes</item>
-      <item>20 minutes</item>
-      <item>25 minutes</item>
-      <item>Never</item>
-      </string-array>
-
-    <!-- Values that are retrieved from the ListPreference. These must match
-         the auto_silence_entries above. -->
-    <string-array name="auto_silence_values" translatable="false">
-      <item>1</item>
-      <item>5</item>
-      <item>10</item>
-      <item>15</item>
-      <item>20</item>
-      <item>25</item>
-      <item>-1</item> <!-- Off -->
-      </string-array>
-
     <!-- Done button when editing an alarm. -->
     <string name="done">Done</string>
 
@@ -467,8 +443,8 @@
 
     <!-- Label to enumerate the number of laps the user has counted -->
     <string-array name="sw_lap_number_set" translatable="false">
-        <item># <xliff:g id="number">%d</xliff:g></item>
-        <item># <xliff:g id="number">%02d</xliff:g></item>
+        <item><xliff:g id="number">%d</xliff:g></item>
+        <item><xliff:g id="number">%02d</xliff:g></item>
     </string-array>
 
     <!-- Stopwatch accessibility strings -->
