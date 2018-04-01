@@ -154,7 +154,6 @@
   <string name="vibrate_notification_summary">Attiva la vibrazione per le notifiche di allarme e timer attive</string>
   <string name="vibrate_notification_title">Vibra alla notifica</string>
   <string name="all_cities_label">Aggiungi</string>
-  <string name="entry_never">Mai</string>
   <string name="default_page_title">Pagina iniziale predefinita</string>
   <string name="global_settings">Generale</string>
   <string name="local_query_playlist">Playlists</string>

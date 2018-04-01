@@ -153,7 +153,6 @@
   <string name="vibrate_notification_summary">Aktiver vibrasjon for aktive alarm- og tidtakervarsler</string>
   <string name="vibrate_notification_title">Varslingsvibrasjon</string>
   <string name="all_cities_label">Legg til</string>
-  <string name="entry_never">Aldri</string>
   <string name="default_page_title">Standard startside</string>
   <string name="global_settings">Universale</string>
 </resources>

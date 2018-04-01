@@ -135,6 +135,7 @@
   <string name="randomMusicType">Náhodná hudba</string>
   <string name="browse_activity_title">Prehliadať</string>
   <string name="local_query_alarm_ringtones">Budíky a zvonenia</string>
+  <string name="local_query_alarm">Budíky</string>
   <string name="local_query_recent">Nedávne</string>
   <string name="local_query_hint">Vyhľadajte</string>
   <string name="local_query_artist">Interpreti</string>
@@ -154,7 +155,6 @@
   <string name="vibrate_notification_summary">Povolenie vibrácií pre oznámenia aktívnych budíkov a časovačov</string>
   <string name="vibrate_notification_title">Vibrovať pri upozornení</string>
   <string name="all_cities_label">Pridať</string>
-  <string name="entry_never">Nikdy</string>
   <string name="default_page_title">Predvolená stránka po spustení</string>
   <string name="global_settings">Globálne</string>
   <string name="local_query_playlist">Zoznamy skladieb</string>

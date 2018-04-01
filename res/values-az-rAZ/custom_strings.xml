@@ -153,7 +153,6 @@
   <string name="vibrate_notification_summary">Aktiv alarm və vaxtölçən bildirişləri üçün vibrasyanı aktivləşdir</string>
   <string name="vibrate_notification_title">Bildiriş vibrasyası</string>
   <string name="all_cities_label">Əlavə et</string>
-  <string name="entry_never">Heç Vaxt</string>
   <string name="default_page_title">Standart başlatma səhifəsi</string>
   <string name="global_settings">Ümumi</string>
 </resources>

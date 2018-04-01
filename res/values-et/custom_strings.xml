@@ -135,6 +135,7 @@
   <string name="randomMusicType">Juhuslik muusika</string>
   <string name="browse_activity_title">Sirvi</string>
   <string name="local_query_alarm_ringtones">Äratused ja helinad</string>
+  <string name="local_query_alarm">Äratused</string>
   <string name="local_query_recent">Hiljutised</string>
   <string name="local_query_hint">Otsi</string>
   <string name="local_query_artist">Esitajad</string>
@@ -154,7 +155,6 @@
   <string name="vibrate_notification_summary">Luba vibratsioon aktiivse äratuse ja taimeri teadete jaoks</string>
   <string name="vibrate_notification_title">Teate vibratsioon</string>
   <string name="all_cities_label">Lisa</string>
-  <string name="entry_never">Mitte kunagi</string>
   <string name="default_page_title">Vaikimisi avaleht</string>
   <string name="global_settings">Üldine</string>
   <string name="local_query_playlist">Esitusloendid</string>

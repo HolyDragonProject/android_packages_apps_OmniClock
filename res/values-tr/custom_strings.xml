@@ -135,6 +135,7 @@
   <string name="randomMusicType">Tesâdüfî müzik</string>
   <string name="browse_activity_title">Göz at</string>
   <string name="local_query_alarm_ringtones">Alarmlar ve zil sesleri</string>
+  <string name="local_query_alarm">Alarmlar</string>
   <string name="local_query_recent">Yakın zamandaki</string>
   <string name="local_query_hint">Ara</string>
   <string name="local_query_artist">Sanatçılar</string>
@@ -154,7 +155,6 @@
   <string name="vibrate_notification_summary">Fa\'âl alarm ve zamanlayıcı bildirimleri için titreşimi etkinleştirin</string>
   <string name="vibrate_notification_title">Bildirim titreşimi</string>
   <string name="all_cities_label">İlâve et</string>
-  <string name="entry_never">Aslâ</string>
   <string name="default_page_title">Varsayılan başlangıç sayfası</string>
   <string name="global_settings">Umûmî</string>
   <string name="local_query_playlist">Oynatma listeleri</string>

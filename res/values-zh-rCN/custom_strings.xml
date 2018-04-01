@@ -135,6 +135,7 @@
   <string name="randomMusicType">随机播放音乐</string>
   <string name="browse_activity_title">浏览</string>
   <string name="local_query_alarm_ringtones">闹钟铃声</string>
+  <string name="local_query_alarm">闹钟</string>
   <string name="local_query_recent">最近播放</string>
   <string name="local_query_hint">搜索</string>
   <string name="local_query_artist">艺术家</string>
@@ -154,7 +155,6 @@
   <string name="vibrate_notification_summary">为活动的闹钟和计时器提示启用震动</string>
   <string name="vibrate_notification_title">通知震动</string>
   <string name="all_cities_label">添加</string>
-  <string name="entry_never">从不</string>
   <string name="default_page_title">默认起始页</string>
   <string name="global_settings">全局</string>
   <string name="local_query_playlist">播放列表</string>

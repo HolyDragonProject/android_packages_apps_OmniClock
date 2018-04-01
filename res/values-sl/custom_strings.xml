@@ -153,7 +153,6 @@
   <string name="vibrate_notification_summary">Omogoči vibriranje za dejavno budilko in obvestila odštevalnika</string>
   <string name="vibrate_notification_title">Vibriranje obvestil</string>
   <string name="all_cities_label">Dodaj</string>
-  <string name="entry_never">Nikoli</string>
   <string name="default_page_title">Začetna stran</string>
   <string name="global_settings">Globalno</string>
 </resources>

@@ -135,6 +135,7 @@
   <string name="randomMusicType">Músicas aleatórias</string>
   <string name="browse_activity_title">Pesquisar</string>
   <string name="local_query_alarm_ringtones">Alarmes e toques</string>
+  <string name="local_query_alarm">Alarmes</string>
   <string name="local_query_recent">Recentes</string>
   <string name="local_query_hint">Procurar</string>
   <string name="local_query_artist">Artistas</string>
@@ -154,7 +155,6 @@
   <string name="vibrate_notification_summary">Habilitar a vibração para notificações de alarme e temporizador ativos</string>
   <string name="vibrate_notification_title">Vibrar com notificação</string>
   <string name="all_cities_label">Adicionar</string>
-  <string name="entry_never">Nunca</string>
   <string name="default_page_title">Página de início do padrão</string>
   <string name="global_settings">Geral</string>
   <string name="local_query_playlist">Listas de reprodução</string>

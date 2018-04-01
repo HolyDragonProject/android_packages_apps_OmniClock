@@ -136,6 +136,7 @@
   <string name="randomMusicType">Случайная музыка</string>
   <string name="browse_activity_title">Обзор</string>
   <string name="local_query_alarm_ringtones">Будильники и рингтоны</string>
+  <string name="local_query_alarm">Будильники</string>
   <string name="local_query_recent">Недавние</string>
   <string name="local_query_hint">Поиск</string>
   <string name="local_query_artist">Исполнители</string>
@@ -155,7 +156,6 @@
   <string name="vibrate_notification_summary">Включить вибрацию для уведомления об активном будильнике и таймере</string>
   <string name="vibrate_notification_title">Вибрация при уведомлении</string>
   <string name="all_cities_label">Добавить</string>
-  <string name="entry_never">Никогда</string>
   <string name="default_page_title">Стартовая вкладка по умолчанию</string>
   <string name="global_settings">Общие</string>
   <string name="local_query_playlist">Плейлисты</string>

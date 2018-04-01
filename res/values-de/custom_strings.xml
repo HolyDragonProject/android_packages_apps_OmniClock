@@ -154,7 +154,6 @@
   <string name="vibrate_notification_summary">Vibration für aktive Alarm und Timer-Benachrichtigungen aktivieren</string>
   <string name="vibrate_notification_title">Benachrichtigungsvibration</string>
   <string name="all_cities_label">Hinzufügen</string>
-  <string name="entry_never">Niemals</string>
   <string name="default_page_title">Standard-Startseite</string>
   <string name="global_settings">Global</string>
   <string name="local_query_playlist">Wiedergabelisten</string>

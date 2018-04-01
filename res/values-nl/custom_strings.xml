@@ -153,7 +153,6 @@
   <string name="vibrate_notification_summary">Trillingen voor actieve alarm en timer meldingen inschakelen</string>
   <string name="vibrate_notification_title">Trillen bij notificatie</string>
   <string name="all_cities_label">Toevoegen</string>
-  <string name="entry_never">Nooit</string>
   <string name="default_page_title">Standaard start pagina</string>
   <string name="global_settings">Globaal</string>
 </resources>

@@ -154,7 +154,6 @@
   <string name="vibrate_notification_summary">Aktifkan getaran untuk pemberitahuan alarm serta timer aktif</string>
   <string name="vibrate_notification_title">Getar pemberitahuan</string>
   <string name="all_cities_label">Tambah</string>
-  <string name="entry_never">Tidak pernah</string>
   <string name="default_page_title">Halaman awal standar</string>
   <string name="global_settings">Global</string>
   <string name="local_query_playlist">Daftar putar</string>

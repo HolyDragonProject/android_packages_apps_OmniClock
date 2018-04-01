@@ -124,7 +124,6 @@
   <string name="show_background_image_title">Visa bakgrundsbild</string>
   <string name="vibrate_notification_summary">Aktivera vibration för aktivt larm och timeraviseringar</string>
   <string name="all_cities_label">Lägg till</string>
-  <string name="entry_never">Aldrig</string>
   <string name="default_page_title">Standardstartsida</string>
   <string name="global_settings">Global</string>
 </resources>
