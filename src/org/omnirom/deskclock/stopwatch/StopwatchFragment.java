@@ -68,9 +68,7 @@ public class StopwatchFragment extends DeskClockFragment
     // Animation constants and objects
     private LayoutTransition mLayoutTransition;
     private LayoutTransition mCircleLayoutTransition;
-    private View mStartSpace;
     private View mEndSpace;
-    private boolean mSpacersUsed;
 
     // Used for calculating the time from the start taking into account the pause times
     long mStartTime = 0;
@@ -381,7 +379,8 @@ public class StopwatchFragment extends DeskClockFragment
         ViewGroup v = (ViewGroup)inflater.inflate(org.omnirom.deskclock.R.layout.stopwatch_fragment, container, false);
 
         mTime = (CircleTimerView)v.findViewById(org.omnirom.deskclock.R.id.stopwatch_time);
-        mTime.setBackgroundResource(Utils.getCircleViewBackgroundResourceId(getActivity()));        mTimeText = (CountingTimerView)v.findViewById(org.omnirom.deskclock.R.id.stopwatch_time_text);
+        mTime.setBackgroundResource(Utils.getCircleViewBackgroundResourceId(getActivity()));
+        mTimeText = (CountingTimerView)v.findViewById(org.omnirom.deskclock.R.id.stopwatch_time_text);
         mLapsList = (ListView)v.findViewById(org.omnirom.deskclock.R.id.laps_list);
         mLapsList.setDividerHeight(0);
         mLapsAdapter = new LapsListAdapter(getActivity());
@@ -410,11 +409,7 @@ public class StopwatchFragment extends DeskClockFragment
         mCircleLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
         mCircleLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
         mCircleLayoutTransition.setAnimateParentHierarchy(false);
-
-        // These spacers assist in keeping the size of CircleButtonsLayout constant
-        mStartSpace = v.findViewById(org.omnirom.deskclock.R.id.start_space);
         mEndSpace = v.findViewById(org.omnirom.deskclock.R.id.end_space);
-        mSpacersUsed = mStartSpace != null || mEndSpace != null;
         // Listener to invoke extra animation within the laps-list
         mLayoutTransition.addTransitionListener(new LayoutTransition.TransitionListener() {
             @Override
@@ -489,14 +484,9 @@ public class StopwatchFragment extends DeskClockFragment
         boolean lapsVisible = mLapsAdapter.getCount() > 0;
 
         mLapsList.setVisibility(lapsVisible ? View.VISIBLE : View.GONE);
-        if (mSpacersUsed) {
-            int spacersVisibility = lapsVisible ? View.GONE : View.VISIBLE;
-            if (mStartSpace != null) {
-                mStartSpace.setVisibility(spacersVisibility);
-            }
-            if (mEndSpace != null) {
-                mEndSpace.setVisibility(spacersVisibility);
-            }
+        int spacersVisibility = lapsVisible ? View.GONE : View.VISIBLE;
+        if (mEndSpace != null) {
+            mEndSpace.setVisibility(spacersVisibility);
         }
         ((ViewGroup)getView()).setLayoutTransition(mLayoutTransition);
         mCircleLayout.setLayoutTransition(mCircleLayoutTransition);
@@ -728,19 +718,14 @@ public class StopwatchFragment extends DeskClockFragment
         // Layout change animations will start upon the first add/hide view. Temporarily disable
         // the layout transition animation for the spacers, make the changes, then re-enable
         // the animation for the add/hide laps-list
-        if (mSpacersUsed) {
-            int spacersVisibility = lapsVisible ? View.GONE : View.VISIBLE;
-            ViewGroup rootView = (ViewGroup) getView();
-            if (rootView != null) {
-                rootView.setLayoutTransition(null);
-                if (mStartSpace != null) {
-                    mStartSpace.setVisibility(spacersVisibility);
-                }
-                if (mEndSpace != null) {
-                    mEndSpace.setVisibility(spacersVisibility);
-                }
-                rootView.setLayoutTransition(mLayoutTransition);
+        int spacersVisibility = lapsVisible ? View.GONE : View.VISIBLE;
+        ViewGroup rootView = (ViewGroup) getView();
+        if (rootView != null) {
+            rootView.setLayoutTransition(null);
+            if (mEndSpace != null) {
+                mEndSpace.setVisibility(spacersVisibility);
             }
+            rootView.setLayoutTransition(mLayoutTransition);
         }
 
         if (lapsVisible) {

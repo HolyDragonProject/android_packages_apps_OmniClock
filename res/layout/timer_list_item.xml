@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center_vertical"
-    android:paddingBottom="@dimen/timer_list_padding_bottom"
+    android:paddingBottom="@dimen/button_footer_height"
     android:orientation="vertical">
 
     <org.omnirom.deskclock.CircleButtonsLayout
