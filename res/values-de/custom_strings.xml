@@ -135,6 +135,7 @@
   <string name="randomMusicType">Zufällige Musik</string>
   <string name="browse_activity_title">Durchsuchen</string>
   <string name="local_query_alarm_ringtones">Alarme und Klingeltöne</string>
+  <string name="local_query_alarm">Alarme</string>
   <string name="local_query_recent">Letzte</string>
   <string name="local_query_hint">Suche</string>
   <string name="local_query_artist">Interpreten</string>

@@ -134,6 +134,8 @@
   <string name="color_theme_title">Tema</string>
   <string name="randomMusicType">Músicas aleatórias</string>
   <string name="browse_activity_title">Procurar</string>
+  <string name="local_query_alarm_ringtones">Alarmes e toques</string>
+  <string name="local_query_alarm">Alarmes</string>
   <string name="local_query_recent">Recente</string>
   <string name="local_query_hint">Pesquisar</string>
   <string name="local_query_artist">Artistas</string>
@@ -155,4 +157,10 @@
   <string name="all_cities_label">Adicionar</string>
   <string name="default_page_title">Página de início padrão</string>
   <string name="global_settings">Global</string>
+  <string name="local_query_playlist">Listas de reprodução</string>
+  <string name="url_paste_hint">Colar URL</string>
+  <string name="playlist_file_name">Nome</string>
+  <string name="local_query_stream">Transmissões</string>
+  <string name="offline_notif_message">Por favor, altere as configurações do sistema</string>
+  <string name="color_theme_black">Preto</string>
 </resources>

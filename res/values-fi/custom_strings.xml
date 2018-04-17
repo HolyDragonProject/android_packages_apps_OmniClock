@@ -33,6 +33,11 @@
   <string name="ringtone_disabled">Pois käytöstä</string>
   <string name="alarm_title">Herätys</string>
   <string name="alarm_volume_enable_title">Järjestelmän hälytyksen äänenvoimakkuus</string>
+  <string name="alarm_test_dialog_title">Toista hälytys</string>
+  <string name="alarm_test_dialog_content">Paina peruuta lopettaaksesi</string>
+  <string name="alarm_test">Toista hälytys</string>
+  <string name="alarmType">Hälytys</string>
+  <string name="ringtoneType">Soittoääni</string>
   <string name="notificationType">Ilmoitus</string>
   <string name="mediaType">Musiikkitiedosto</string>
   <string name="folderType">Musiikkikansio</string>
@@ -76,6 +81,7 @@
   <string name="timer_alarm_title">Soittoääni</string>
   <string name="week_start_title">Viikon alkamispäivä</string>
   <string name="storage_title">Tallennustila:</string>
+  <string name="folders_scanning">Skannataan\u2026</string>
   <string name="show_alarm_title">Näytä seuraava hälytys</string>
   <string name="show_date_title">Näytä päivämäärä</string>
   <string name="font_sample_text">11.57</string>
@@ -83,6 +89,7 @@
   <string name="custom_gadget">Digitaalinen kello</string>
   <string name="clock_color_title">Väri</string>
   <string name="clock_shadow_title">Varjo</string>
+  <string name="menu_item_version">Versiotiedot</string>
   <string name="editor_save">Tallenna muutokset</string>
   <string name="menu_item_spotify">Spotify</string>
   <string name="color_theme_light">Vaalea</string>
