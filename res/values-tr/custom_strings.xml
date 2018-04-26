@@ -164,4 +164,6 @@
   <string name="offline_notif_title">Cihaz çevrimdışı</string>
   <string name="offline_notif_message">Lütfen sistem ayarlarınızı değiştirin</string>
   <string name="color_theme_black">Siyah</string>
+  <string name="snooze_on_silence_title">Kendiliğinden erteleme</string>
+  <string name="snooze_on_silence_summary">Sessizlik zaman aşımından sonra ihrâc etmek yerine ertele</string>
 </resources>

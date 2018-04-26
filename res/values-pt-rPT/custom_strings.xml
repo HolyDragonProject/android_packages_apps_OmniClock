@@ -164,4 +164,6 @@
   <string name="offline_notif_title">Dispositivo desligado</string>
   <string name="offline_notif_message">Por favor, altere as configurações do sistema</string>
   <string name="color_theme_black">Preto</string>
+  <string name="snooze_on_silence_title">Suspender automaticamente</string>
+  <string name="snooze_on_silence_summary">Suspender em vez de desligar depois do tempo limite em silêncio</string>
 </resources>

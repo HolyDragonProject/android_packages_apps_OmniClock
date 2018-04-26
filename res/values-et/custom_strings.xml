@@ -164,4 +164,6 @@
   <string name="offline_notif_title">Seade ühenduseta</string>
   <string name="offline_notif_message">Palun muuda oma süsteemiseadeid</string>
   <string name="color_theme_black">Must</string>
+  <string name="snooze_on_silence_title">Automaatne kordus</string>
+  <string name="snooze_on_silence_summary">Korda äratust tühistamise asemel peale vaikuse ajalõppu</string>
 </resources>

@@ -164,4 +164,6 @@
   <string name="offline_notif_title">Készülék offline</string>
   <string name="offline_notif_message">Kérjük módosítsa a rendszer beállításait</string>
   <string name="color_theme_black">Sötét</string>
+  <string name="snooze_on_silence_title">Automatikus szundi</string>
+  <string name="snooze_on_silence_summary">A némítási időkorlát után az elutasítás helyett szundi</string>
 </resources>

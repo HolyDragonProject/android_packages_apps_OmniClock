@@ -164,4 +164,6 @@
   <string name="offline_notif_title">离线设备</string>
   <string name="offline_notif_message">请修改你的系统设置</string>
   <string name="color_theme_black">黑色</string>
+  <string name="snooze_on_silence_title">自动打盹</string>
+  <string name="snooze_on_silence_summary">暂停, 而不是在沉默超时后解散</string>
 </resources>

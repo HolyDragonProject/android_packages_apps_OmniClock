@@ -134,6 +134,8 @@
   <string name="color_theme_title">Thema</string>
   <string name="randomMusicType">Willekeurige muziek</string>
   <string name="browse_activity_title">Bladeren</string>
+  <string name="local_query_alarm_ringtones">Wekkers en beltonen</string>
+  <string name="local_query_alarm">Wekkers</string>
   <string name="local_query_recent">Recent</string>
   <string name="local_query_hint">Zoeken</string>
   <string name="local_query_artist">Artiesten</string>
@@ -155,4 +157,13 @@
   <string name="all_cities_label">Toevoegen</string>
   <string name="default_page_title">Standaard start pagina</string>
   <string name="global_settings">Globaal</string>
+  <string name="local_query_playlist">Afspeellijsten</string>
+  <string name="url_paste_hint">Plak URL</string>
+  <string name="playlist_file_name">Naam</string>
+  <string name="local_query_stream">Streams</string>
+  <string name="offline_notif_title">Apparaat offline</string>
+  <string name="offline_notif_message">Gelieve uw systeeminstellingen wijzigen</string>
+  <string name="color_theme_black">Zwart</string>
+  <string name="snooze_on_silence_title">Auto snooze</string>
+  <string name="snooze_on_silence_summary">Snooze in plaats van afwijzen na stilte time-out</string>
 </resources>

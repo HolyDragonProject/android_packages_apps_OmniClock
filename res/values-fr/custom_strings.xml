@@ -164,4 +164,6 @@
   <string name="offline_notif_title">Appareil hors ligne</string>
   <string name="offline_notif_message">Veuillez modifier vos paramètres système</string>
   <string name="color_theme_black">Noir</string>
+  <string name="snooze_on_silence_title">Veille automatique</string>
+  <string name="snooze_on_silence_summary">Mettre en veille au lieu de dissimuler après le délai de silence</string>
 </resources>

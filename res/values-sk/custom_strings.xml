@@ -164,4 +164,6 @@
   <string name="offline_notif_title">Zariadenie nie je pripojené</string>
   <string name="offline_notif_message">Prosím, zmeňte nastavenia systému</string>
   <string name="color_theme_black">Čierna</string>
+  <string name="snooze_on_silence_title">Automatické odloženie</string>
+  <string name="snooze_on_silence_summary">Odloženie namiesto zrušenia po vypršaní tichého režimu</string>
 </resources>
