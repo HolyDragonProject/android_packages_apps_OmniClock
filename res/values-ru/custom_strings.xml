@@ -165,4 +165,5 @@
   <string name="offline_notif_title">Устройство офлайн</string>
   <string name="offline_notif_message">Пожалуйста, измените системные настройки</string>
   <string name="color_theme_black">Чёрная</string>
+  <string name="snooze_on_silence_title">Автоматическая отсрочка</string>
 </resources>
