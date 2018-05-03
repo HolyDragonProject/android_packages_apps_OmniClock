@@ -1426,7 +1426,9 @@ public class AlarmClockFragment extends DeskClockFragment implements
         Uri defaultAlarm = Utils.getDefaultAlarmUri(getActivity());
         if (defaultAlarm == null || !mAlarms.contains(defaultAlarm)) {
             // choose the first one from the list
-            defaultAlarm = mAlarms.get(0);
+            if (mAlarms.size() != 0) {
+                defaultAlarm = mAlarms.get(0);
+            }
         }
         return defaultAlarm;
     }

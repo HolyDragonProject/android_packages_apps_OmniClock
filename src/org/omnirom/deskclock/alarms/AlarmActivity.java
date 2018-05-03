@@ -443,22 +443,40 @@ public class AlarmActivity extends Activity implements View.OnClickListener, Vie
         mAlarmHandled = true;
         LogUtils.v(LOGTAG, "Snoozed: " + mAlarmInstance);
 
-        final int revealColor = getResources().getColor(org.omnirom.deskclock.R.color.snooze_circle_bg);
-        setAnimatedFractions(1.0f /* snoozeFraction */, 0.0f /* dismissFraction */);
-        getAlertAnimator(mSnoozeButton, org.omnirom.deskclock.R.string.alarm_alert_snoozed_text,
-                AlarmStateManager.getSnoozedMinutes(this), revealColor, mCurrentHourColor).start();
+        try {
+            final int revealColor = getResources().getColor(org.omnirom.deskclock.R.color.snooze_circle_bg);
+            setAnimatedFractions(1.0f /* snoozeFraction */, 0.0f /* dismissFraction */);
+            getAlertAnimator(mSnoozeButton, org.omnirom.deskclock.R.string.alarm_alert_snoozed_text,
+                    AlarmStateManager.getSnoozedMinutes(this), revealColor, mCurrentHourColor).start();
+        } catch (Exception e) {
+        }
         AlarmStateManager.setSnoozeState(this, mAlarmInstance, false /* showToast */);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, ALERT_DISMISS_DELAY_MILLIS);
     }
 
     private void dismiss() {
         mAlarmHandled = true;
         LogUtils.v(LOGTAG, "Dismissed: " + mAlarmInstance);
 
-        setAnimatedFractions(0.0f /* snoozeFraction */, 1.0f /* dismissFraction */);
-        final int revealColor = getResources().getColor(org.omnirom.deskclock.R.color.dismiss_circle_bg);
-        getAlertAnimator(mDismissButton, org.omnirom.deskclock.R.string.alarm_alert_off_text, null /* infoText */,
-                revealColor, mCurrentHourColor).start();
+        try {
+            setAnimatedFractions(0.0f /* snoozeFraction */, 1.0f /* dismissFraction */);
+            final int revealColor = getResources().getColor(org.omnirom.deskclock.R.color.dismiss_circle_bg);
+            getAlertAnimator(mDismissButton, org.omnirom.deskclock.R.string.alarm_alert_off_text, null /* infoText */,
+                    revealColor, mCurrentHourColor).start();
         AlarmStateManager.setDismissState(this, mAlarmInstance);
+        } catch (Exception e) {
+        }
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, ALERT_DISMISS_DELAY_MILLIS);
     }
 
     private void setAnimatedFractions(float snoozeFraction, float dismissFraction) {

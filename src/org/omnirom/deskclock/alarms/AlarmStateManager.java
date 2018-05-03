@@ -881,7 +881,11 @@ public final class AlarmStateManager extends BroadcastReceiver {
             Uri uri = intent.getData();
             AlarmInstance instance = AlarmInstance.getInstance(context.getContentResolver(),
                     AlarmInstance.getId(uri));
-
+            if (instance == null) {
+                // Not a big deal, but it shouldn't happen
+                LogUtils.e("Can not change state for unknown instance: " + uri);
+                return;
+            }
             long alarmId = instance.mAlarmId == null ? Alarm.INVALID_ID : instance.mAlarmId;
             Intent viewAlarmIntent = Alarm.createIntent(context, DeskClock.class, alarmId);
             viewAlarmIntent.putExtra(DeskClock.SELECT_TAB_INTENT_EXTRA, DeskClock.ALARM_TAB_INDEX);

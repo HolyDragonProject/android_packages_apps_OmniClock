@@ -32,8 +32,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 
 import java.io.IOException;
 
@@ -48,28 +46,12 @@ public class TimerRingService extends Service implements AudioManager.OnAudioFoc
 
     private static boolean sPlaying = false;
     private MediaPlayer mMediaPlayer;
-    private TelephonyManager mTelephonyManager;
-    private int mInitialCallState;
     private static AudioManager sAudioManager;
     private static boolean sIncreasingVolume;
     private static int sCurrentVolume = INCREASING_VOLUME_START;
     private static int sSavedVolume;
     private static int sMaxVolume;
     private static long sVolumeIncreaseSpeed;
-
-    private final PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
-        @Override
-        public void onCallStateChanged(int state, String ignored) {
-            // The user might already be in a call when the alarm fires. When
-            // we register onCallStateChanged, we get the initial in-call state
-            // which kills the alarm. Check against the initial call state so
-            // we don't kill the alarm during a call.
-            if (state != TelephonyManager.CALL_STATE_IDLE
-                    && state != mInitialCallState) {
-                stopSelf();
-            }
-        }
-    };
 
     private static Handler sHandler = new Handler() {
         @Override
@@ -91,11 +73,6 @@ public class TimerRingService extends Service implements AudioManager.OnAudioFoc
     };
     @Override
     public void onCreate() {
-        // Listen for incoming calls to kill the alarm.
-        mTelephonyManager =
-                (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        mTelephonyManager.listen(
-                mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         sAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         AlarmAlertWakeLock.acquireScreenCpuWakeLock(this);
     }
@@ -104,7 +81,6 @@ public class TimerRingService extends Service implements AudioManager.OnAudioFoc
     public void onDestroy() {
         stop();
         // Stop listening for incoming calls.
-        mTelephonyManager.listen(mPhoneStateListener, 0);
         AlarmAlertWakeLock.releaseCpuLock();
     }
 
@@ -122,9 +98,6 @@ public class TimerRingService extends Service implements AudioManager.OnAudioFoc
         }
 
         play();
-        // Record the initial call state here so that the new alarm has the
-        // newest state.
-        mInitialCallState = mTelephonyManager.getCallState();
 
         return START_STICKY;
     }
@@ -162,26 +135,12 @@ public class TimerRingService extends Service implements AudioManager.OnAudioFoc
         LogUtils.v("Volume increase interval " + sVolumeIncreaseSpeed);
 
         try {
-            boolean silentAlarmSound = false;
-            // Check if we are in a call. If we are, use the in-call alarm
-            // resource at a low volume to not disrupt the call.
-            if (mTelephonyManager.getCallState()
-                    != TelephonyManager.CALL_STATE_IDLE) {
-                LogUtils.v("Using the in-call alarm");
-                mMediaPlayer.setVolume(IN_CALL_VOLUME, IN_CALL_VOLUME);
-                setDataSourceFromResource(getResources(), mMediaPlayer,
-                        R.raw.in_call_alarm);
-            } else {
-                silentAlarmSound = !setTimerAlarm();
-            }
             final boolean vibrate = prefs.getBoolean(SettingsActivity.KEY_TIMER_ALARM_VIBRATE, false);
             if (vibrate) {
                 Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(sVibratePattern, 0);
             }
-            if (!silentAlarmSound) {
-                startAlarm(mMediaPlayer);
-            }
+            startAlarm(mMediaPlayer);
         } catch (Exception ex) {
             LogUtils.v("Using the fallback ringtone");
             // The alert may be on the sd card which could be busy right
