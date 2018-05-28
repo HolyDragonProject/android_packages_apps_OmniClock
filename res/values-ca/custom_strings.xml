@@ -76,7 +76,7 @@
   <string name="prealarm_default_label">Pre-alarma</string>
   <string name="fullscreen_alarm_settings">Alarmes de pantalla completa</string>
   <string name="fullscreen_alarm_title">Alarmes de pantalla completa</string>
-  <string name="fullscreen_alarm_summary">Utilitza sempre alarmes de pantalla completa en lloc d\'una notificació d\'avís</string>
+  <string name="fullscreen_alarm_summary">Utilitza sempre alarmes de pantalla completa en lloc d\'un avís emergent</string>
   <string name="take_persistent_grant_uri_permission_failed_msg">No s\'ha pogut obtenir el permís d\'assignació persistent per al to de trucada</string>
   <string name="notification_settings">Avisos</string>
   <!-- User-defined cities -->
@@ -98,7 +98,7 @@
   <string name="timer_alarm_title">To de trucada</string>
   <string name="timer_alarm_custom_title">Personalització del to del temporitzador</string>
   <string name="week_start_title">La setmana comença en</string>
-  <string name="default_week_start">Predeterminat de l\'idioma</string>
+  <string name="default_week_start">Per defecte de la configuració regional</string>
   <string name="clone_alarm">Copia l\'alarma</string>
   <string name="storage_title">Emmagatzematge:</string>
   <string name="folders_scanning">S\'està cercant\u2026</string>
