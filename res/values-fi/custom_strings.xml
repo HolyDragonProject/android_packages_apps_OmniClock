@@ -102,6 +102,7 @@
   <string name="shortcut_start_timer">Ajastin</string>
   <string name="shortcut_stopwatch">Sekuntikello</string>
   <string name="all_cities_label">Lisää</string>
+  <string name="url_paste_hint">Liitä URL</string>
   <string name="playlist_file_name">Nimi</string>
   <string name="color_theme_black">Musta</string>
 </resources>

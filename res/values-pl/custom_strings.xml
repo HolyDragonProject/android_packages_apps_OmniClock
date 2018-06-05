@@ -134,6 +134,7 @@
   <string name="color_theme_title">Motyw</string>
   <string name="randomMusicType">Losowa muzyka</string>
   <string name="browse_activity_title">Przeglądaj</string>
+  <string name="local_query_alarm">Alarmy</string>
   <string name="local_query_recent">Ostatnie</string>
   <string name="local_query_hint">Wyszukaj</string>
   <string name="local_query_artist">Wykonawcy</string>
@@ -155,4 +156,10 @@
   <string name="all_cities_label">Dodaj</string>
   <string name="default_page_title">Domyślna strona początkowa</string>
   <string name="global_settings">Globalnie</string>
+  <string name="local_query_playlist">Listy odtwarzania</string>
+  <string name="url_paste_hint">Wklej URL</string>
+  <string name="playlist_file_name">Nazwa</string>
+  <string name="offline_notif_title">Urządzenie w trybie offline</string>
+  <string name="offline_notif_message">Proszę zmienić ustawienia systemu</string>
+  <string name="snooze_on_silence_title">Automatyczna drzemka</string>
 </resources>
