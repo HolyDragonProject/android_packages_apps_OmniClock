@@ -25,12 +25,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v13.app.ActivityCompat;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -91,6 +94,7 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
     public static final int STOPWATCH_TAB_INDEX = 3;
 
     public static final String SELECT_TAB_INTENT_EXTRA = "deskclock.select.tab";
+    private static final int PERMISSIONS_REQUEST_EXTERNAL_STORAGE = 0;
 
     private final BroadcastReceiver mColorThemeReceiver = new BroadcastReceiver() {
         @Override
@@ -266,7 +270,11 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
             if (!firstStartDone) {
                 prefs.edit().putBoolean(KEY_SPOTIFY_FIRST_START_DONE, true).commit();
                 startActivity(Utils.getSpotifyFirstStartIntent(this));
+            } else {
+                checkStoragePermissions();
             }
+        } else {
+            checkStoragePermissions();
         }
     }
 
@@ -607,5 +615,49 @@ public class DeskClock extends Activity implements LabelDialogFragment.TimerLabe
             return getResources().getDrawable(R.drawable.ic_notify_stopwatch);
         }
         return getResources().getDrawable(R.drawable.ic_notify_alarm);
+    }
+
+    private void checkStoragePermissions() {
+        boolean needRequest = false;
+        String[] permissions = {
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+        };
+        final ArrayList<String> permissionList = new ArrayList<String>();
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(permission);
+                needRequest = true;
+            }
+        }
+
+        if (needRequest) {
+            int count = permissionList.size();
+            if (count > 0) {
+                final String[] permissionArray = new String[count];
+                for (int i = 0; i < count; i++) {
+                    permissionArray[i] = permissionList.get(i);
+                }
+                mHander.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ActivityCompat.requestPermissions(DeskClock.this, permissionArray, PERMISSIONS_REQUEST_EXTERNAL_STORAGE);
+                    }
+                }, 1000);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                }
+            }
+            return;
+        }
     }
 }
