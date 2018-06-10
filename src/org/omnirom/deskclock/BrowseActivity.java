@@ -85,7 +85,6 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
     private SearchView mSearchView;
     private int mQueryType;
     private String mCurrentQueryText = "";
-    private View mCurrentUri;
     private ProgressBar mProgress;
     private View mFooterView;
     private TextView mQueryTypeText;
@@ -163,7 +162,6 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
         }
 
         setContentView(R.layout.browse_activity);
-        mCurrentUri = findViewById(R.id.current_uri);
         mSearchView = (SearchView) findViewById(R.id.query_pattern);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setSubmitButtonEnabled(false);
@@ -1163,9 +1161,7 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
                 unknownTone = false;
             }
         }
-        if (unknownTone || TextUtils.isEmpty(title.getText())) {
-            mCurrentUri.setVisibility(View.INVISIBLE);
-        }
+
         final int iconIdFinal = iconId;
         playIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1545,9 +1541,6 @@ public class BrowseActivity extends Activity implements SearchView.OnQueryTextLi
 
     private void doInit() {
         doQuery(mCurrentQueryText, 0);
-        if (mSelectedUri != null) {
-            resolveUri(mSelectedUri, mCurrentUri);
-        }
     }
 
     private void resolvePasteContents(final String pasteString, final String name) {

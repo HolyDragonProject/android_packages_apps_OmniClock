@@ -163,6 +163,7 @@
     <dimen name="main_clock_circle_size">6dip</dimen>
     <dimen name="main_clock_font_size">18sp</dimen>
     <dimen name="main_clock_ambient_size">2dp</dimen>
+    <dimen name="main_clock_tick_width">1dp</dimen>
 
     <!-- stroke with of outer cirecles -->
     <dimen name="circletimer_circle_size">8dip</dimen>

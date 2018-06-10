@@ -26,6 +26,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,7 @@ public class ClockFragment extends DeskClockFragment {
     private ListView mList;
     private String mDateFormat;
     private String mDateFormatForAccessibility;
+    private View mDateAndAlarm;
 
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -162,6 +164,7 @@ public class ClockFragment extends DeskClockFragment {
         mAnalogClock.setShowAlarm(false);
         mAnalogClock.setShowNumbers(false);
         mAnalogClock.setShowTicks(false);
+        mDateAndAlarm = mClockFrame.findViewById(R.id.date_and_alarm);
         Utils.setTimeFormat(mDigitalClock, (int) (mDigitalClock.getTextSize() / 3),
                 (int) (mDigitalClock.getTextSize() / 3));
         View footerView = inflater.inflate(R.layout.blank_footer_view, mList, false);
@@ -198,8 +201,7 @@ public class ClockFragment extends DeskClockFragment {
             mAdapter.reloadData(activity);
         }
         // Resume can invoked after changing the clock style.
-        Utils.setClockStyle(activity, mDigitalClock, mAnalogClock,
-                SettingsActivity.KEY_CLOCK_STYLE);
+        Utils.setClockStyle(activity, mDigitalClock, mAnalogClock);
 
         if (mAdapter.getCount() == 0) {
             mList.setVisibility(View.GONE);
@@ -210,6 +212,16 @@ public class ClockFragment extends DeskClockFragment {
 
         Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mClockFrame);
         Utils.refreshAlarm(activity, mClockFrame);
+
+        boolean showDateInside = PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getBoolean(SettingsActivity.KEY_ANALOG_SHOW_DATE, false);
+        mAnalogClock.setShowDate(showDateInside);
+        mAnalogClock.setShowAlarm(showDateInside);
+        mDateAndAlarm.setVisibility(showDateInside && Utils.isClockStyleAnalog(getActivity())? View.GONE : View.VISIBLE);
+        mAnalogClock.setShowNumbers(PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getBoolean(SettingsActivity.KEY_ANALOG_SHOW_NUMBERS, false));
+        mAnalogClock.setShowTicks(PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getBoolean(SettingsActivity.KEY_ANALOG_SHOW_TICKS, false));
     }
 
     @Override

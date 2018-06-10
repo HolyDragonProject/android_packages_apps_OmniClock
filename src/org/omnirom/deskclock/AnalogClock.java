@@ -82,6 +82,16 @@ public class AnalogClock extends View {
     private float mTextInset;
     private float mTextInsetTop;
     private boolean m24hmode;
+    private int mBgColor;
+    private int mBorderColor;
+    private int mTextColor;
+    private int mHourColor;
+    private int mMinuteColor;
+    private int mAccentColor;
+    private int mSecondsColor;
+    private int mAmbientColor;
+    private int mAmbientBgColor;
+    private Paint mTickPaint;
 
     public AnalogClock(Context context) {
         this(context, null);
@@ -97,52 +107,67 @@ public class AnalogClock extends View {
         mContext = context;
         Resources r = mContext.getResources();
 
+        mBgColor = r.getColor(R.color.analog_clock_bg_color);
+        mBorderColor = r.getColor(R.color.primary);
+        mTextColor = r.getColor(R.color.analog_clock_text_color);
+        mHourColor = r.getColor(R.color.analog_clock_hour_hand_color);
+        mMinuteColor = r.getColor(R.color.analog_clock_minute_hand_color);
+        mAccentColor = r.getColor(R.color.accent);
+        mSecondsColor = r.getColor(R.color.analog_clock_seconds_hand_color);
+        mAmbientColor = r.getColor(R.color.analog_clock_ambient_color);
+        mAmbientBgColor = r.getColor(R.color.analog_clock_ambient_bg_color);
+
         mCirclePaint = new Paint();
         mCirclePaint.setAntiAlias(true);
         mCirclePaint.setStyle(Paint.Style.STROKE);
-        mCirclePaint.setColor(r.getColor(R.color.primary));
+        mCirclePaint.setColor(mBorderColor);
 
         mRemaingCirclePaint = new Paint();
         mRemaingCirclePaint.setAntiAlias(true);
         mRemaingCirclePaint.setStyle(Paint.Style.STROKE);
-        mRemaingCirclePaint.setColor(r.getColor(R.color.accent));
+        mRemaingCirclePaint.setColor(mAccentColor);
 
         mBgPaint = new Paint();
         mBgPaint.setAntiAlias(true);
         mBgPaint.setStyle(Paint.Style.FILL);
-        mBgPaint.setColor(r.getColor(R.color.analog_clock_bg_color));
+        mBgPaint.setColor(mBgColor);
 
         mHourPaint = new Paint();
         mHourPaint.setAntiAlias(true);
         mHourPaint.setStyle(Paint.Style.STROKE);
         mHourPaint.setStrokeCap(Paint.Cap.ROUND);
-        mHourPaint.setColor(r.getColor(R.color.analog_clock_hour_hand_color));
+        mHourPaint.setColor(mHourColor);
 
         mMinutePaint = new Paint();
         mMinutePaint.setAntiAlias(true);
         mMinutePaint.setStyle(Paint.Style.STROKE);
         mMinutePaint.setStrokeCap(Paint.Cap.ROUND);
-        mMinutePaint.setColor(r.getColor(R.color.analog_clock_minute_hand_color));
+        mMinutePaint.setColor(mMinuteColor);
 
         mSecondsPaint = new Paint();
         mSecondsPaint.setAntiAlias(true);
         mSecondsPaint.setStyle(Paint.Style.STROKE);
-        mSecondsPaint.setColor(r.getColor(R.color.analog_clock_seconds_hand_color));
+        mSecondsPaint.setColor(mSecondsColor);
 
         mCenterDotPaint = new Paint();
         mCenterDotPaint.setAntiAlias(true);
         mCenterDotPaint.setStyle(Paint.Style.FILL);
-        mCenterDotPaint.setColor(r.getColor(R.color.accent));
+        mCenterDotPaint.setColor(mAccentColor);
+
+        mTickPaint = new Paint();
+        mTickPaint.setAntiAlias(true);
+        mTickPaint.setStyle(Paint.Style.STROKE);
+        mTickPaint.setColor(mTextColor);
 
         mAmbientPaint = new Paint();
         mAmbientPaint.setAntiAlias(true);
         mAmbientPaint.setStyle(Paint.Style.STROKE);
-        mAmbientPaint.setColor(r.getColor(R.color.analog_clock_ambient_color));
+        mAmbientPaint.setColor(mAmbientColor);
 
         mAmbientBgPaint = new Paint();
         mAmbientBgPaint.setAntiAlias(true);
         mAmbientBgPaint.setStyle(Paint.Style.FILL);
-        mAmbientBgPaint.setColor(r.getColor(R.color.analog_clock_ambient_bg_color));
+        mAmbientBgPaint.setColor(mAmbientBgColor);
 
         Typeface typeface = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
 
@@ -150,20 +175,39 @@ public class AnalogClock extends View {
         mTextPaint.setTypeface(typeface);
         mTextPaint.setAntiAlias(true);
         mTextPaint.setSubpixelText(true);
-        mTextPaint.setColor(r.getColor(R.color.analog_clock_text_color));
+        mTextPaint.setColor(mTextColor);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 
         mTextPaintSmall = new TextPaint();
         mTextPaintSmall.setTypeface(typeface);
         mTextPaintSmall.setAntiAlias(true);
         mTextPaintSmall.setSubpixelText(true);
-        mTextPaintSmall.setColor(r.getColor(R.color.analog_clock_text_color));
+        mTextPaintSmall.setColor(mTextColor);
         mTextPaintSmall.setTextAlign(Paint.Align.CENTER);
 
         onDensityOrFontScaleChanged();
 
         setWorldClock(false);
         mCalendar = new Time();
+    }
+
+    private void updateColors() {
+        mCirclePaint.setColor(mBorderColor);
+        mRemaingCirclePaint.setColor(mAccentColor);
+        mBgPaint.setColor(mBgColor);
+        mHourPaint.setColor(mHourColor);
+        mMinutePaint.setColor(mMinuteColor);
+        mSecondsPaint.setColor(mSecondsColor);
+        mCenterDotPaint.setColor(mAccentColor);
+        mTickPaint.setColor(mTextColor);
+
+        if (mIsAmbientDisplay) {
+            mTextPaint.setColor(mAmbientColor);
+            mTextPaintSmall.setColor(mAmbientColor);
+        } else {
+            mTextPaint.setColor(mTextColor);
+            mTextPaintSmall.setColor(mTextColor);
+        }
     }
 
     public void onDensityOrFontScaleChanged() {
@@ -182,6 +226,7 @@ public class AnalogClock extends View {
         mHourPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_hour_hand_width));
         mMinutePaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_minute_hand_width));
         mSecondsPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_seconds_hand_width));
+        mTickPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_tick_width));
         mHandEndLength = r.getDimensionPixelSize(R.dimen.main_clock_hand_end_length);
 
         if (mIsWorldClock) {
@@ -340,7 +385,7 @@ public class AnalogClock extends View {
     private void drawHourTick(Canvas canvas, float radius, int x, int y, float angle) {
         canvas.save();
         canvas.rotate(angle, x, y);
-        canvas.drawLine(x + radius - mTickLength, y, x + radius, y, mAmbientPaint);
+        canvas.drawLine(x + radius - mTickLength, y, x + radius, y, mTickPaint);
         canvas.restore();
     }
 
@@ -422,6 +467,13 @@ public class AnalogClock extends View {
     public void setDark(boolean dark) {
         if (mIsAmbientDisplay != dark) {
             mIsAmbientDisplay = dark;
+            if (mIsAmbientDisplay) {
+                mTextPaint.setColor(mAmbientColor);
+                mTextPaintSmall.setColor(mAmbientColor);
+            } else {
+                mTextPaint.setColor(mTextColor);
+                mTextPaintSmall.setColor(mTextColor);
+            }
             invalidate();
         }
     }
@@ -469,6 +521,18 @@ public class AnalogClock extends View {
             mShowSeconds = showSeconds;
             invalidate();
         }
+    }
+
+    public void setColors(int bgColor, int borderColor, int hourColor, int minuteColor, int textColor,
+                          int accentColor) {
+        mBgColor = bgColor;
+        mBorderColor = borderColor;
+        mHourColor = hourColor;
+        mMinuteColor = minuteColor;
+        mTextColor = textColor;
+        mAccentColor = accentColor;
+        updateColors();
+        invalidate();
     }
 
     public void refreshTime() {

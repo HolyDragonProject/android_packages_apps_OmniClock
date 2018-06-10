@@ -118,6 +118,9 @@ public class SettingsActivity extends PreferenceActivity
     public static final String KEY_VIBRATE_NOTIFICATION = "vibrate_notification";
     public static final String KEY_DEFAULT_PAGE = "default_page";
     public static final String KEY_SNOOZE_ON_SILENCE = "snooze_on_silence";
+    public static final String KEY_ANALOG_SHOW_DATE = "show_date_and_alarm";
+    public static final String KEY_ANALOG_SHOW_NUMBERS ="show_numbers";
+    public static final String KEY_ANALOG_SHOW_TICKS ="show_ticks";
 
     // default action for alarm action
     public static final String DEFAULT_ALARM_ACTION = "0";
@@ -134,6 +137,9 @@ public class SettingsActivity extends PreferenceActivity
     private CheckBoxPreference mCustomTimerAlarm;
     private NumberPickerPreference mSnoozeMinutes;
     private AutoSilencePickerPreference mSilenceMinutes;
+    private CheckBoxPreference mAnalogShowDateAndTime;
+    private CheckBoxPreference mAnalogShowNumbers;
+    private CheckBoxPreference mAnalogShowTicks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +185,12 @@ public class SettingsActivity extends PreferenceActivity
         updateSilenceAfterSummary(mSilenceMinutes, mSilenceMinutes.getValue());
         mSilenceMinutes.setOnPreferenceChangeListener(this);
 
+        mAnalogShowDateAndTime = (CheckBoxPreference) findPreference(KEY_ANALOG_SHOW_DATE);
+        mAnalogShowNumbers = (CheckBoxPreference) findPreference(KEY_ANALOG_SHOW_NUMBERS);
+        mAnalogShowTicks = (CheckBoxPreference) findPreference(KEY_ANALOG_SHOW_TICKS);
+
+        updateClockStyleDeps(Utils.isClockStyleAnalog(this));
+
         addSettings();
 
         if (!getResources().getBoolean(R.bool.config_disableSensorOnWirelessCharging)) {
@@ -212,6 +224,7 @@ public class SettingsActivity extends PreferenceActivity
             final ListPreference listPref = (ListPreference) pref;
             final int idx = listPref.findIndexOfValue((String) newValue);
             listPref.setSummary(listPref.getEntries()[idx]);
+            updateClockStyleDeps(newValue.equals(Utils.CLOCK_TYPE_ANALOG));
         } else if (KEY_HOME_TZ.equals(pref.getKey())) {
             final ListPreference listPref = (ListPreference) pref;
             final int idx = listPref.findIndexOfValue((String) newValue);
@@ -509,5 +522,11 @@ public class SettingsActivity extends PreferenceActivity
     private String getSnoozedMinutes(int snoozeMinutes) {
         return getResources().getQuantityString(R.plurals.snooze_duration,
                 snoozeMinutes, snoozeMinutes);
+    }
+
+    private void updateClockStyleDeps(boolean isAnalog) {
+        mAnalogShowDateAndTime.setEnabled(isAnalog);
+        mAnalogShowNumbers.setEnabled(isAnalog);
+        mAnalogShowTicks.setEnabled(isAnalog);
     }
 }

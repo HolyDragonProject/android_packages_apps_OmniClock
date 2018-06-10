@@ -178,4 +178,10 @@
     <string name="minute_color_title">Minute color</string>
     <string name="text_color_title">Text color</string>
     <string name="accent_color_title">Accent color</string>
+    <string name="show_date_and_alarm_title">Show date and alarm inside</string>
+    <string name="show_date_and_alarm_summary"></string>
+    <string name="show_numbers_summary"></string>
+    <string name="show_ticks_summary"></string>
+    <string name="analog_clock_settings">Analog clock</string>
+    <string name="time_zone_settings">Timezone settings</string>
 </resources>

@@ -37,26 +37,44 @@
             android:entries="@array/clock_style_entries"
             android:entryValues="@array/clock_style_values"
             android:key="clock_style"
-            android:title="@string/clock_style" />
+            android:title="@string/clock_style"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="analog_clock_settings"
+        android:title="@string/analog_clock_settings">
+        <CheckBoxPreference
+            android:key="show_date_and_alarm"
+            android:summary="@string/show_date_and_alarm_summary"
+            android:title="@string/show_date_and_alarm_title"/>
+        <CheckBoxPreference
+            android:key="show_numbers"
+            android:summary="@string/show_numbers_summary"
+            android:title="@string/show_numbers_title"/>
+        <CheckBoxPreference
+            android:key="show_ticks"
+            android:summary="@string/show_ticks_summary"
+            android:title="@string/show_ticks_title"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/time_zone_settings">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="automatic_home_clock"
             android:summary="@string/automatic_home_clock_summary"
-            android:title="@string/automatic_home_clock" />
+            android:title="@string/automatic_home_clock"/>
         <ListPreference
             android:dialogTitle="@string/home_time_zone_title"
             android:entries="@array/timezone_labels"
             android:entryValues="@array/timezone_values"
             android:key="home_time_zone"
-            android:title="@string/home_time_zone" />
+            android:title="@string/home_time_zone"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/alarm_settings">
         <ListPreference
             android:dialogTitle="@string/week_start_title"
             android:entryValues="@array/week_start_values"
             android:key="week_start"
             android:title="@string/week_start_title"
             android:defaultValue="0"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/alarm_settings" >
         <org.omnirom.deskclock.preference.AutoSilencePickerPreference
             android:defaultValue="10"
             android:dialogTitle="@string/auto_silence_title"

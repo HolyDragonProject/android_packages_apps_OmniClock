@@ -140,18 +140,12 @@ public class Screensaver extends DreamService {
     }
 
     private void setClockStyle() {
-        Utils.setClockStyle(this, mDigitalClock, mAnalogClock,
-                ScreensaverSettingsActivity.KEY_CLOCK_STYLE);
+        Utils.setClockStyle(this, mDigitalClock, mAnalogClock);
         mSaverView = findViewById(R.id.main_clock);
         boolean dimNightMode = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(ScreensaverSettingsActivity.KEY_NIGHT_MODE, false);
         Utils.dimClockView(dimNightMode, mSaverView);
         setScreenBright(!dimNightMode);
-        if (Utils.isClockStyleAnalog(this, ScreensaverSettingsActivity.KEY_CLOCK_STYLE)) {
-            mDateAlarmLine.setVisibility(View.GONE);
-        } else {
-            mDateAlarmLine.setVisibility(View.VISIBLE);
-        }
     }
 
     private void layoutClockSaver() {
@@ -159,11 +153,18 @@ public class Screensaver extends DreamService {
         mDigitalClock = (TextClock) findViewById(R.id.digital_clock);
         mAnalogClock = (AnalogClock) findViewById(R.id.analog_clock);
         mAnalogClock.setShowSeconds(false);
-        mAnalogClock.setShowDate(true);
-        mAnalogClock.setShowAlarm(true);
-        mAnalogClock.setShowNumbers(false);
-        mAnalogClock.setShowTicks(false);
         mDateAlarmLine = findViewById(R.id.date_alarm_line);
+
+        boolean showDateInside = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsActivity.KEY_ANALOG_SHOW_DATE, false);
+        mAnalogClock.setShowDate(showDateInside);
+        mAnalogClock.setShowAlarm(showDateInside);
+        mDateAlarmLine.setVisibility(showDateInside && Utils.isClockStyleAnalog(this)? View.GONE : View.VISIBLE);
+        mAnalogClock.setShowNumbers(PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsActivity.KEY_ANALOG_SHOW_NUMBERS, false));
+        mAnalogClock.setShowTicks(PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsActivity.KEY_ANALOG_SHOW_TICKS, false));
+
         setClockStyle();
         Utils.setTimeFormat(mDigitalClock, (int) (mDigitalClock.getTextSize() / 3), 0);
 

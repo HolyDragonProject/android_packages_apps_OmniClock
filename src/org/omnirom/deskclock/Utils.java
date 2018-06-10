@@ -479,11 +479,10 @@ public class Utils {
      * For screensavers to set whether the digital or analog clock should be displayed.
      * Returns the view to be displayed.
      */
-    public static View setClockStyle(Context context, View digitalClock, View analogClock,
-                                     String clockStyleKey) {
+    public static View setClockStyle(Context context, View digitalClock, View analogClock) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String defaultClockStyle = context.getResources().getString(R.string.default_clock_style);
-        String style = sharedPref.getString(clockStyleKey, defaultClockStyle);
+        String style = sharedPref.getString(SettingsActivity.KEY_CLOCK_STYLE, defaultClockStyle);
         View returnView;
         if (style.equals(CLOCK_TYPE_ANALOG)) {
             digitalClock.setVisibility(View.GONE);
@@ -498,10 +497,10 @@ public class Utils {
         return returnView;
     }
 
-    public static boolean isClockStyleAnalog(Context context, String clockStyleKey) {
+    public static boolean isClockStyleAnalog(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         String defaultClockStyle = context.getResources().getString(R.string.default_clock_style);
-        String style = sharedPref.getString(clockStyleKey, defaultClockStyle);
+        String style = sharedPref.getString(SettingsActivity.KEY_CLOCK_STYLE, defaultClockStyle);
         if (style.equals(CLOCK_TYPE_ANALOG)) {
             return true;
         }

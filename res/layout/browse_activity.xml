@@ -99,18 +99,6 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/list_divider_material"
-            android:paddingTop="10dp"
-            android:visibility="gone" />
-
-        <include
-            android:id="@+id/current_uri"
-            layout="@layout/browse_item"
-            android:visibility="gone"/>
-
-        <View
-            android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@drawable/list_divider_material"
             android:paddingTop="10dp" />
