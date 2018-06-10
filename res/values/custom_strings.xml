@@ -169,4 +169,7 @@
     <string name="color_theme_black">Black</string>
     <string name="snooze_on_silence_title">Auto snooze</string>
     <string name="snooze_on_silence_summary">Snooze instead of dismiss after silence timeout</string>
+    <string name="show_numbers_title">Show hour numbers</string>
+    <string name="show_ticks_title">Show hour marks</string>
+    <string name="show_24_hour_title">Show 24h mode</string>
 </resources>

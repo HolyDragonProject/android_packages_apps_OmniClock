@@ -34,6 +34,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.omnirom.deskclock.DeskClock;
+import org.omnirom.deskclock.R;
 
 import java.util.Date;
 
@@ -173,25 +174,28 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
 
     private static void updateClock(
             Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        boolean showAlarm = WidgetUtils.isShowingAlarm(context, appWidgetId, false);
-        boolean showDate = WidgetUtils.isShowingDate(context, appWidgetId, false);
+        boolean showAlarm = WidgetUtils.isShowingAlarm(context, appWidgetId, true);
+        boolean showDate = WidgetUtils.isShowingDate(context, appWidgetId, true);
+        boolean showNumbers = WidgetUtils.isShowingNumbers(context, appWidgetId, false);
+        boolean showTicks = WidgetUtils.isShowingTicks(context, appWidgetId, false);
+        boolean show24Hours = WidgetUtils.isShowing24hours(context, appWidgetId, false);
 
         if (DigitalAppWidgetService.LOGGING) {
             Log.i(TAG, "updateClock " + appWidgetId);
         }
-        RemoteViews widget = new RemoteViews(context.getPackageName(), org.omnirom.deskclock.R.layout.custom_analog_appwidget);
+        RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.custom_analog_appwidget);
 
         // Launch clock when clicking on the time in the widget only if not a lock screen widget
         Bundle newOptions = appWidgetManager.getAppWidgetOptions(appWidgetId);
         if (newOptions != null &&
                 newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, -1)
                         != AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD) {
-            widget.setOnClickPendingIntent(org.omnirom.deskclock.R.id.the_clock_image,
+            widget.setOnClickPendingIntent(R.id.the_clock_image,
                     PendingIntent.getActivity(context, 0, new Intent(context, DeskClock.class), 0));
         }
 
-        Bitmap analogClock = WidgetUtils.createAnalogClockBitmap(context, showAlarm, showDate);
-        widget.setImageViewBitmap(org.omnirom.deskclock.R.id.the_clock_image, analogClock);
+        Bitmap analogClock = WidgetUtils.createAnalogClockBitmap(context, showAlarm, showDate, showNumbers, showTicks, show24Hours);
+        widget.setImageViewBitmap(R.id.the_clock_image, analogClock);
 
         appWidgetManager.updateAppWidget(appWidgetId, widget);
     }

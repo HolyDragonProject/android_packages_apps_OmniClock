@@ -13,20 +13,25 @@
      limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/analog_gadget" >
+                  android:title="@string/analog_gadget">
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="show_alarm"
-            android:title="@string/show_alarm_title" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="show_date"
-            android:title="@string/show_date_title" />
-
-        <Preference
-            android:widgetLayout="@layout/preference_button"
-            android:persistent="false" />
+    <CheckBoxPreference
+        android:key="show_alarm"
+        android:title="@string/show_alarm_title"/>
+    <CheckBoxPreference
+        android:key="show_date"
+        android:title="@string/show_date_title"/>
+    <CheckBoxPreference
+        android:key="show_numbers"
+        android:title="@string/show_numbers_title"/>
+    <CheckBoxPreference
+        android:key="show_ticks"
+        android:title="@string/show_ticks_title"/>
+    <CheckBoxPreference
+        android:key="show_24_hour"
+        android:title="@string/show_24_hour_title"/>
+    <Preference
+        android:persistent="false"
+        android:widgetLayout="@layout/preference_button"/>
 
 </PreferenceScreen>

@@ -18,9 +18,9 @@ package org.omnirom.alarmclock;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,18 +29,21 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.text.TextPaint;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import org.omnirom.deskclock.AlarmUtils;
 import org.omnirom.deskclock.Utils;
+import org.omnirom.deskclock.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -76,10 +79,10 @@ public class WidgetUtils {
         }
         float density = res.getDisplayMetrics().density;
         // Estimate height of date text box
-        float lblBox = 1.35f * res.getDimension(org.omnirom.deskclock.R.dimen.label_font_size);
-        float neededSize = res.getDimension(org.omnirom.deskclock.R.dimen.digital_widget_list_min_fixed_height) +
+        float lblBox = 1.35f * res.getDimension(R.dimen.label_font_size);
+        float neededSize = res.getDimension(R.dimen.digital_widget_list_min_fixed_height) +
                 2 * lblBox +
-                res.getDimension(org.omnirom.deskclock.R.dimen.digital_widget_list_min_scaled_height);
+                res.getDimension(R.dimen.digital_widget_list_min_scaled_height);
         return ((density * height) > neededSize);
     }
 
@@ -117,6 +120,21 @@ public class WidgetUtils {
     public static boolean isShowingWorldClock(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(CustomAppWidgetConfigure.KEY_WORLD_CLOCKS + "_" + id, true);
+    }
+
+    public static boolean isShowingNumbers(Context context, int id, boolean defaultValue) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(CustomAnalogAppWidgetConfigure.KEY_SHOW_NUMBERS + "_" + id, defaultValue);
+    }
+
+    public static boolean isShowingTicks(Context context, int id, boolean defaultValue) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(CustomAnalogAppWidgetConfigure.KEY_SHOW_TICKS + "_" + id, defaultValue);
+    }
+
+    public static boolean isShowing24hours(Context context, int id, boolean defaultValue) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(CustomAnalogAppWidgetConfigure.KEY_24H_MODE + "_" + id, defaultValue);
     }
 
     public static Bitmap createTextBitmap(final String text, final Typeface typeface, final float textSizePixels, final int textColor, boolean shadow, float letterSpacing) {
@@ -217,7 +235,7 @@ public class WidgetUtils {
         return prefs.getInt(CustomAppWidgetConfigure.KEY_CLOCK_COLOR + "_" + id, Color.WHITE);
     }
 
-    public static Bitmap createAnalogClockBitmap(Context context, boolean showAlarm, boolean showDate) {
+    public static Bitmap createAnalogClockBitmap(Context context, boolean showAlarm, boolean showDate, boolean showNumbers, boolean showTicks, boolean show24hours) {
         Resources r = context.getResources();
 
         Calendar calendar = new GregorianCalendar();
@@ -228,58 +246,71 @@ public class WidgetUtils {
         Paint circlePaint = new Paint();
         circlePaint.setAntiAlias(true);
         circlePaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setColor(r.getColor(org.omnirom.deskclock.R.color.primary));
+        circlePaint.setColor(r.getColor(R.color.primary));
 
         Paint remaingCirclePaint = new Paint();
         remaingCirclePaint.setAntiAlias(true);
         remaingCirclePaint.setStyle(Paint.Style.STROKE);
-        remaingCirclePaint.setColor(r.getColor(org.omnirom.deskclock.R.color.accent));
+        remaingCirclePaint.setColor(r.getColor(R.color.accent));
 
         Paint bgPaint = new Paint();
         bgPaint.setAntiAlias(true);
         bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setColor(r.getColor(org.omnirom.deskclock.R.color.analog_clock_bg_color));
+        bgPaint.setColor(r.getColor(R.color.analog_clock_bg_color));
 
         Paint hourPaint = new Paint();
         hourPaint.setAntiAlias(true);
+        hourPaint.setStrokeCap(Paint.Cap.ROUND);
         hourPaint.setStyle(Paint.Style.STROKE);
-        hourPaint.setColor(r.getColor(org.omnirom.deskclock.R.color.analog_clock_hour_hand_color));
+        hourPaint.setColor(r.getColor(R.color.analog_clock_hour_hand_color));
 
         Paint minutePaint = new Paint();
         minutePaint.setAntiAlias(true);
+        minutePaint.setStrokeCap(Paint.Cap.ROUND);
         minutePaint.setStyle(Paint.Style.STROKE);
-        minutePaint.setColor(r.getColor(org.omnirom.deskclock.R.color.analog_clock_minute_hand_color));
+        minutePaint.setColor(r.getColor(R.color.analog_clock_minute_hand_color));
 
         Paint centerDotPaint = new Paint();
         centerDotPaint.setAntiAlias(true);
         centerDotPaint.setStyle(Paint.Style.FILL);
-        centerDotPaint.setColor(r.getColor(org.omnirom.deskclock.R.color.accent));
+        centerDotPaint.setColor(r.getColor(R.color.accent));
 
-        Paint alarmPaint = new Paint();
-        alarmPaint.setAntiAlias(true);
-        alarmPaint.setStyle(Paint.Style.STROKE);
-        alarmPaint.setColor(r.getColor(org.omnirom.deskclock.R.color.analog_clock_alarm_color));
+        Paint tickPaint = new Paint();
+        tickPaint.setAntiAlias(true);
+        tickPaint.setStyle(Paint.Style.STROKE);
+        tickPaint.setColor(r.getColor(R.color.white));
 
-        float textSizePixels = r.getDimension(org.omnirom.deskclock.R.dimen.analog_widget_font_size);
-        Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
+        Typeface typeface = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
 
         final TextPaint textPaint = new TextPaint();
         textPaint.setTypeface(typeface);
-        textPaint.setTextSize(textSizePixels);
         textPaint.setAntiAlias(true);
         textPaint.setSubpixelText(true);
-        textPaint.setColor(r.getColor(org.omnirom.deskclock.R.color.white));
+        textPaint.setColor(r.getColor(R.color.white));
         textPaint.setTextAlign(Paint.Align.CENTER);
 
-        final int circleStrokeWidth = r.getDimensionPixelSize(org.omnirom.deskclock.R.dimen.widget_clock_circle_size);
-        final int handEndLength = r.getDimensionPixelSize(org.omnirom.deskclock.R.dimen.widget_clock_hand_end_length);
-        final int width = r.getDimensionPixelSize(org.omnirom.deskclock.R.dimen.custom_analog_widget_size);
+        final TextPaint textPaintSmall = new TextPaint();
+        textPaintSmall.setTypeface(typeface);
+        textPaintSmall.setAntiAlias(true);
+        textPaintSmall.setSubpixelText(true);
+        textPaintSmall.setColor(r.getColor(R.color.white));
+        textPaintSmall.setTextAlign(Paint.Align.CENTER);
+
+        float textSizePixels = r.getDimension(R.dimen.analog_widget_font_size);
+        textPaint.setTextSize(textSizePixels);
+        textPaintSmall.setTextSize(textSizePixels / 2f);
+
+        final int circleStrokeWidth = r.getDimensionPixelSize(R.dimen.widget_clock_circle_size);
+        final int handEndLength = 0;
+        final int width = r.getDimensionPixelSize(R.dimen.custom_analog_widget_size);
+        float textInset = textSizePixels;
+        float textInsetTop = 1.5f * textSizePixels;
 
         circlePaint.setStrokeWidth(circleStrokeWidth);
         remaingCirclePaint.setStrokeWidth(circleStrokeWidth);
-        hourPaint.setStrokeWidth(r.getDimensionPixelSize(org.omnirom.deskclock.R.dimen.widget_clock_hour_hand_width));
-        minutePaint.setStrokeWidth(r.getDimensionPixelSize(org.omnirom.deskclock.R.dimen.widget_clock_minute_hand_width));
-        alarmPaint.setStrokeWidth(circleStrokeWidth);
+        hourPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.widget_clock_hour_hand_width));
+        minutePaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.widget_clock_minute_hand_width));
+        tickPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.widget_clock_tick_width));
 
         Bitmap myBitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(myBitmap);
@@ -296,7 +327,34 @@ public class WidgetUtils {
         arcRect.bottom = y + radius;
         arcRect.left = x - radius;
         arcRect.right = x + radius;
+
+        int tickLength = (int) (radius / 12.0);
+        int numberInset = 0;
+
+        if (showTicks) {
+            numberInset = (int) (radius / 5.0);
+        } else {
+            numberInset = (int) (radius / 6.0);
+        }
+
+        if (showNumbers) {
+            textInset += numberInset;
+            textInsetTop += numberInset;
+        }
+
         canvas.drawArc(arcRect, 0, 360, true, bgPaint);
+
+        int i = 1;
+        for (int angle = 0; angle < 360; angle += show24hours ? 15 : 30) {
+            if (showTicks) {
+                drawHourTick(canvas, radius, x, y, angle, tickLength, tickPaint);
+            }
+            if (showNumbers) {
+                drawNumeral(canvas, availableWidth, availableHeight, radius, i, textPaint, textPaintSmall, numberInset, show24hours);
+            }
+            i++;
+        }
+
         canvas.drawArc(arcRect, 0, 360, false, circlePaint);
         float minuteStartAngle = minutes / 60.0f * 360.0f;
         if (minuteStartAngle < 90) {
@@ -308,47 +366,31 @@ public class WidgetUtils {
 
         if (showDate) {
             CharSequence dateFormat = DateFormat.getBestDateTimePattern(Locale.getDefault(),
-                    context.getString(org.omnirom.deskclock.R.string.abbrev_wday_month_day_no_year));
+                    context.getString(R.string.abbrev_wday_month_day_no_year));
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat.toString(), Locale.getDefault());
             String currDate = sdf.format(new Date()).toUpperCase();
 
             Path path = new Path();
             RectF arcRectText = new RectF(arcRect);
-            arcRectText.inset(2 * textSizePixels, 2 * textSizePixels);
+            arcRectText.inset(textInsetTop, textInsetTop);
             path.addArc(arcRectText, 180f, 180f);
             canvas.drawTextOnPath(currDate, path, 0, 0, textPaint);
         }
         if (showAlarm) {
             long nextAlamMilis = Utils.getNextAlarmInMillis(context);
             if (nextAlamMilis != -1) {
-                Calendar alarmTime = Calendar.getInstance();
-                alarmTime.setTimeInMillis(nextAlamMilis);
-                Calendar twelveHoursFromNow = Calendar.getInstance();
-                twelveHoursFromNow.setTime(new Date());
-                twelveHoursFromNow.add(Calendar.HOUR_OF_DAY, 12);
-
-                if (false && alarmTime.before(twelveHoursFromNow)) {
-                    float hour = alarmTime.get(Calendar.HOUR_OF_DAY);
-                    float minute = alarmTime.get(Calendar.MINUTE);
-                    hour = hour + minute / 60.0f;
-                    float angle = hour / 12.0f * 360.0f - 90;
-                    RectF arcRectInset = new RectF(arcRect);
-                    arcRectInset.inset(circleStrokeWidth, circleStrokeWidth);
-                    canvas.drawArc(arcRectInset, angle - 4, 4, false, alarmPaint);
-                }
-
-                String alarmTimeString = AlarmUtils.getFormattedTime(context, alarmTime).toUpperCase();
-
+                calendar.setTimeInMillis(nextAlamMilis);
+                String alarmTimeString = AlarmUtils.getFormattedTime(context, calendar);
                 Path path = new Path();
                 RectF arcRectText = new RectF(arcRect);
-                arcRectText.inset(textSizePixels, textSizePixels);
+                arcRectText.inset(textInset, textInset);
                 path.addArc(arcRectText, 180f, -180f);
                 canvas.drawTextOnPath(alarmTimeString, path, 0, 0, textPaint);
             }
         }
-        drawHand(canvas, hourPaint, x, y, radius * 0.70f, hours / 12.0f * 360.0f - 90, handEndLength);
-        drawHand(canvas, minutePaint, x, y, radius + circleStrokeWidth / 2, minutes / 60.0f * 360.0f - 90, handEndLength);
-        canvas.drawCircle(x, y, hourPaint.getStrokeWidth(), centerDotPaint);
+        drawHand(canvas, hourPaint, x, y, radius * 0.70f, hours / (show24hours ? 24.0f : 12.0f) * 360.0f - 90, handEndLength);
+        drawHand(canvas, minutePaint, x, y, radius, minutes / 60.0f * 360.0f - 90, handEndLength);
+        canvas.drawCircle(x, y, minutePaint.getStrokeWidth(), centerDotPaint);
 
         return myBitmap;
     }
@@ -359,6 +401,24 @@ public class WidgetUtils {
         canvas.drawLine(x, y, x + length, y, mHandPaint);
         canvas.drawLine(x, y, x - mHandEndLength, y, mHandPaint);
         canvas.restore();
+    }
+
+    private static void drawHourTick(Canvas canvas, float radius, int x, int y, float angle, int tickLength, Paint tickPaint) {
+        canvas.save();
+        canvas.rotate(angle, x, y);
+        canvas.drawLine(x + radius - tickLength, y, x + radius, y, tickPaint);
+        canvas.restore();
+    }
+
+    private static void drawNumeral(Canvas canvas, int width, int height, float radius, int number, Paint textPaint, Paint textPaintSmall, int numberInset, boolean show24hours) {
+
+        String tmp = String.valueOf(number == 24 ? 0 : number);
+        Rect rect = new Rect();
+        textPaint.getTextBounds(tmp, 0, tmp.length(), rect);
+        double angle = show24hours ? (Math.PI / 12 * (number - 6)) : (Math.PI / 6 * (number - 3));
+        int x = (int) (width / 2 + Math.cos(angle) * (radius - numberInset));
+        int y = (int) (height / 2 + Math.sin(angle) * (radius - numberInset) + rect.height() / 2);
+        canvas.drawText(tmp, x, y, show24hours ? (number % 2 == 0 ? textPaint : textPaintSmall) : textPaint);
     }
 
     private static void drawTextOnCanvas(Canvas canvas, float xPos, float yPos, final String text,
@@ -396,8 +456,8 @@ public class WidgetUtils {
         }
 
         CharSequence dateFormat = DateFormat.getBestDateTimePattern(Locale.getDefault(),
-                context.getString((showAlarm && hasAlarm) ? org.omnirom.deskclock.R.string.abbrev_wday_month_day_no_year :
-                        org.omnirom.deskclock.R.string.full_wday_month_day_no_year));
+                context.getString((showAlarm && hasAlarm) ? R.string.abbrev_wday_month_day_no_year :
+                        R.string.full_wday_month_day_no_year));
 
         String currDate = "";
 
@@ -412,7 +472,7 @@ public class WidgetUtils {
         if (letterSpacing != -1) {
             textPaint.setLetterSpacing(letterSpacing);
         }
-        Drawable d = context.getDrawable(org.omnirom.deskclock.R.drawable.ic_alarm);
+        Drawable d = context.getDrawable(R.drawable.ic_alarm);
 
         float separatorWidth = textPaint.measureText(" ");
 

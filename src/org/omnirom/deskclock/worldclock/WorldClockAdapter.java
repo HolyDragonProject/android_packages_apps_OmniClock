@@ -234,7 +234,6 @@ public class WorldClockAdapter extends BaseAdapter {
             dclock.setVisibility(View.GONE);
             aclock.setVisibility(View.VISIBLE);
             aclock.setTimeZone(cityObj.mTimeZone);
-            aclock.enableSeconds(false);
         } else {
             dclock.setVisibility(View.VISIBLE);
             aclock.setVisibility(View.GONE);

@@ -48,7 +48,8 @@ public class ClockFragment extends DeskClockFragment {
     private final static String TAG = "ClockFragment";
 
     private TextClock mDigitalClock;
-    private View mAnalogClock, mClockFrame;
+    private AnalogClock mAnalogClock;
+    private View mClockFrame;
     private WorldClockAdapter mAdapter;
     private ListView mList;
     private String mDateFormat;
@@ -155,7 +156,12 @@ public class ClockFragment extends DeskClockFragment {
             });
         }
         mDigitalClock = (TextClock)mClockFrame.findViewById(R.id.digital_clock);
-        mAnalogClock = mClockFrame.findViewById(R.id.analog_clock);
+        mAnalogClock = (AnalogClock) mClockFrame.findViewById(R.id.analog_clock);
+        mAnalogClock.setShowSeconds(true);
+        mAnalogClock.setShowDate(false);
+        mAnalogClock.setShowAlarm(false);
+        mAnalogClock.setShowNumbers(false);
+        mAnalogClock.setShowTicks(false);
         Utils.setTimeFormat(mDigitalClock, (int) (mDigitalClock.getTextSize() / 3),
                 (int) (mDigitalClock.getTextSize() / 3));
         View footerView = inflater.inflate(R.layout.blank_footer_view, mList, false);

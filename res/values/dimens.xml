@@ -96,8 +96,6 @@
     <dimen name="timer_circle_margin">32dp</dimen>
 
     <dimen name="circle_size">240dp</dimen>
-    <!-- Size of analog clock in world clock. -->
-    <dimen name="world_clock_analog_size">60dip</dimen>
 
     <dimen name="stopwatch_list_margin_start">64dip</dimen>
 
@@ -156,17 +154,19 @@
     <dimen name="world_clock_hour_hand_width">2dip</dimen>
     <dimen name="world_clock_minute_hand_width">2dip</dimen>
     <dimen name="world_clock_seconds_hand_width">1dip</dimen>
-
+    <dimen name="world_clock_circle_size">2dip</dimen>
+    <dimen name="world_clock_analog_size">60dip</dimen>
     <dimen name="main_clock_hour_hand_width">7dip</dimen>
     <dimen name="main_clock_minute_hand_width">6dip</dimen>
     <dimen name="main_clock_seconds_hand_width">2dip</dimen>
-    <dimen name="main_clock_hand_end_length">12dip</dimen>
+    <dimen name="main_clock_hand_end_length">0dip</dimen>
+    <dimen name="main_clock_circle_size">6dip</dimen>
+    <dimen name="main_clock_font_size">18sp</dimen>
+    <dimen name="main_clock_ambient_size">2dp</dimen>
 
     <!-- stroke with of outer cirecles -->
     <dimen name="circletimer_circle_size">8dip</dimen>
     <dimen name="circletimer_marker_size">16dip</dimen>
-    <dimen name="world_clock_circle_size">2dip</dimen>
-    <dimen name="main_clock_circle_size">6dip</dimen>
 
     <dimen name="custom_analog_widget_size">100dip</dimen>
     <dimen name="min_analog_widget_resize_size">50dip</dimen>
@@ -174,6 +174,7 @@
     <dimen name="widget_clock_minute_hand_width">3dip</dimen>
     <dimen name="widget_clock_hand_end_length">8dip</dimen>
     <dimen name="widget_clock_circle_size">3dip</dimen>
+    <dimen name="widget_clock_tick_width">1dp</dimen>
 
     <dimen name="analog_widget_font_size">10sp</dimen>
     <dimen name="alarm_undo_bar_height">48dip</dimen>

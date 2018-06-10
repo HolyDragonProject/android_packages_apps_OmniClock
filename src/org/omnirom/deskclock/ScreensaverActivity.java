@@ -44,6 +44,7 @@ public class ScreensaverActivity extends Activity {
     private View mContentView, mSaverView;
     private AnalogClock mAnalogClock;
     private TextClock mDigitalClock;
+    private View mDateAlarmLine;
 
     private final Handler mHandler = new Handler();
     private final ScreensaverMoveSaverRunnable mMoveSaverRunnable;
@@ -181,13 +182,23 @@ public class ScreensaverActivity extends Activity {
         mClockStyle = (mSaverView == mDigitalClock ?
                 Utils.CLOCK_TYPE_DIGITAL : Utils.CLOCK_TYPE_ANALOG);
         Utils.dimClockView(true, mSaverView);
+        if (Utils.isClockStyleAnalog(this, ScreensaverSettingsActivity.KEY_CLOCK_STYLE)) {
+            mDateAlarmLine.setVisibility(View.GONE);
+        } else {
+            mDateAlarmLine.setVisibility(View.VISIBLE);
+        }
     }
 
     private void layoutClockSaver() {
         setContentView(R.layout.desk_clock_saver);
         mDigitalClock = (TextClock) findViewById(R.id.digital_clock);
         mAnalogClock = (AnalogClock) findViewById(R.id.analog_clock);
-        mAnalogClock.enableSeconds(false);
+        mAnalogClock.setShowSeconds(false);
+        mAnalogClock.setShowDate(true);
+        mAnalogClock.setShowAlarm(true);
+        mAnalogClock.setShowNumbers(false);
+        mAnalogClock.setShowTicks(false);
+        mDateAlarmLine = findViewById(R.id.date_alarm_line);
         setClockStyle();
         Utils.setTimeFormat(mDigitalClock, (int) (mDigitalClock.getTextSize() / 3), 0);
 

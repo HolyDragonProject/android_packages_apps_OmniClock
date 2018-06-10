@@ -72,4 +72,7 @@
     <color name="dismiss_circle_bg">@android:color/holo_red_light</color>
     <color name="bottom_nav_bg">@color/material_grey_900</color>
     <color name="bottom_line_bg">#00000000</color>
+    <color name="analog_clock_ambient_color">#ffffff</color>
+    <color name="analog_clock_ambient_bg_color">#000000</color>
+    <color name="analog_clock_text_color">#ffffff</color>
 </resources>

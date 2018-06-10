@@ -63,7 +63,6 @@ public class ScreensaverSettingsActivity extends PreferenceActivity
         listPref.setOnPreferenceChangeListener(this);
 
         Preference pref = findPreference(KEY_NIGHT_MODE);
-        boolean state = ((CheckBoxPreference) pref).isChecked();
         pref.setOnPreferenceChangeListener(this);
     }
 

@@ -498,6 +498,17 @@ public class Utils {
         return returnView;
     }
 
+    public static boolean isClockStyleAnalog(Context context, String clockStyleKey) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        String defaultClockStyle = context.getResources().getString(R.string.default_clock_style);
+        String style = sharedPref.getString(clockStyleKey, defaultClockStyle);
+        if (style.equals(CLOCK_TYPE_ANALOG)) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * For screensavers to dim the lights if necessary.
      */

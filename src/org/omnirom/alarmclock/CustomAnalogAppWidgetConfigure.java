@@ -28,12 +28,16 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.View;
 
+import org.omnirom.deskclock.R;
 import org.omnirom.deskclock.Utils;
 
 public class CustomAnalogAppWidgetConfigure extends PreferenceActivity {
 
     public static final String KEY_SHOW_ALARM = "show_alarm";
     public static final String KEY_SHOW_DATE = "show_date";
+    public static final String KEY_SHOW_NUMBERS = "show_numbers";
+    public static final String KEY_SHOW_TICKS = "show_ticks";
+    public static final String KEY_24H_MODE = "show_24_hour";
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
@@ -59,9 +63,12 @@ public class CustomAnalogAppWidgetConfigure extends PreferenceActivity {
             return;
         }
 
-        addPreferencesFromResource(org.omnirom.deskclock.R.xml.custom_analog_appwidget_configure);
-        initPreference(KEY_SHOW_ALARM);
-        initPreference(KEY_SHOW_DATE);
+        addPreferencesFromResource(R.xml.custom_analog_appwidget_configure);
+        initPreference(KEY_SHOW_ALARM, true);
+        initPreference(KEY_SHOW_DATE, true);
+        initPreference(KEY_SHOW_NUMBERS, false);
+        initPreference(KEY_SHOW_TICKS, false);
+        initPreference(KEY_24H_MODE, false);
     }
 
     public void handleOkClick(View v) {
@@ -72,19 +79,22 @@ public class CustomAnalogAppWidgetConfigure extends PreferenceActivity {
         finish();
     }
 
-    private void initPreference(String key) {
+    private void initPreference(String key, boolean defaultValue) {
         CheckBoxPreference b = (CheckBoxPreference) findPreference(key);
         b.setKey(key + "_" + String.valueOf(mAppWidgetId));
-        b.setDefaultValue(true);
-        b.setChecked(true);
+        b.setDefaultValue(defaultValue);
+        b.setChecked(defaultValue);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putBoolean(b.getKey(), true).commit();
+        prefs.edit().putBoolean(b.getKey(), defaultValue).commit();
     }
 
     public static void clearPrefs(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().remove(KEY_SHOW_ALARM + "_" + id).commit();
         prefs.edit().remove(KEY_SHOW_DATE + "_" + id).commit();
+        prefs.edit().remove(KEY_SHOW_NUMBERS + "_" + id).commit();
+        prefs.edit().remove(KEY_SHOW_TICKS + "_" + id).commit();
+        prefs.edit().remove(KEY_24H_MODE + "_" + id).commit();
     }
 
     public static void remapPrefs(Context context, int oldId, int newId) {
@@ -94,8 +104,22 @@ public class CustomAnalogAppWidgetConfigure extends PreferenceActivity {
         prefs.edit().putBoolean(KEY_SHOW_ALARM + "_" + newId, oldValue).commit();
         oldValue = prefs.getBoolean(KEY_SHOW_DATE + "_" + oldId, false);
         prefs.edit().putBoolean(KEY_SHOW_DATE + "_" + newId, oldValue).commit();
+        oldValue = prefs.getBoolean(KEY_SHOW_NUMBERS + "_" + oldId, false);
+        prefs.edit().putBoolean(KEY_SHOW_NUMBERS + "_" + newId, oldValue).commit();
+        oldValue = prefs.getBoolean(KEY_SHOW_TICKS + "_" + oldId, false);
+        prefs.edit().putBoolean(KEY_SHOW_TICKS + "_" + newId, oldValue).commit();
+        oldValue = prefs.getBoolean(KEY_24H_MODE + "_" + oldId, false);
+        prefs.edit().putBoolean(KEY_24H_MODE + "_" + newId, oldValue).commit();
 
         prefs.edit().remove(KEY_SHOW_ALARM + "_" + oldId).commit();
         prefs.edit().remove(KEY_SHOW_DATE + "_" + oldId).commit();
+        prefs.edit().remove(KEY_SHOW_NUMBERS + "_" + oldId).commit();
+        prefs.edit().remove(KEY_SHOW_TICKS + "_" + oldId).commit();
+        prefs.edit().remove(KEY_24H_MODE + "_" + oldId).commit();
+    }
+
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
+        return false;
     }
 }
