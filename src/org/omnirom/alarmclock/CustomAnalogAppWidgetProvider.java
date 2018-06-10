@@ -179,6 +179,12 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
         boolean showNumbers = WidgetUtils.isShowingNumbers(context, appWidgetId, false);
         boolean showTicks = WidgetUtils.isShowingTicks(context, appWidgetId, false);
         boolean show24Hours = WidgetUtils.isShowing24hours(context, appWidgetId, false);
+        int bgColor = WidgetUtils.getAnalogBgColor(context, appWidgetId);
+        int borderColor = WidgetUtils.getAnalogBorderColor(context, appWidgetId);
+        int hourColor = WidgetUtils.getAnalogHourColor(context, appWidgetId);
+        int minuteColor = WidgetUtils.getAnalogMinuteColor(context, appWidgetId);
+        int textColor = WidgetUtils.getAnalogTextColor(context, appWidgetId);
+        int accentColor = WidgetUtils.getAnalogAccentColor(context, appWidgetId);
 
         if (DigitalAppWidgetService.LOGGING) {
             Log.i(TAG, "updateClock " + appWidgetId);
@@ -194,7 +200,8 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
                     PendingIntent.getActivity(context, 0, new Intent(context, DeskClock.class), 0));
         }
 
-        Bitmap analogClock = WidgetUtils.createAnalogClockBitmap(context, showAlarm, showDate, showNumbers, showTicks, show24Hours);
+        Bitmap analogClock = WidgetUtils.createAnalogClockBitmap(context, showAlarm, showDate, showNumbers, showTicks,
+                show24Hours, bgColor, borderColor, hourColor, minuteColor, textColor, accentColor);
         widget.setImageViewBitmap(R.id.the_clock_image, analogClock);
 
         appWidgetManager.updateAppWidget(appWidgetId, widget);

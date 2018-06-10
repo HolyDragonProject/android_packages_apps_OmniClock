@@ -235,7 +235,35 @@ public class WidgetUtils {
         return prefs.getInt(CustomAppWidgetConfigure.KEY_CLOCK_COLOR + "_" + id, Color.WHITE);
     }
 
-    public static Bitmap createAnalogClockBitmap(Context context, boolean showAlarm, boolean showDate, boolean showNumbers, boolean showTicks, boolean show24hours) {
+    public static int getAnalogBgColor(Context context, int id) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_BG_COLOR + "_" + id, context.getResources().getColor(R.color.analog_clock_bg_color));
+    }
+
+    public static int getAnalogBorderColor(Context context, int id) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_BORDER_COLOR + "_" + id, context.getResources().getColor(R.color.primary));
+    }
+    public static int getAnalogHourColor(Context context, int id) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_HOUR_COLOR + "_" + id, context.getResources().getColor(R.color.analog_clock_hour_hand_color));
+    }
+    public static int getAnalogMinuteColor(Context context, int id) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_MINUTE_COLOR + "_" + id, context.getResources().getColor(R.color.analog_clock_minute_hand_color));
+    }
+    public static int getAnalogTextColor(Context context, int id) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_TEXT_COLOR + "_" + id, context.getResources().getColor(R.color.analog_clock_text_color));
+    }
+    public static int getAnalogAccentColor(Context context, int id) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_ACCENT_COLOR + "_" + id, context.getResources().getColor(R.color.accent));
+    }
+
+    public static Bitmap createAnalogClockBitmap(Context context, boolean showAlarm, boolean showDate, boolean showNumbers, boolean showTicks,
+                                                 boolean show24hours, int bgColor, int borderColor, int hourColor, int minuteColor, int textColor,
+                                                 int accentColor) {
         Resources r = context.getResources();
 
         Calendar calendar = new GregorianCalendar();
@@ -246,39 +274,39 @@ public class WidgetUtils {
         Paint circlePaint = new Paint();
         circlePaint.setAntiAlias(true);
         circlePaint.setStyle(Paint.Style.STROKE);
-        circlePaint.setColor(r.getColor(R.color.primary));
+        circlePaint.setColor(borderColor);
 
         Paint remaingCirclePaint = new Paint();
         remaingCirclePaint.setAntiAlias(true);
         remaingCirclePaint.setStyle(Paint.Style.STROKE);
-        remaingCirclePaint.setColor(r.getColor(R.color.accent));
+        remaingCirclePaint.setColor(accentColor);
 
         Paint bgPaint = new Paint();
         bgPaint.setAntiAlias(true);
         bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setColor(r.getColor(R.color.analog_clock_bg_color));
+        bgPaint.setColor(bgColor);
 
         Paint hourPaint = new Paint();
         hourPaint.setAntiAlias(true);
         hourPaint.setStrokeCap(Paint.Cap.ROUND);
         hourPaint.setStyle(Paint.Style.STROKE);
-        hourPaint.setColor(r.getColor(R.color.analog_clock_hour_hand_color));
+        hourPaint.setColor(hourColor);
 
         Paint minutePaint = new Paint();
         minutePaint.setAntiAlias(true);
         minutePaint.setStrokeCap(Paint.Cap.ROUND);
         minutePaint.setStyle(Paint.Style.STROKE);
-        minutePaint.setColor(r.getColor(R.color.analog_clock_minute_hand_color));
+        minutePaint.setColor(minuteColor);
 
         Paint centerDotPaint = new Paint();
         centerDotPaint.setAntiAlias(true);
         centerDotPaint.setStyle(Paint.Style.FILL);
-        centerDotPaint.setColor(r.getColor(R.color.accent));
+        centerDotPaint.setColor(accentColor);
 
         Paint tickPaint = new Paint();
         tickPaint.setAntiAlias(true);
         tickPaint.setStyle(Paint.Style.STROKE);
-        tickPaint.setColor(r.getColor(R.color.white));
+        tickPaint.setColor(textColor);
 
         Typeface typeface = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
 
@@ -286,14 +314,14 @@ public class WidgetUtils {
         textPaint.setTypeface(typeface);
         textPaint.setAntiAlias(true);
         textPaint.setSubpixelText(true);
-        textPaint.setColor(r.getColor(R.color.white));
+        textPaint.setColor(textColor);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
         final TextPaint textPaintSmall = new TextPaint();
         textPaintSmall.setTypeface(typeface);
         textPaintSmall.setAntiAlias(true);
         textPaintSmall.setSubpixelText(true);
-        textPaintSmall.setColor(r.getColor(R.color.white));
+        textPaintSmall.setColor(textColor);
         textPaintSmall.setTextAlign(Paint.Align.CENTER);
 
         float textSizePixels = r.getDimension(R.dimen.analog_widget_font_size);
@@ -368,7 +396,7 @@ public class WidgetUtils {
             CharSequence dateFormat = DateFormat.getBestDateTimePattern(Locale.getDefault(),
                     context.getString(R.string.abbrev_wday_month_day_no_year));
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat.toString(), Locale.getDefault());
-            String currDate = sdf.format(new Date()).toUpperCase();
+            String currDate = sdf.format(new Date());
 
             Path path = new Path();
             RectF arcRectText = new RectF(arcRect);

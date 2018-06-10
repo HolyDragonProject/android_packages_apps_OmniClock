@@ -172,4 +172,10 @@
     <string name="show_numbers_title">Show hour numbers</string>
     <string name="show_ticks_title">Show hour marks</string>
     <string name="show_24_hour_title">Show 24h mode</string>
+    <string name="bg_color_title">Background color</string>
+    <string name="border_color_title">Border color</string>
+    <string name="hour_color_title">Hour color</string>
+    <string name="minute_color_title">Minute color</string>
+    <string name="text_color_title">Text color</string>
+    <string name="accent_color_title">Accent color</string>
 </resources>
