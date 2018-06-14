@@ -190,12 +190,34 @@
                 android:resource="@xml/custom_appwidget" />
         </receiver>
 
+        <receiver
+            android:name="org.omnirom.alarmclock.BinaryClockAppWidgetProvider"
+            android:icon="@mipmap/ic_launcher_alarmclock"
+            android:label="@string/binary_gadget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+                <action android:name="android.app.action.NEXT_ALARM_CLOCK_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/binary_clock_appwidget" />
+        </receiver>
+
         <service
             android:name="org.omnirom.alarmclock.CustomAppWidgetProvider$ClockUpdateService"
             android:exported="false" />
 
         <service
             android:name="org.omnirom.alarmclock.CustomAnalogAppWidgetProvider$AnalogClockUpdateService"
+            android:exported="false" />
+
+        <service
+            android:name="org.omnirom.alarmclock.BinaryClockAppWidgetProvider$BinaryClockUpdateService"
             android:exported="false" />
 
         <service
@@ -210,6 +232,12 @@
         </activity>
 
         <activity android:name="org.omnirom.alarmclock.CustomAnalogAppWidgetConfigure" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="org.omnirom.alarmclock.BinaryClockAppWidgetConfigure" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

@@ -38,11 +38,13 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import org.omnirom.deskclock.DeskClock;
+import org.omnirom.deskclock.R;
 import org.omnirom.deskclock.Utils;
 import org.omnirom.deskclock.worldclock.Cities;
 import org.omnirom.deskclock.worldclock.CitiesActivity;
 
 import java.util.Date;
+import java.util.Locale;
 
 public class CustomAppWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "CustomAppWidgetProvider";
@@ -149,7 +151,7 @@ public class CustomAppWidgetProvider extends AppWidgetProvider {
                     if (WidgetUtils.isShowingWorldClock(context, appWidgetId)) {
                         appWidgetManager.
                                 notifyAppWidgetViewDataChanged(appWidgetId,
-                                        org.omnirom.deskclock.R.id.digital_appwidget_listview);
+                                        R.id.digital_appwidget_listview);
                     }
                 }
             }
@@ -202,39 +204,42 @@ public class CustomAppWidgetProvider extends AppWidgetProvider {
 
     private static void updateClock(
             Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        boolean showAlarm = WidgetUtils.isShowingAlarm(context, appWidgetId, true);
-        boolean showDate = WidgetUtils.isShowingDate(context, appWidgetId, true);
-        Typeface clockFont = WidgetUtils.getClockFont(context, appWidgetId);
-        int clockColor = WidgetUtils.getClockColor(context, appWidgetId);
-        boolean clockShadow = WidgetUtils.isClockShadow(context, appWidgetId);
+        boolean showAlarm = WidgetUtils.isShowingAlarm(context, CustomAppWidgetConfigure.KEY_SHOW_ALARM, appWidgetId, true);
+        boolean showDate = WidgetUtils.isShowingDate(context, CustomAppWidgetConfigure.KEY_SHOW_DATE, appWidgetId, true);
+        Typeface clockFont = WidgetUtils.getClockFont(context, CustomAppWidgetConfigure.KEY_CLOCK_FONT, appWidgetId);
+        int clockColor = WidgetUtils.getClockColor(context, CustomAppWidgetConfigure.KEY_CLOCK_COLOR, appWidgetId);
+        boolean clockShadow = WidgetUtils.isClockShadow(context, CustomAppWidgetConfigure.KEY_CLOCK_SHADOW, appWidgetId);
         boolean showWorldClocks = WidgetUtils.isShowingWorldClock(context, appWidgetId);
 
         if (DigitalAppWidgetService.LOGGING) {
             Log.i(TAG, "updateClock " + appWidgetId);
         }
-        RemoteViews widget = new RemoteViews(context.getPackageName(), org.omnirom.deskclock.R.layout.custom_appwidget);
+        RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.custom_appwidget);
 
-        widget.setViewVisibility(org.omnirom.deskclock.R.id.the_date_image, showDate ? View.VISIBLE : View.GONE);
+        widget.setViewVisibility(R.id.the_date_image, showDate ? View.VISIBLE : View.GONE);
 
         // Launch clock when clicking on the time in the widget only if not a lock screen widget
         Bundle newOptions = appWidgetManager.getAppWidgetOptions(appWidgetId);
         if (newOptions != null &&
                 newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, -1)
                         != AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD) {
-            widget.setOnClickPendingIntent(org.omnirom.deskclock.R.id.the_clock_image,
+            widget.setOnClickPendingIntent(R.id.the_clock_image,
                     PendingIntent.getActivity(context, 0, new Intent(context, DeskClock.class), 0));
-            widget.setOnClickPendingIntent(org.omnirom.deskclock.R.id.the_date_image,
+            widget.setOnClickPendingIntent(R.id.the_date_image,
                     PendingIntent.getActivity(context, 0, Utils.getCalendarIntent(new Date()), 0));
         }
-        float fontSize = context.getResources().getDimension(org.omnirom.deskclock.R.dimen.widget_custom_font_size);
+        float fontSize = context.getResources().getDimension(R.dimen.widget_custom_font_size);
         CharSequence timeFormat = DateFormat.is24HourFormat(context) ?
                 Utils.getRaw24ModeFormat(false) :
                 Utils.getRaw12ModeFormat(false);
 
-        final Bitmap textBitmap = WidgetUtils.createTimeBitmap(timeFormat.toString(),
-                clockFont, fontSize, clockColor, clockShadow, -1,
+        Bitmap textBitmap = WidgetUtils.createTimeBitmap(timeFormat.toString(),
+                clockFont, fontSize, clockColor, false, -1,
                 !DateFormat.is24HourFormat(context));
-        widget.setImageViewBitmap(org.omnirom.deskclock.R.id.the_clock_image, textBitmap);
+        if (clockShadow) {
+            textBitmap = WidgetUtils.shadow(context.getResources(), textBitmap);
+        }
+        widget.setImageViewBitmap(R.id.the_clock_image, textBitmap);
 
         if (showAlarm || showDate) {
             updateDate(context, widget, clockColor, clockShadow, showDate, showAlarm, showAlarm);
@@ -246,17 +251,17 @@ public class CustomAppWidgetProvider extends AppWidgetProvider {
             final Intent intent = new Intent(context, DigitalAppWidgetService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            widget.setRemoteAdapter(org.omnirom.deskclock.R.id.digital_appwidget_listview, intent);
+            widget.setRemoteAdapter(R.id.digital_appwidget_listview, intent);
 
             // Set up the click on any world clock to start the Cities Activity
             //TODO: Should this be in the options guard above?
-            widget.setPendingIntentTemplate(org.omnirom.deskclock.R.id.digital_appwidget_listview,
+            widget.setPendingIntentTemplate(R.id.digital_appwidget_listview,
                     PendingIntent.
                             getActivity(context, 0, new Intent(context, CitiesActivity.class), 0));
 
             // Refresh the widget
             appWidgetManager.notifyAppWidgetViewDataChanged(
-                    appWidgetId, org.omnirom.deskclock.R.id.digital_appwidget_listview);
+                    appWidgetId, R.id.digital_appwidget_listview);
         }
         appWidgetManager.updateAppWidget(appWidgetId, widget);
     }
@@ -264,16 +269,21 @@ public class CustomAppWidgetProvider extends AppWidgetProvider {
     private static void updateDate(Context context, RemoteViews widget, int clockColor,
                                    boolean clockShadow, boolean showDate, boolean showAlarm, boolean hasAlarm) {
         if (showDate || showAlarm) {
-            float fontSize = context.getResources().getDimension(org.omnirom.deskclock.R.dimen.custom_widget_label_font_size);
+            float fontSize = context.getResources().getDimension(R.dimen.custom_widget_label_font_size);
             Typeface dateFont = Typeface.create("sans-serif-light", Typeface.NORMAL);
-
+            CharSequence dateFormat = DateFormat.getBestDateTimePattern(Locale.getDefault(),
+                    context.getString((showAlarm && hasAlarm) ? R.string.abbrev_wday_month_day_no_year :
+                            R.string.full_wday_month_day_no_year));
             Bitmap dateBitmap = WidgetUtils.createDataAlarmBitmap(context, dateFont, fontSize, clockColor,
-                    clockShadow, 0.15f, showDate, showAlarm);
+                    false, 0.15f, showDate, showAlarm, dateFormat);
             if (dateBitmap != null) {
-                widget.setViewVisibility(org.omnirom.deskclock.R.id.the_date_image, View.VISIBLE);
-                widget.setImageViewBitmap(org.omnirom.deskclock.R.id.the_date_image, dateBitmap);
+                if (clockShadow) {
+                    dateBitmap = WidgetUtils.shadow(context.getResources(), dateBitmap);
+                }
+                widget.setViewVisibility(R.id.the_date_image, View.VISIBLE);
+                widget.setImageViewBitmap(R.id.the_date_image, dateBitmap);
             } else {
-                widget.setViewVisibility(org.omnirom.deskclock.R.id.the_date_image, View.GONE);
+                widget.setViewVisibility(R.id.the_date_image, View.GONE);
             }
         }
     }

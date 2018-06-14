@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService.RemoteViewsFactory;
 
+import org.omnirom.deskclock.R;
 import org.omnirom.deskclock.Utils;
 import org.omnirom.deskclock.worldclock.CityObj;
 import org.omnirom.deskclock.worldclock.WorldClockAdapter;
@@ -49,8 +50,8 @@ public class DigitalWidgetViewsFactory implements RemoteViewsFactory {
         public RemoteWorldClockAdapter(Context context) {
             super(context);
             mClocksPerRow = context.getResources().getInteger(
-                    org.omnirom.deskclock.R.integer.appwidget_world_clocks_per_row);
-            mFontSize = context.getResources().getDimension(org.omnirom.deskclock.R.dimen.widget_medium_font_size);
+                    R.integer.appwidget_world_clocks_per_row);
+            mFontSize = context.getResources().getDimension(R.dimen.widget_medium_font_size);
         }
 
         public RemoteViews getViewAt(int position) {
@@ -61,28 +62,28 @@ public class DigitalWidgetViewsFactory implements RemoteViewsFactory {
             }
 
             RemoteViews views = new RemoteViews(
-                    mContext.getPackageName(), org.omnirom.deskclock.R.layout.world_clock_remote_list_item);
+                    mContext.getPackageName(), R.layout.world_clock_remote_list_item);
 
             // Always how the left clock
-            updateView(views, (CityObj) mCitiesList[index], org.omnirom.deskclock.R.id.left_clock,
-                    org.omnirom.deskclock.R.id.city_name_left, org.omnirom.deskclock.R.id.city_day_left);
+            updateView(views, (CityObj) mCitiesList[index], R.id.left_clock,
+                    R.id.city_name_left, R.id.city_day_left);
             // Show the right clock if any, make it invisible if there is no
             // clock on the right
             // to keep the left view on the left.
             if (index + 1 < mCitiesList.length) {
-                updateView(views, (CityObj) mCitiesList[index + 1], org.omnirom.deskclock.R.id.right_clock,
-                        org.omnirom.deskclock.R.id.city_name_right, org.omnirom.deskclock.R.id.city_day_right);
+                updateView(views, (CityObj) mCitiesList[index + 1], R.id.right_clock,
+                        R.id.city_name_right, R.id.city_day_right);
             } else {
-                hideView(views, org.omnirom.deskclock.R.id.right_clock, org.omnirom.deskclock.R.id.city_name_right,
-                        org.omnirom.deskclock.R.id.city_day_right);
+                hideView(views, R.id.right_clock, R.id.city_name_right,
+                        R.id.city_day_right);
             }
 
             // Hide last spacer if last row
             int lastRow = ((mCitiesList.length + 1) / 2) - 1;
             if (position == lastRow) {
-                views.setViewVisibility(org.omnirom.deskclock.R.id.city_spacer, View.GONE);
+                views.setViewVisibility(R.id.city_spacer, View.GONE);
             } else {
-                views.setViewVisibility(org.omnirom.deskclock.R.id.city_spacer, View.VISIBLE);
+                views.setViewVisibility(R.id.city_spacer, View.VISIBLE);
             }
 
             return views;
@@ -101,18 +102,17 @@ public class DigitalWidgetViewsFactory implements RemoteViewsFactory {
             WidgetUtils.setTimeFormat(clock, (int)(mFontSize / 3), clockId, 0);
             clock.setTextViewTextSize(clockId, TypedValue.COMPLEX_UNIT_PX, mFontSize);
             clock.setString(clockId, "setTimeZone", cityObj.mTimeZone);
-
             // Home city or city not in DB , use data from the save selected cities list
             clock.setTextViewText(labelId, Utils.getCityName(cityObj, cityInDb));
 
-            int clockColor = WidgetUtils.getClockColor(mContext, mId);
+            int clockColor = WidgetUtils.getClockColor(mContext, CustomAppWidgetConfigure.KEY_CLOCK_COLOR, mId);
             clock.setTextColor(clockId, clockColor);
             clock.setTextColor(labelId, clockColor);
             clock.setTextColor(dayId, clockColor);
 
             if (myDayOfWeek != cityDayOfWeek) {
                 clock.setTextViewText(dayId, mContext.getString(
-                        org.omnirom.deskclock.R.string.world_day_of_week_label, now.getDisplayName(
+                        R.string.world_day_of_week_label, now.getDisplayName(
                                 Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())));
                 clock.setViewVisibility(dayId, View.VISIBLE);
             } else {
@@ -166,7 +166,7 @@ public class DigitalWidgetViewsFactory implements RemoteViewsFactory {
         RemoteViews v = mAdapter.getViewAt(position);
         if (v != null) {
             Intent fillInIntent = new Intent();
-            v.setOnClickFillInIntent(org.omnirom.deskclock.R.id.widget_item, fillInIntent);
+            v.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
         }
         return v;
     }

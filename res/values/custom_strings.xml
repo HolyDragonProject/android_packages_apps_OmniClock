@@ -184,4 +184,5 @@
     <string name="show_ticks_summary"></string>
     <string name="analog_clock_settings">Analog clock</string>
     <string name="time_zone_settings">Timezone settings</string>
+    <string name="binary_gadget">Binary clock</string>
 </resources>

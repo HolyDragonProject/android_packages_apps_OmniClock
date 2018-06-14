@@ -46,6 +46,7 @@
                     android:layout_width="@dimen/circle_size"
                     android:layout_height="@dimen/circle_size"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/bottom_text_spacing_analog"
                     android:layout_marginBottom="@dimen/bottom_text_spacing_analog" />
 
                 <TextClock

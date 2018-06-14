@@ -22,10 +22,12 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -102,19 +104,19 @@ public class WidgetUtils {
         }
     }
 
-    public static boolean isShowingAlarm(Context context, int id, boolean defaultValue) {
+    public static boolean isShowingAlarm(Context context, String key, int id, boolean defaultValue) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(CustomAppWidgetConfigure.KEY_SHOW_ALARM + "_" + id, defaultValue);
+        return prefs.getBoolean(key + "_" + id, defaultValue);
     }
 
-    public static boolean isShowingDate(Context context, int id, boolean defaultValue) {
+    public static boolean isShowingDate(Context context, String key, int id, boolean defaultValue) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(CustomAppWidgetConfigure.KEY_SHOW_DATE + "_" + id, defaultValue);
+        return prefs.getBoolean(key + "_" + id, defaultValue);
     }
 
-    public static boolean isClockShadow(Context context, int id) {
+    public static boolean isClockShadow(Context context, String key, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(CustomAppWidgetConfigure.KEY_CLOCK_SHADOW + "_" + id, true);
+        return prefs.getBoolean(key + "_" + id, true);
     }
 
     public static boolean isShowingWorldClock(Context context, int id) {
@@ -218,9 +220,9 @@ public class WidgetUtils {
         return myBitmap;
     }
 
-    public static Typeface getClockFont(Context context, int id) {
+    public static Typeface getClockFont(Context context, String key, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String font = prefs.getString(CustomAppWidgetConfigure.KEY_CLOCK_FONT + "_" + id, null);
+        String font = prefs.getString(key + "_" + id, null);
         if (font != null) {
             try {
                 return Typeface.createFromFile(font);
@@ -230,9 +232,9 @@ public class WidgetUtils {
         return Typeface.create("sans-serif-light", Typeface.NORMAL);
     }
 
-    public static int getClockColor(Context context, int id) {
+    public static int getClockColor(Context context, String key, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt(CustomAppWidgetConfigure.KEY_CLOCK_COLOR + "_" + id, Color.WHITE);
+        return prefs.getInt(key + "_" + id, Color.WHITE);
     }
 
     public static int getAnalogBgColor(Context context, int id) {
@@ -244,18 +246,22 @@ public class WidgetUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_BORDER_COLOR + "_" + id, context.getResources().getColor(R.color.primary));
     }
+
     public static int getAnalogHourColor(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_HOUR_COLOR + "_" + id, context.getResources().getColor(R.color.analog_clock_hour_hand_color));
     }
+
     public static int getAnalogMinuteColor(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_MINUTE_COLOR + "_" + id, context.getResources().getColor(R.color.analog_clock_minute_hand_color));
     }
+
     public static int getAnalogTextColor(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_TEXT_COLOR + "_" + id, context.getResources().getColor(R.color.analog_clock_text_color));
     }
+
     public static int getAnalogAccentColor(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getInt(CustomAnalogAppWidgetConfigure.KEY_ACCENT_COLOR + "_" + id, context.getResources().getColor(R.color.accent));
@@ -450,8 +456,8 @@ public class WidgetUtils {
     }
 
     private static void drawTextOnCanvas(Canvas canvas, float xPos, float yPos, final String text,
-                                  final Typeface typeface, final float textSizePixels, final int textColor,
-                                  boolean shadow, float letterSpacing) {
+                                         final Typeface typeface, final float textSizePixels, final int textColor,
+                                         boolean shadow, float letterSpacing) {
         final TextPaint textPaint = new TextPaint();
         textPaint.setTypeface(typeface);
         textPaint.setTextSize(textSizePixels);
@@ -475,23 +481,16 @@ public class WidgetUtils {
     public static Bitmap createDataAlarmBitmap(final Context context, final Typeface typeface,
                                                final float textSizePixels, final int textColor,
                                                boolean shadow, float letterSpacing, boolean showDate,
-                                               boolean showAlarm) {
+                                               boolean showAlarm, CharSequence dateFormat) {
 
         String nextAlarm = Utils.getNextAlarm(context);
         boolean hasAlarm = !TextUtils.isEmpty(nextAlarm);
-        if (hasAlarm) {
-            nextAlarm = nextAlarm.toUpperCase();
-        }
-
-        CharSequence dateFormat = DateFormat.getBestDateTimePattern(Locale.getDefault(),
-                context.getString((showAlarm && hasAlarm) ? R.string.abbrev_wday_month_day_no_year :
-                        R.string.full_wday_month_day_no_year));
 
         String currDate = "";
 
         if (showDate) {
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat.toString(), Locale.getDefault());
-            currDate = sdf.format(new Date()).toUpperCase();
+            currDate = sdf.format(new Date());
         }
 
         final TextPaint textPaint = new TextPaint();
@@ -504,7 +503,7 @@ public class WidgetUtils {
 
         float separatorWidth = textPaint.measureText(" ");
 
-        float dateWidth = showDate ? textPaint.measureText(currDate) + 2 * separatorWidth  : 0;
+        float dateWidth = showDate ? textPaint.measureText(currDate) + 2 * separatorWidth : 0;
         float alarmWidth = (showAlarm && hasAlarm) ? textPaint.measureText(nextAlarm) + 3 * separatorWidth + d.getIntrinsicWidth() : 0;
         float totalWidth = dateWidth + alarmWidth;
         float totalHeight = Math.max(d.getIntrinsicHeight(), textSizePixels);
@@ -529,5 +528,131 @@ public class WidgetUtils {
             return myBitmap;
         }
         return null;
+    }
+
+    public static Bitmap createBinaryClockBitmap(final Context context, int clockColor, boolean clockShadow, Bitmap dateBitmap) {
+        Resources r = context.getResources();
+
+        Calendar calendar = new GregorianCalendar();
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        int minutes = calendar.get(Calendar.MINUTE);
+
+        Paint dotPaint = new Paint();
+        dotPaint.setAntiAlias(true);
+        dotPaint.setStyle(Paint.Style.FILL);
+        dotPaint.setColor(clockColor);
+        dotPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.binary_clock_stroke_size));
+
+        Paint emptyDotPaint = new Paint();
+        emptyDotPaint.setAntiAlias(true);
+        emptyDotPaint.setStyle(Paint.Style.STROKE);
+        emptyDotPaint.setColor(clockColor);
+        emptyDotPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.binary_clock_stroke_size));
+
+        int dotSize = r.getDimensionPixelSize(R.dimen.binary_clock_dot_size);
+
+        int[][] dots = calculateDotMatrix(hours, minutes);
+
+        int width = r.getDimensionPixelSize(R.dimen.binary_clock_widget_width);
+        int height = r.getDimensionPixelSize(R.dimen.binary_clock_widget_height);
+        int dotWidth = r.getDimensionPixelSize(R.dimen.binary_clock_dot_width);
+        int dotHeight = r.getDimensionPixelSize(R.dimen.binary_clock_dot_height);
+
+        if (dateBitmap != null) {
+            width = Math.max(dateBitmap.getWidth(), width);
+        }
+
+        Bitmap myBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(myBitmap);
+
+        int cellWidth = dotWidth / 4;
+        int cellHeight = dotHeight / 4;
+
+        int xStart = (width - dotWidth) / 2;
+        int yStart = (height - dotHeight) / 2;
+        if (dateBitmap != null) {
+            yStart = (height - dateBitmap.getHeight() - dotHeight) / 2;
+        }
+        int yLine = yStart + cellHeight / 2;
+
+        for (int y = 3; y >= 0 ; y--) {
+            int xLine = xStart + cellWidth / 2;
+            for (int x = 0; x < 4; x++) {
+                if (y >= 2 && x == 0) {
+                    xLine += cellWidth;
+                    continue;
+                }
+                if (dots[x][y] == 1) {
+                    canvas.drawCircle(xLine, yLine, dotSize, dotPaint);
+                } else {
+                    canvas.drawCircle(xLine, yLine, dotSize, emptyDotPaint);
+                }
+                xLine += cellWidth;
+            }
+            yLine += cellHeight;
+        }
+
+        if (dateBitmap != null) {
+            canvas.drawBitmap(dateBitmap, (width - dateBitmap.getWidth()) / 2, yStart + dotHeight, null);
+        }
+        return myBitmap;
+    }
+
+    private static int[][] calculateDotMatrix(int hour, int minute) {
+        int hour0 = (int) (hour >= 10 ? hour / 10 : 0);
+        int hour1 = (int) (hour - hour0 * 10);
+        int minute0 = (int) (minute >= 10 ? minute / 10 : 0);
+        int minute1 = (int) (minute - minute0 * 10);
+
+        int[][] dots = new int[4][4];
+        if (hour0 != 0) {
+            String hour0Bin = Integer.toBinaryString(hour0);
+            for (int i = 0; i < hour0Bin.length(); i++) {
+                dots[0][hour0Bin.length() - 1 - i] = hour0Bin.charAt(i) == '1' ? 1 : 0;
+            }
+        }
+        if (hour1 != 0) {
+            String hour1Bin = Integer.toBinaryString(hour1);
+            for (int i = 0; i < hour1Bin.length(); i++) {
+                dots[1][hour1Bin.length() - 1 - i] = hour1Bin.charAt(i) == '1' ? 1 : 0;
+            }
+        }
+        if (minute0 != 0) {
+            String minute0Bin = Integer.toBinaryString(minute0);
+            for (int i = 0; i < minute0Bin.length(); i++) {
+                dots[2][minute0Bin.length() - 1 - i] = minute0Bin.charAt(i) == '1' ? 1 : 0;
+            }
+        }
+        if (minute1 != 0) {
+            String minute1Bin = Integer.toBinaryString(minute1);
+            for (int i = 0; i < minute1Bin.length(); i++) {
+                dots[3][minute1Bin.length() - 1 - i] = minute1Bin.charAt(i) == '1' ? 1 : 0;
+            }
+        }
+        return dots;
+    }
+
+    public static Bitmap shadow(Resources resources, Bitmap b) {
+        final Canvas canvas = new Canvas();
+        canvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG,
+                Paint.FILTER_BITMAP_FLAG));
+
+        BlurMaskFilter blurFilter = new BlurMaskFilter(5,
+                BlurMaskFilter.Blur.OUTER);
+        Paint shadowPaint = new Paint();
+        shadowPaint.setColor(Color.BLACK);
+        shadowPaint.setMaskFilter(blurFilter);
+
+        int[] offsetXY = new int[2];
+        Bitmap b2 = b.extractAlpha(shadowPaint, offsetXY);
+
+        Bitmap bmResult = Bitmap.createBitmap(b.getWidth(), b.getHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        canvas.setBitmap(bmResult);
+        canvas.drawBitmap(b2, offsetXY[0], offsetXY[1], null);
+        canvas.drawBitmap(b, 0, 0, null);
+
+        return bmResult;
     }
 }

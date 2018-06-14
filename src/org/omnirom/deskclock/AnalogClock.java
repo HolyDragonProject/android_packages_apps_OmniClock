@@ -60,27 +60,27 @@ public class AnalogClock extends View {
     private Paint mCirclePaint;
     private Paint mRemaingCirclePaint;
     private boolean mIsWorldClock;
-    private float mCircleStrokeWidth;
+    private int mCircleStrokeWidth;
     private Paint mBgPaint;
     private Paint mHourPaint;
     private Paint mMinutePaint;
     private Paint mSecondsPaint;
     private Paint mCenterDotPaint;
-    private float mHandEndLength;
+    private int mHandEndLength;
     private Paint mAmbientPaint;
     private Paint mAmbientBgPaint;
     private boolean mIsAmbientDisplay;
     private boolean mShowAlarm;
     private boolean mShowDate;
     private Paint mTextPaint;
-    private float mTextSizePixels;
+    private int mTextSizePixels;
     private int mTickLength;
     private Paint mTextPaintSmall;
     private boolean mShowTicks = true;
     private boolean mShowNumbers = true;
     private int mNumberInset;
-    private float mTextInset;
-    private float mTextInsetTop;
+    private int mTextInset;
+    private int mTextInsetTop;
     private boolean m24hmode;
     private int mBgColor;
     private int mBorderColor;
@@ -212,17 +212,17 @@ public class AnalogClock extends View {
 
     public void onDensityOrFontScaleChanged() {
         Resources r = mContext.getResources();
-        mTextSizePixels = r.getDimension(R.dimen.main_clock_font_size);
+        mTextSizePixels = r.getDimensionPixelSize(R.dimen.main_clock_font_size);
         mTextPaint.setTextSize(mTextSizePixels);
         mTextPaintSmall.setTextSize(mTextSizePixels / 2f);
 
-        mCircleStrokeWidth = r.getDimension(R.dimen.main_clock_circle_size);
+        mCircleStrokeWidth = r.getDimensionPixelSize(R.dimen.main_clock_circle_size);
         mTextInset = mTextSizePixels;
-        mTextInsetTop = 1.8f * mTextSizePixels;
+        mTextInsetTop = (int) (1.8f * mTextSizePixels);
 
         mCirclePaint.setStrokeWidth(mCircleStrokeWidth);
         mRemaingCirclePaint.setStrokeWidth(mCircleStrokeWidth);
-        mAmbientPaint.setStrokeWidth(r.getDimension(R.dimen.main_clock_ambient_size));
+        mAmbientPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_ambient_size));
         mHourPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_hour_hand_width));
         mMinutePaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_minute_hand_width));
         mSecondsPaint.setStrokeWidth(r.getDimensionPixelSize(R.dimen.main_clock_seconds_hand_width));
@@ -230,7 +230,7 @@ public class AnalogClock extends View {
         mHandEndLength = r.getDimensionPixelSize(R.dimen.main_clock_hand_end_length);
 
         if (mIsWorldClock) {
-            mCircleStrokeWidth = getResources().getDimension(R.dimen.world_clock_circle_size);
+            mCircleStrokeWidth = getResources().getDimensionPixelSize(R.dimen.world_clock_circle_size);
             mCirclePaint.setStrokeWidth(mCircleStrokeWidth);
             mRemaingCirclePaint.setStrokeWidth(mCircleStrokeWidth);
             mHourPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.world_clock_hour_hand_width));
@@ -297,7 +297,7 @@ public class AnalogClock extends View {
         int x = availableWidth / 2;
         int y = availableHeight / 2;
 
-        float radius = availableHeight / 2 - mCircleStrokeWidth;
+        int radius = availableHeight / 2 - mCircleStrokeWidth;
         RectF arcRect = new RectF();
         arcRect.top = y - radius;
         arcRect.bottom = y + radius;
@@ -312,8 +312,8 @@ public class AnalogClock extends View {
             mNumberInset = (int) (radius / 6.0);
         }
 
-        float textInset = mTextInset;
-        float textInsetTop = mTextInsetTop;
+        int textInset = mTextInset;
+        int textInsetTop = mTextInsetTop;
         if (mShowNumbers) {
             textInset += mNumberInset;
             textInsetTop += mNumberInset;
@@ -366,7 +366,7 @@ public class AnalogClock extends View {
             }
         }
 
-        drawHand(canvas, mIsAmbientDisplay ? mAmbientPaint : mHourPaint, x, y, radius * 0.70f, mHour / (m24hmode ? 24.0f : 12.0f) * 360.0f - 90);
+        drawHand(canvas, mIsAmbientDisplay ? mAmbientPaint : mHourPaint, x, y, (int)(radius * 0.70f), mHour / (m24hmode ? 24.0f : 12.0f) * 360.0f - 90);
         drawHand(canvas, mIsAmbientDisplay ? mAmbientPaint : mMinutePaint, x, y, radius, mMinutes / 60.0f * 360.0f - 90);
         if (mShowSeconds) {
             drawHand(canvas, mIsAmbientDisplay ? mAmbientPaint : mSecondsPaint, x, y, radius, mSeconds / 60.0f * 360.0f - 90);
@@ -374,7 +374,7 @@ public class AnalogClock extends View {
         canvas.drawCircle(x, y, mMinutePaint.getStrokeWidth(), mIsAmbientDisplay ? mAmbientPaint : mCenterDotPaint);
     }
 
-    private void drawHand(Canvas canvas, Paint mHandPaint, int x, int y, float length, float angle) {
+    private void drawHand(Canvas canvas, Paint mHandPaint, int x, int y, int length, float angle) {
         canvas.save();
         canvas.rotate(angle, x, y);
         canvas.drawLine(x, y, x + length, y, mHandPaint);
@@ -382,14 +382,14 @@ public class AnalogClock extends View {
         canvas.restore();
     }
 
-    private void drawHourTick(Canvas canvas, float radius, int x, int y, float angle) {
+    private void drawHourTick(Canvas canvas, int radius, int x, int y, float angle) {
         canvas.save();
         canvas.rotate(angle, x, y);
         canvas.drawLine(x + radius - mTickLength, y, x + radius, y, mTickPaint);
         canvas.restore();
     }
 
-    private void drawNumeral(Canvas canvas, float radius, int number) {
+    private void drawNumeral(Canvas canvas, int radius, int number) {
 
         String tmp = String.valueOf(number == 24 ? 0 : number);
         Rect rect = new Rect();

@@ -28,27 +28,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import org.omnirom.deskclock.DeskClock;
 import org.omnirom.deskclock.R;
+import org.omnirom.deskclock.Utils;
 
 import java.util.Date;
+import java.util.Locale;
 
-public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
-    private static final String TAG = "AnalogAppWidgetProvider";
+public class BinaryClockAppWidgetProvider extends AppWidgetProvider {
+    private static final String TAG = "BinaryClockAppWidgetProvider";
 
     // there is no other way to use ACTION_TIME_TICK then this
-    public static class AnalogClockUpdateService extends Service {
+    public static class BinaryClockUpdateService extends Service {
         private final BroadcastReceiver mClockChangedReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
                 if (DigitalAppWidgetService.LOGGING) {
-                    Log.i(TAG, "AnalogClockUpdateService:onReceive: " + action);
+                    Log.i(TAG, "BinaryClockUpdateService:onReceive: " + action);
                 }
                 updateAllClocks(context);
             }
@@ -66,7 +71,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
             intentFilter.addAction(Intent.ACTION_TIME_TICK);
             registerReceiver(mClockChangedReceiver, intentFilter);
             if (DigitalAppWidgetService.LOGGING) {
-                Log.i(TAG, "AnalogClockUpdateService:onCreate");
+                Log.i(TAG, "BinaryClockUpdateService:onCreate");
             }
         }
 
@@ -75,7 +80,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
             super.onDestroy();
             unregisterReceiver(mClockChangedReceiver);
             if (DigitalAppWidgetService.LOGGING) {
-                Log.i(TAG, "AnalogClockUpdateService:onDestroy");
+                Log.i(TAG, "BinaryClockUpdateService:onDestroy");
             }
         }
     }
@@ -86,7 +91,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
         if (DigitalAppWidgetService.LOGGING) {
             Log.i(TAG, "onEnabled");
         }
-        context.startService(new Intent(context, AnalogClockUpdateService.class));
+        context.startService(new Intent(context, BinaryClockUpdateService.class));
     }
 
     @Override
@@ -95,7 +100,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
         if (DigitalAppWidgetService.LOGGING) {
             Log.i(TAG, "onDisabled");
         }
-        context.stopService(new Intent(context, AnalogClockUpdateService.class));
+        context.stopService(new Intent(context, BinaryClockUpdateService.class));
     }
 
 
@@ -106,7 +111,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
             if (DigitalAppWidgetService.LOGGING) {
                 Log.i(TAG, "onDeleted: " + id);
             }
-            CustomAnalogAppWidgetConfigure.clearPrefs(context, id);
+            BinaryClockAppWidgetConfigure.clearPrefs(context, id);
         }
     }
 
@@ -135,7 +140,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
             }
             updateClock(context, appWidgetManager, appWidgetId);
         }
-        context.startService(new Intent(context, AnalogClockUpdateService.class));
+        context.startService(new Intent(context, BinaryClockUpdateService.class));
     }
 
     @Override
@@ -145,7 +150,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
             if (DigitalAppWidgetService.LOGGING) {
                 Log.i(TAG, "onRestored " + oldWidgetId + " " + newWidgetIds[i]);
             }
-            CustomAnalogAppWidgetConfigure.remapPrefs(context, oldWidgetId, newWidgetIds[i]);
+            BinaryClockAppWidgetConfigure.remapPrefs(context, oldWidgetId, newWidgetIds[i]);
             i++;
         }
     }
@@ -156,7 +161,7 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
         }
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         if (appWidgetManager != null) {
-            ComponentName componentName = new ComponentName(context, CustomAnalogAppWidgetProvider.class);
+            ComponentName componentName = new ComponentName(context, BinaryClockAppWidgetProvider.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(componentName);
             for (int appWidgetId : appWidgetIds) {
                 updateClock(context, appWidgetManager, appWidgetId);
@@ -174,22 +179,16 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
 
     private static void updateClock(
             Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
-        boolean showAlarm = WidgetUtils.isShowingAlarm(context, CustomAnalogAppWidgetConfigure.KEY_SHOW_ALARM, appWidgetId, true);
-        boolean showDate = WidgetUtils.isShowingDate(context, CustomAnalogAppWidgetConfigure.KEY_SHOW_DATE, appWidgetId, true);
-        boolean showNumbers = WidgetUtils.isShowingNumbers(context, appWidgetId, false);
-        boolean showTicks = WidgetUtils.isShowingTicks(context, appWidgetId, false);
-        boolean show24Hours = WidgetUtils.isShowing24hours(context, appWidgetId, false);
-        int bgColor = WidgetUtils.getAnalogBgColor(context, appWidgetId);
-        int borderColor = WidgetUtils.getAnalogBorderColor(context, appWidgetId);
-        int hourColor = WidgetUtils.getAnalogHourColor(context, appWidgetId);
-        int minuteColor = WidgetUtils.getAnalogMinuteColor(context, appWidgetId);
-        int textColor = WidgetUtils.getAnalogTextColor(context, appWidgetId);
-        int accentColor = WidgetUtils.getAnalogAccentColor(context, appWidgetId);
+        int clockColor = WidgetUtils.getClockColor(context, BinaryClockAppWidgetConfigure.KEY_CLOCK_COLOR, appWidgetId);
+        boolean showAlarm = WidgetUtils.isShowingAlarm(context, BinaryClockAppWidgetConfigure.KEY_SHOW_ALARM, appWidgetId, true);
+        boolean showDate = WidgetUtils.isShowingDate(context, BinaryClockAppWidgetConfigure.KEY_SHOW_DATE, appWidgetId, true);
+        Typeface clockFont = WidgetUtils.getClockFont(context, BinaryClockAppWidgetConfigure.KEY_CLOCK_FONT, appWidgetId);
+        boolean clockShadow = WidgetUtils.isClockShadow(context, BinaryClockAppWidgetConfigure.KEY_CLOCK_SHADOW, appWidgetId);
 
         if (DigitalAppWidgetService.LOGGING) {
             Log.i(TAG, "updateClock " + appWidgetId);
         }
-        RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.custom_analog_appwidget);
+        RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.binary_clock_appwidget);
 
         // Launch clock when clicking on the time in the widget only if not a lock screen widget
         Bundle newOptions = appWidgetManager.getAppWidgetOptions(appWidgetId);
@@ -200,9 +199,21 @@ public class CustomAnalogAppWidgetProvider extends AppWidgetProvider {
                     PendingIntent.getActivity(context, 0, new Intent(context, DeskClock.class), 0));
         }
 
-        Bitmap analogClock = WidgetUtils.createAnalogClockBitmap(context, showAlarm, showDate, showNumbers, showTicks,
-                show24Hours, bgColor, borderColor, hourColor, minuteColor, textColor, accentColor);
-        widget.setImageViewBitmap(R.id.the_clock_image, analogClock);
+        Bitmap dateBitmap = null;
+        if (showAlarm || showDate) {
+            float fontSize = context.getResources().getDimension(R.dimen.binary_clock_label_font_size);
+            CharSequence dateFormat = DateFormat.getBestDateTimePattern(Locale.getDefault(),
+                    context.getString(R.string.abbrev_wday_month_day_no_year));
+            Typeface dateFont = Typeface.create("sans-serif-light", Typeface.NORMAL);
+            dateBitmap = WidgetUtils.createDataAlarmBitmap(context, dateFont, fontSize, clockColor,
+                    false, 0.15f, showDate, showAlarm, dateFormat);
+        }
+
+        Bitmap binaryClock = WidgetUtils.createBinaryClockBitmap(context, clockColor, clockShadow, dateBitmap);
+        if (clockShadow) {
+            binaryClock = WidgetUtils.shadow(context.getResources(), binaryClock);
+        }
+        widget.setImageViewBitmap(R.id.the_clock_image, binaryClock);
 
         appWidgetManager.updateAppWidget(appWidgetId, widget);
     }
