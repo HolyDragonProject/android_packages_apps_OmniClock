@@ -166,4 +166,17 @@
   <string name="color_theme_black">Preto</string>
   <string name="snooze_on_silence_title">Suspender automaticamente</string>
   <string name="snooze_on_silence_summary">Suspender em vez de desligar depois do tempo limite em silêncio</string>
+  <string name="show_numbers_title">Mostrar os números das horas</string>
+  <string name="show_ticks_title">Mostrar marcas das horas</string>
+  <string name="show_24_hour_title">Mostrar no modo 24h</string>
+  <string name="bg_color_title">Cor de fundo</string>
+  <string name="border_color_title">Cor da margem</string>
+  <string name="hour_color_title">Cor das horas</string>
+  <string name="minute_color_title">Cor dos minutos</string>
+  <string name="text_color_title">Cor do texto</string>
+  <string name="accent_color_title">Cor do realce</string>
+  <string name="show_date_and_alarm_title">Mostrar a data e o alarme no interior</string>
+  <string name="analog_clock_settings">Relógio analógico</string>
+  <string name="time_zone_settings">Configurações de fuso horário</string>
+  <string name="binary_gadget">Relógio binário</string>
 </resources>
