@@ -166,4 +166,17 @@
   <string name="color_theme_black">Sötét</string>
   <string name="snooze_on_silence_title">Automatikus szundi</string>
   <string name="snooze_on_silence_summary">A némítási időkorlát után az elutasítás helyett szundi</string>
+  <string name="show_numbers_title">Óraszámjegyek megjelenítése</string>
+  <string name="show_ticks_title">Órajelek megjelenítése</string>
+  <string name="show_24_hour_title">24 órás mód megjelenítése</string>
+  <string name="bg_color_title">Háttérszín</string>
+  <string name="border_color_title">Szegélyszín</string>
+  <string name="hour_color_title">Az óraszámjegyek színe</string>
+  <string name="minute_color_title">A percszámjegyek színe</string>
+  <string name="text_color_title">Szövegszín</string>
+  <string name="accent_color_title">Másodlagos szín</string>
+  <string name="show_date_and_alarm_title">Dátum és ébresztések megjelenítése belül</string>
+  <string name="analog_clock_settings">Analóg óra</string>
+  <string name="time_zone_settings">Időzóna-beállítások</string>
+  <string name="binary_gadget">Bináris óra</string>
 </resources>

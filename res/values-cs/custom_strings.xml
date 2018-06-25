@@ -166,4 +166,17 @@
   <string name="color_theme_black">Černé</string>
   <string name="snooze_on_silence_title">Automatické odložení</string>
   <string name="snooze_on_silence_summary">Odložení namísto zrušení po vypršení tichého režimu</string>
+  <string name="show_numbers_title">Zobrazit čísla hodin</string>
+  <string name="show_ticks_title">Zobrazit značky hodin</string>
+  <string name="show_24_hour_title">Zobrazit 24h režim</string>
+  <string name="bg_color_title">Barva pozadí</string>
+  <string name="border_color_title">Barva ohraničení</string>
+  <string name="hour_color_title">Barva hodin</string>
+  <string name="minute_color_title">Barva minut</string>
+  <string name="text_color_title">Barva textu</string>
+  <string name="accent_color_title">Barva zvýraznění</string>
+  <string name="show_date_and_alarm_title">Zobrazit datum a uvnitř uvnitř</string>
+  <string name="analog_clock_settings">Analogové hodiny</string>
+  <string name="time_zone_settings">Nastavení časového pásma</string>
+  <string name="binary_gadget">Binární hodiny</string>
 </resources>

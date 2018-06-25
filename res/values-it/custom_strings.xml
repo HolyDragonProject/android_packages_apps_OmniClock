@@ -164,4 +164,19 @@
   <string name="offline_notif_title">Dispositivo offline</string>
   <string name="offline_notif_message">Per favore, cambia le impostazioni di sistema</string>
   <string name="color_theme_black">Nero</string>
+  <string name="snooze_on_silence_title">Posticipo automatico</string>
+  <string name="snooze_on_silence_summary">Posticipa invece di chiudere dopo il silenzio</string>
+  <string name="show_numbers_title">Mostra i numeri delle ore</string>
+  <string name="show_ticks_title">Mostra i segni delle ore</string>
+  <string name="show_24_hour_title">Mostra la modalità 24 ore</string>
+  <string name="bg_color_title">Colore dello sfondo</string>
+  <string name="border_color_title">Colore del bordo</string>
+  <string name="hour_color_title">Colore delle ore</string>
+  <string name="minute_color_title">Colore dei minuti</string>
+  <string name="text_color_title">Colore del testo</string>
+  <string name="accent_color_title">Colore di rilievo</string>
+  <string name="show_date_and_alarm_title">Mostra la data e l\'allarme all\'interno</string>
+  <string name="analog_clock_settings">Orologio analogico</string>
+  <string name="time_zone_settings">Impostazioni del fuso orario</string>
+  <string name="binary_gadget">Orologio binario</string>
 </resources>

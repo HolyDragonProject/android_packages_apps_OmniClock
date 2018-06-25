@@ -166,4 +166,17 @@
   <string name="color_theme_black">Must</string>
   <string name="snooze_on_silence_title">Automaatne kordus</string>
   <string name="snooze_on_silence_summary">Korda äratust tühistamise asemel peale vaikuse ajalõppu</string>
+  <string name="show_numbers_title">Kuva tunninumbreid</string>
+  <string name="show_ticks_title">Kuva tunnitähiseid</string>
+  <string name="show_24_hour_title">Kuva 24-tunni režiim</string>
+  <string name="bg_color_title">Taustavärv</string>
+  <string name="border_color_title">Äärevärv</string>
+  <string name="hour_color_title">Tunnivärv</string>
+  <string name="minute_color_title">Minutivärv</string>
+  <string name="text_color_title">Tekstivärv</string>
+  <string name="accent_color_title">Rõhuvärv</string>
+  <string name="show_date_and_alarm_title">Kuva sees kuupäeva ja äratust</string>
+  <string name="analog_clock_settings">Analoogkell</string>
+  <string name="time_zone_settings">Ajatsooni seaded</string>
+  <string name="binary_gadget">Binaarkell</string>
 </resources>
