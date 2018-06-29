@@ -553,8 +553,8 @@ public class WidgetUtils {
 
         int[][] dots = calculateDotMatrix(hours, minutes);
 
-        int width = r.getDimensionPixelSize(R.dimen.binary_clock_widget_width);
-        int height = r.getDimensionPixelSize(R.dimen.binary_clock_widget_height);
+        int width = r.getDimensionPixelSize(R.dimen.binary_clock_widget_size);
+        int height = r.getDimensionPixelSize(R.dimen.binary_clock_widget_size);
         int dotWidth = r.getDimensionPixelSize(R.dimen.binary_clock_dot_width);
         int dotHeight = r.getDimensionPixelSize(R.dimen.binary_clock_dot_height);
 

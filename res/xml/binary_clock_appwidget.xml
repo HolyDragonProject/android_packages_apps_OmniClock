@@ -15,14 +15,14 @@
 -->
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="@dimen/binary_clock_widget_width"
-    android:minHeight="@dimen/binary_clock_widget_height"
+    android:minWidth="@dimen/binary_clock_widget_size"
+    android:minHeight="@dimen/binary_clock_widget_size"
     android:updatePeriodMillis="0"
     android:previewImage="@drawable/appwidget_binary_clock_preview"
     android:initialLayout="@layout/binary_clock_appwidget"
     android:widgetCategory="keyguard|home_screen"
     android:configure="org.omnirom.alarmclock.BinaryClockAppWidgetConfigure"
-    android:minResizeWidth="@dimen/min_binary_clock_widget_width"
-    android:minResizeHeight="@dimen/min_binary_clock_widget_height"
+    android:minResizeWidth="@dimen/min_binary_clock_widget_size"
+    android:minResizeHeight="@dimen/min_binary_clock_widget_size"
     android:resizeMode="vertical|horizontal" >
 </appwidget-provider>
